@@ -1288,8 +1288,7 @@ function teamBadge(name, size){
   var cached = teamBadgeCache[name] !== undefined ? teamBadgeCache[name] : TEAM_BADGES[name];
   var hasImg = cached && cached !== false;
   if (hasImg){
-    var pad = Math.round(size*0.1);
-    return '<span class="teamBadgeSlot" data-club="'+name.replace(/"/g,'&quot;')+'" style="display:inline-flex; align-items:center; justify-content:center; width:'+size+'px; height:'+size+'px; border-radius:8px; background:var(--surface-1); padding:'+pad+'px; flex-shrink:0; box-sizing:border-box;"><img src="'+cached+'" alt="" style="max-width:100%; max-height:100%; object-fit:contain;" /></span>';
+    return '<span class="teamBadgeSlot" data-club="'+name.replace(/"/g,'&quot;')+'" style="display:inline-flex; align-items:center; justify-content:center; width:'+size+'px; height:'+size+'px; border-radius:8px; background:transparent; flex-shrink:0; box-sizing:border-box;"><img src="'+cached+'" alt="" style="max-width:100%; max-height:100%; object-fit:contain;" /></span>';
   }
   return '<span class="teamBadgeSlot" data-club="'+name.replace(/"/g,'&quot;')+'" style="display:inline-flex; align-items:center; justify-content:center; width:'+size+'px; height:'+size+'px; border-radius:50%; background:'+color+'; color:#fff; font-size:'+Math.round(size*0.38)+'px; font-weight:500; flex-shrink:0; overflow:hidden;">'+initials(name)+'</span>';
 }
@@ -1326,7 +1325,7 @@ function processBadges(){
   });
 }
 function applyBadgeImage(elm, url){
-  elm.style.background = '#ffffff';
+  elm.style.background = 'transparent';
   elm.innerHTML = '<img src="'+url+'" alt="" style="width:100%; height:100%; object-fit:contain;" />';
 }
 
@@ -1473,9 +1472,9 @@ function trophyIcon(label, size){
 }
 function titleIconChips(titlesList){
   if (!titlesList.length) return '';
-  return '<span style="display:inline-flex; gap:4px; align-items:center; margin-left:3px;">'+
+  return '<span style="display:inline-flex; gap:6px; align-items:center; margin-left:5px;">'+
     titlesList.map(function(label){
-      return trophyIcon(label, 14);
+      return trophyIcon(label, 20);
     }).join('')+
   '</span>';
 }
@@ -2410,6 +2409,16 @@ function managerOfYearTier(pts){
   if (pts >= 25) return {label:'Entrenador Destacado', icon:'ti-award'};
   return null;
 }
+function loadImgForCanvas(url){
+  return new Promise(function(resolve){
+    if (!url){ resolve(null); return; }
+    var img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function(){ resolve(img); };
+    img.onerror = function(){ resolve(null); };
+    img.src = url;
+  });
+}
 function generateShareImageBlob(){
   return new Promise(function(resolve){
     var W = 1080, H = 1900;
@@ -2426,8 +2435,8 @@ function generateShareImageBlob(){
     var amber = '#F2A93B', cream = '#F1F5EC', muted = '#9FB3A6';
     ctx.textAlign = 'center';
     ctx.fillStyle = muted; ctx.font = '600 30px Arial'; ctx.fillText('MI CARRERA COMO DT', W/2, 130);
-    ctx.fillStyle = cream; ctx.font = '700 64px Arial'; ctx.fillText(state.name || 'DT', W/2, 210);
-    ctx.fillStyle = amber; ctx.font = '500 34px Arial'; ctx.fillText(state.team ? ('Último club: '+state.team) : '', W/2, 260);
+    ctx.fillStyle = cream; ctx.font = '700 64px Arial'; ctx.fillText(state.name || 'DT', W/2, 275);
+    ctx.fillStyle = amber; ctx.font = '500 34px Arial'; ctx.fillText(state.team ? ('Último club: '+state.team) : '', W/2, 325);
 
     var titulos = state.history.filter(function(h){ return h.achievement==='Título de Liga'; }).length;
     var ascensos = state.history.filter(function(h){ return h.achievement==='Ascenso'; }).length;
@@ -2445,7 +2454,7 @@ function generateShareImageBlob(){
       {label:'Selecciones', value:natTitulos}
     ];
     var cols = 2, rows = 3, cardW = 440, cardH = 160, gapX = 40, gapY = 30;
-    var startX = (W - (cols*cardW + gapX))/2, startY = 330;
+    var startX = (W - (cols*cardW + gapX))/2, startY = 395;
     stats.forEach(function(s, i){
       var cx = startX + (i%cols)*(cardW+gapX);
       var cy = startY + Math.floor(i/cols)*(cardH+gapY);
@@ -2455,61 +2464,104 @@ function generateShareImageBlob(){
       ctx.fillStyle = muted; ctx.font = '500 26px Arial'; ctx.fillText(s.label, cx+cardW/2, cy+135);
     });
 
+    function yearsSpan(seasons){
+      if (seasons.length <= 3) return seasons.map(seasonYearLabel).join(', ');
+      return seasonYearLabel(seasons[0])+'–'+seasonYearLabel(seasons[seasons.length-1]);
+    }
     var clubGroups = buildClubGroups();
     var clubLines = [];
     Object.keys(clubGroups).forEach(function(club){
       Object.keys(clubGroups[club]).forEach(function(label){
-        var count = clubGroups[club][label].length;
-        clubLines.push(label+(count>1?' x'+count:'')+' — '+club);
+        var seasons = clubGroups[club][label];
+        var count = seasons.length;
+        clubLines.push({
+          text: label+(count>1?' x'+count:'')+' — '+club+' ('+yearsSpan(seasons)+')',
+          img: trophyImageFor(label)
+        });
       });
     });
-    var clubSectionY = startY + rows*(cardH+gapY) + 20;
-    if (clubLines.length){
-      ctx.fillStyle = cream; ctx.font = '600 30px Arial'; ctx.fillText('CON CLUBES', W/2, clubSectionY);
-      clubLines.forEach(function(line, i){
-        ctx.fillStyle = amber; ctx.font = '500 26px Arial';
-        ctx.fillText(line, W/2, clubSectionY + 40 + i*38);
-      });
-    }
-    var afterClubY = clubSectionY + (clubLines.length ? 40 + clubLines.length*38 + 25 : 20);
-
     var natWonList = state.nationalHistory.filter(function(h){ return h.stage==='Campeón'; });
-    var natSectionY = afterClubY;
-    if (natWonList.length){
-      ctx.fillStyle = cream; ctx.font = '600 30px Arial'; ctx.fillText('CON SELECCIONES', W/2, natSectionY);
-      natWonList.forEach(function(h, i){
-        ctx.fillStyle = amber; ctx.font = '500 28px Arial';
-        ctx.fillText(h.kind+' — '+h.team, W/2, natSectionY + 42 + i*40);
-      });
-    }
-    var afterNatY = natSectionY + (natWonList.length ? 42 + natWonList.length*40 + 30 : 20);
-
-    var pts = computeTotalPoints();
-    var tier = managerOfYearTier(pts);
-    if (tier){
-      ctx.fillStyle = cream; ctx.font = '700 40px Arial'; ctx.fillText(tier.label, W/2, afterNatY);
-    }
-    ctx.fillStyle = muted; ctx.font = '500 26px Arial'; ctx.fillText(pts+' puntos de carrera', W/2, afterNatY + 45);
-
-    var lineY = afterNatY + 90;
-    ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(140,lineY); ctx.lineTo(W-140,lineY); ctx.stroke();
-    ctx.fillStyle = amber; ctx.font = '700 32px Arial';
-    ctx.fillText((location.hostname || 'DT · Simulador de carrera') + (location.pathname && location.pathname!=='/' ? location.pathname : ''), W/2, lineY + 50);
+    var natLines = natWonList.map(function(h){
+      return {
+        text: h.kind+' — '+h.team+' ('+tournamentYearLabel(h.season)+')',
+        img: trophyImageFor(h.kind)
+      };
+    });
 
     var badgeUrl = (typeof TEAM_BADGES !== 'undefined') ? TEAM_BADGES[state.team] : null;
-    if (badgeUrl){
-      var img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = function(){
-        try { ctx.drawImage(img, W/2-60, 268, 60, 60); } catch(e){}
-        canvas.toBlob(function(blob){ resolve(blob); }, 'image/png');
-      };
-      img.onerror = function(){ canvas.toBlob(function(blob){ resolve(blob); }, 'image/png'); };
-      img.src = badgeUrl;
-    } else {
+    var urlsToLoad = [];
+    if (badgeUrl) urlsToLoad.push(badgeUrl);
+    clubLines.forEach(function(l){ if (l.img) urlsToLoad.push(l.img); });
+    natLines.forEach(function(l){ if (l.img) urlsToLoad.push(l.img); });
+    urlsToLoad = urlsToLoad.filter(function(u, i){ return urlsToLoad.indexOf(u) === i; });
+
+    Promise.all(urlsToLoad.map(loadImgForCanvas)).then(function(loadedImgs){
+      var imgMap = {};
+      urlsToLoad.forEach(function(u, i){ imgMap[u] = loadedImgs[i]; });
+      var iconSize = 50, iconGap = 16;
+
+      function drawTrophyLine(line, cx, y, font){
+        ctx.font = font;
+        var textW = ctx.measureText(line.text).width;
+        var iconImg = line.img ? imgMap[line.img] : null;
+        var iconW = iconImg ? iconSize + iconGap : 0;
+        var lineStartX = cx - (textW + iconW)/2;
+        if (iconImg){
+          try { ctx.drawImage(iconImg, lineStartX, y - iconSize + 12, iconSize, iconSize); } catch(e){}
+        }
+        ctx.textAlign = 'left';
+        ctx.fillStyle = amber;
+        ctx.fillText(line.text, lineStartX + iconW, y);
+        ctx.textAlign = 'center';
+      }
+
+      var clubLineH = 60, natLineH = 62;
+      var clubSectionY = startY + rows*(cardH+gapY) + 20;
+      if (clubLines.length){
+        ctx.fillStyle = cream; ctx.font = '600 30px Arial'; ctx.fillText('CON CLUBES', W/2, clubSectionY);
+        clubLines.forEach(function(line, i){
+          drawTrophyLine(line, W/2, clubSectionY + 55 + i*clubLineH, '500 26px Arial');
+        });
+      }
+      var afterClubY = clubSectionY + (clubLines.length ? 55 + clubLines.length*clubLineH + 20 : 20);
+
+      var natSectionY = afterClubY;
+      if (natLines.length){
+        ctx.fillStyle = cream; ctx.font = '600 30px Arial'; ctx.fillText('CON SELECCIONES', W/2, natSectionY);
+        natLines.forEach(function(line, i){
+          drawTrophyLine(line, W/2, natSectionY + 57 + i*natLineH, '500 28px Arial');
+        });
+      }
+      var afterNatY = natSectionY + (natLines.length ? 57 + natLines.length*natLineH + 25 : 20);
+
+      var pts = computeTotalPoints();
+      var tier = managerOfYearTier(pts);
+      if (tier){
+        ctx.fillStyle = cream; ctx.font = '700 40px Arial'; ctx.fillText(tier.label, W/2, afterNatY);
+      }
+      ctx.fillStyle = muted; ctx.font = '500 26px Arial'; ctx.fillText(pts+' puntos de carrera', W/2, afterNatY + 45);
+
+      var lineY = afterNatY + 90;
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(140,lineY); ctx.lineTo(W-140,lineY); ctx.stroke();
+      ctx.fillStyle = amber; ctx.font = '700 32px Arial';
+      ctx.fillText((location.hostname || 'DT · Simulador de carrera') + (location.pathname && location.pathname!=='/' ? location.pathname : ''), W/2, lineY + 50);
+
+      if (badgeUrl && imgMap[badgeUrl]){
+        var crestSize = 130, crestX = W/2 - crestSize/2, crestY = 65;
+        var ccx = crestX + crestSize/2, ccy = crestY + crestSize/2, cr = crestSize/2;
+        var glow = ctx.createRadialGradient(ccx,ccy,0,ccx,ccy,cr+22);
+        glow.addColorStop(0,'rgba(255,255,255,0.06)');
+        glow.addColorStop(1,'rgba(255,255,255,0)');
+        ctx.fillStyle = glow;
+        ctx.beginPath(); ctx.arc(ccx,ccy,cr+22,0,Math.PI*2); ctx.fill();
+        ctx.save();
+        ctx.beginPath(); ctx.arc(ccx,ccy,cr,0,Math.PI*2); ctx.clip();
+        try { ctx.drawImage(imgMap[badgeUrl], crestX, crestY, crestSize, crestSize); } catch(e){}
+        ctx.restore();
+      }
       canvas.toBlob(function(blob){ resolve(blob); }, 'image/png');
-    }
+    });
   });
 }
 function buildShareText(){
@@ -2539,7 +2591,7 @@ function renderCareerSummary(){
       var seasons = labels[label];
       var years = seasons.map(seasonYearLabel).join(', ');
       var countTxt = seasons.length > 1 ? ' x'+seasons.length : '';
-      return '<p style="margin:3px 0; font-size:13px; color:var(--text-secondary); display:flex; align-items:center; gap:6px;">'+trophyIcon(label, 14)+'<span>'+label+countTxt+' (años: '+years+')</span></p>';
+      return '<p style="margin:5px 0; font-size:13px; color:var(--text-secondary); display:flex; align-items:center; gap:10px;">'+trophyIcon(label, 32)+'<span>'+label+countTxt+' (años: '+years+')</span></p>';
     }).join('');
     return '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 0.9rem; margin-bottom:8px;">'+
       '<div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">'+teamBadge(club)+'<p style="margin:0; font-size:14px; font-weight:500;">'+club+'</p></div>'+
@@ -2549,7 +2601,7 @@ function renderCareerSummary(){
 
   var natPalmares = natTitles.length ? natTitles.map(function(h){
     return '<div style="display:flex; align-items:center; gap:10px; background:var(--surface-1); border-radius:var(--radius); padding:0.6rem 0.85rem; margin-bottom:8px;">'+
-      trophyIcon(h.kind, 22)+
+      trophyIcon(h.kind, 40)+
       '<div><p style="margin:0; font-size:14px; font-weight:500;">'+h.kind+' — Campeón con '+h.team+'</p>'+
       '<p style="margin:0; font-size:12px; color:var(--text-secondary);">'+tournamentYearLabel(h.season)+'</p></div>'+
     '</div>';
