@@ -2311,7 +2311,7 @@ function managerOfYearTier(pts){
 }
 function generateShareImageBlob(){
   return new Promise(function(resolve){
-    var W = 1080, H = 1500;
+    var W = 1080, H = 1900;
     var canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     var ctx = canvas.getContext('2d');
@@ -2354,8 +2354,26 @@ function generateShareImageBlob(){
       ctx.fillStyle = muted; ctx.font = '500 26px Arial'; ctx.fillText(s.label, cx+cardW/2, cy+135);
     });
 
+    var clubGroups = buildClubGroups();
+    var clubLines = [];
+    Object.keys(clubGroups).forEach(function(club){
+      Object.keys(clubGroups[club]).forEach(function(label){
+        var count = clubGroups[club][label].length;
+        clubLines.push(label+(count>1?' x'+count:'')+' — '+club);
+      });
+    });
+    var clubSectionY = startY + rows*(cardH+gapY) + 20;
+    if (clubLines.length){
+      ctx.fillStyle = cream; ctx.font = '600 30px Arial'; ctx.fillText('CON CLUBES', W/2, clubSectionY);
+      clubLines.forEach(function(line, i){
+        ctx.fillStyle = amber; ctx.font = '500 26px Arial';
+        ctx.fillText(line, W/2, clubSectionY + 40 + i*38);
+      });
+    }
+    var afterClubY = clubSectionY + (clubLines.length ? 40 + clubLines.length*38 + 25 : 20);
+
     var natWonList = state.nationalHistory.filter(function(h){ return h.stage==='Campeón'; });
-    var natSectionY = startY + rows*(cardH+gapY) + 20;
+    var natSectionY = afterClubY;
     if (natWonList.length){
       ctx.fillStyle = cream; ctx.font = '600 30px Arial'; ctx.fillText('CON SELECCIONES', W/2, natSectionY);
       natWonList.forEach(function(h, i){
