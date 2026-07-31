@@ -56,9 +56,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     padding: 24px 16px 64px;
     line-height: 1.55;
   }
-  #layout { max-width: 1300px; margin: 0 auto; display: flex; gap: 24px; align-items: flex-start; }
+  #layout { max-width: 1450px; margin: 0 auto; display: flex; gap: 24px; align-items: flex-start; }
   #app { flex: 1 1 560px; max-width: 640px; min-width: 0; }
-  #timelineSidebar, #nationalSidebar { flex: 0 0 300px; max-width: 300px; position: sticky; top: 24px; max-height: calc(100vh - 48px); overflow-y: auto; }
+  #timelineSidebar, #nationalSidebar { flex: 0 0 380px; max-width: 380px; position: sticky; top: 24px; max-height: calc(100vh - 48px); overflow-y: auto; }
   @media (max-width: 1180px) {
     #layout { flex-direction: column; }
     #app { max-width: 640px; width: 100%; }
@@ -1415,7 +1415,7 @@ function renderNationalTimeline(){
       nationalTeamCrest(h.team, 30)+
       '<div style="flex:1; min-width:0;">'+
         '<p style="margin:0; font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+h.team+'</p>'+
-        '<p style="margin:0; font-size:11px; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center;">'+h.kind+' · '+h.stage+(won ? titleIconChips([h.kind]) : '')+'</p>'+
+        '<p style="margin:0; font-size:11px; color:var(--text-secondary); white-space:normal; overflow:visible; display:flex; align-items:center; flex-wrap:wrap; row-gap:4px;">'+h.kind+' · '+h.stage+(won ? titleIconChips([h.kind]) : '')+'</p>'+
       '</div>'+
     '</div>';
   }).join('');
@@ -1465,7 +1465,9 @@ function trophyIcon(label, size){
   var img = trophyImageFor(label);
   var safeLabel = label.replace(/"/g,'&quot;');
   if (img){
-    return '<img src="'+img+'" alt="'+safeLabel+'" title="'+safeLabel+'" style="width:'+size+'px; height:'+size+'px; object-fit:contain; flex-shrink:0; vertical-align:middle;" />';
+    var pad = Math.max(2, Math.round(size*0.14));
+    var box = size + pad*2;
+    return '<span style="display:inline-flex; align-items:center; justify-content:center; width:'+box+'px; height:'+box+'px; border-radius:7px; background:var(--bg); flex-shrink:0; vertical-align:middle; box-sizing:border-box;"><img src="'+img+'" alt="'+safeLabel+'" title="'+safeLabel+'" style="width:'+size+'px; height:'+size+'px; object-fit:contain;" /></span>';
   }
   var t = titleIconFor(label);
   return svgTrophyIcon(t.shape, t.color, size, label);
@@ -1492,7 +1494,7 @@ function buildHistoryRow(h, idx){
     teamBadge(h.team, 34)+
     '<div style="flex:1; min-width:0;">'+
       '<p style="margin:0; font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:5px;">'+flagEmoji(h.country,16)+'<span style="overflow:hidden; text-overflow:ellipsis;">'+h.team+'</span></p>'+
-      '<p style="margin:0; font-size:11px; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center;">'+h.pos+' · '+h.pts+' pts'+titleIconChips(titlesList)+'</p>'+
+      '<p style="margin:0; font-size:11px; color:var(--text-secondary); white-space:normal; overflow:visible; display:flex; align-items:center; flex-wrap:wrap; row-gap:4px;">'+h.pos+' · '+h.pts+' pts'+titleIconChips(titlesList)+'</p>'+
     '</div>'+
     ratingChip(mr)+
   '</div>';
