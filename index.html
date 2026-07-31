@@ -1454,18 +1454,34 @@ function titleIconFor(label){
   }
   return {shape:'ribbon', color:'#c7c7c7'};
 }
+function trophyImageFor(label){
+  if (!label) return null;
+  if (TROPHY_IMAGES[label]) return TROPHY_IMAGES[label];
+  for (var key in TROPHY_IMAGES){
+    if (label.indexOf(key) !== -1) return TROPHY_IMAGES[key];
+  }
+  return null;
+}
+function trophyIcon(label, size){
+  var img = trophyImageFor(label);
+  var safeLabel = label.replace(/"/g,'&quot;');
+  if (img){
+    return '<img src="'+img+'" alt="'+safeLabel+'" title="'+safeLabel+'" style="width:'+size+'px; height:'+size+'px; object-fit:contain; flex-shrink:0; vertical-align:middle;" />';
+  }
+  var t = titleIconFor(label);
+  return svgTrophyIcon(t.shape, t.color, size, label);
+}
 function titleIconChips(titlesList){
   if (!titlesList.length) return '';
   return '<span style="display:inline-flex; gap:4px; align-items:center; margin-left:3px;">'+
     titlesList.map(function(label){
-      var t = titleIconFor(label);
-      return svgTrophyIcon(t.shape, t.color, 14, label);
+      return trophyIcon(label, 14);
     }).join('')+
   '</span>';
 }
 function buildHistoryRow(h, idx){
   var titlesList = [];
-  if (h.achievement) titlesList.push(h.achievement);
+  if (h.achievement) titlesList.push(h.achievement === 'Título de Liga' ? h.division : h.achievement);
   if (h.euro && h.euro.stage==='Campeón') titlesList.push(h.euro.comp.split(' (')[0]);
   if (h.cwc && h.cwc.stage==='Campeón') titlesList.push('Mundial de Clubes');
   if (h.cup && h.cup.stage==='Campeón') titlesList.push(h.cup.name);
@@ -2368,7 +2384,7 @@ function buildClubGroups(){
     groups[club][label].push(season);
   }
   state.history.forEach(function(h){
-    if (h.achievement) add(h.team, h.achievement, h.season);
+    if (h.achievement) add(h.team, h.achievement === 'Título de Liga' ? h.division : h.achievement, h.season);
     if (h.euro && h.euro.stage==='Campeón') add(h.team, h.euro.comp.split(' (')[0]+' (Campeón)', h.season);
     if (h.cup && h.cup.stage==='Campeón') add(h.team, h.cup.name+' (Campeón)', h.season);
     if (h.cwc && h.cwc.stage==='Campeón') add(h.team, 'Mundial de Clubes (Campeón)', h.season);
@@ -2523,8 +2539,7 @@ function renderCareerSummary(){
       var seasons = labels[label];
       var years = seasons.map(seasonYearLabel).join(', ');
       var countTxt = seasons.length > 1 ? ' x'+seasons.length : '';
-      var t = titleIconFor(label);
-      return '<p style="margin:3px 0; font-size:13px; color:var(--text-secondary); display:flex; align-items:center; gap:6px;">'+svgTrophyIcon(t.shape, t.color, 14, label)+'<span>'+label+countTxt+' (años: '+years+')</span></p>';
+      return '<p style="margin:3px 0; font-size:13px; color:var(--text-secondary); display:flex; align-items:center; gap:6px;">'+trophyIcon(label, 14)+'<span>'+label+countTxt+' (años: '+years+')</span></p>';
     }).join('');
     return '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 0.9rem; margin-bottom:8px;">'+
       '<div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">'+teamBadge(club)+'<p style="margin:0; font-size:14px; font-weight:500;">'+club+'</p></div>'+
@@ -2533,9 +2548,8 @@ function renderCareerSummary(){
   }).join('') : '<p style="font-size:14px; color:var(--text-secondary);">Sin títulos ni ascensos en esta carrera.</p>';
 
   var natPalmares = natTitles.length ? natTitles.map(function(h){
-    var t = titleIconFor(h.kind);
     return '<div style="display:flex; align-items:center; gap:10px; background:var(--surface-1); border-radius:var(--radius); padding:0.6rem 0.85rem; margin-bottom:8px;">'+
-      svgTrophyIcon(t.shape, t.color, 22, h.kind)+
+      trophyIcon(h.kind, 22)+
       '<div><p style="margin:0; font-size:14px; font-weight:500;">'+h.kind+' — Campeón con '+h.team+'</p>'+
       '<p style="margin:0; font-size:12px; color:var(--text-secondary);">'+tournamentYearLabel(h.season)+'</p></div>'+
     '</div>';
