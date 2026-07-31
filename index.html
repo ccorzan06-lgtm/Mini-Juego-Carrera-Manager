@@ -1315,9 +1315,25 @@ function renderScreen(id){
   else if (id==='palmares') renderCareerSummary();
   else renderLanding();
 }
+function saveGame(){
+  try {
+    localStorage.setItem('dtCareerSave', JSON.stringify({state:state, screenId: (history.state && history.state.screenId) || 'inicio'}));
+  } catch(e){}
+}
+function loadGame(){
+  try {
+    var raw = localStorage.getItem('dtCareerSave');
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch(e){ return null; }
+}
+function deleteSave(){
+  try { localStorage.removeItem('dtCareerSave'); } catch(e){}
+}
 function navigate(id){
   history.pushState({screenId:id, snapshot: JSON.stringify(state)}, '', '#'+id);
   renderScreen(id);
+  saveGame();
 }
 window.addEventListener('popstate', function(e){
   if (e.state && e.state.snapshot){
@@ -1505,6 +1521,24 @@ function renderLanding(){
     '</div>'
   );
   el('landingStart').addEventListener('click', function(){ navigate('inicio'); });
+  var saved = loadGame();
+  if (saved){
+    var bar = document.createElement('div');
+    bar.style.cssText = 'margin-top:16px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;';
+    bar.innerHTML = '<button id="continueSaveBtn" class="primaryBtn">Continuar partida guardada <i class="ti ti-player-play" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'+
+      '<button id="deleteSaveBtn" style="background:none; border:1px solid var(--border); color:var(--text-secondary); font-size:13px;">Borrar partida guardada</button>';
+    el('landingStart').parentElement.parentElement.appendChild(bar);
+    el('continueSaveBtn').addEventListener('click', function(){
+      state = saved.state;
+      navigate(saved.screenId || 'inicio');
+    });
+    el('deleteSaveBtn').addEventListener('click', function(){
+      if (confirm('¿Seguro que querés borrar la partida guardada? No se puede deshacer.')){
+        deleteSave();
+        renderLanding();
+      }
+    });
+  }
 }
 function renderSetup(){
   var countryOpts = COUNTRIES.map(function(c){ return '<option value="'+c+'">'; }).join('');
@@ -1546,7 +1580,7 @@ function renderOffers(){
         var h = historyFor(t.n, t.b);
         var rating = baselineClubRating(t.b, isTopFlight(division), division.base);
         return '<button class="offerBtn" data-team="'+t.n+'" data-b="'+t.b+'" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px; justify-content:space-between;">'+
-          '<span style="display:flex; align-items:center; gap:10px;">'+teamBadge(t.n)+'<span><span style="display:block;">'+t.n+'</span><span style="display:block; font-size:12px; color:var(--text-secondary); font-weight:400;">'+h.label+'</span></span></span>'+
+          '<span style="display:flex; align-items:center; gap:10px;">'+teamBadge(t.n)+'<span><span style="display:flex; align-items:center; gap:6px;">'+flagEmoji(division.country,18)+' '+t.n+'</span><span style="display:block; font-size:12px; color:var(--text-secondary); font-weight:400;">'+h.label+'</span></span></span>'+
         '</button>';
       }).join('')+
     '</div>'
