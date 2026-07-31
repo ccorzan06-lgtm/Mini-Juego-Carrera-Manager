@@ -394,7 +394,7 @@ function simulateNationalTournament(team, kind, form){
   var draw = (typeof getTournamentTeams !== 'undefined') ? getTournamentTeams(compName, team) : null;
   var opponentPool = draw
     ? draw.groups.reduce(function(acc,g){ return acc.concat(g); }, []).filter(function(t){ return t.n !== team.n; })
-    : NATIONAL_TEAMS.filter(function(t){ return t.cont === team.cont && t.n !== team.n; });
+    : NATIONAL_TEAMS.filter(function(t){ return (kind==='Mundial' || t.cont === team.cont) && t.n !== team.n; });
   var usedOpponents = {};
   var matchLog = [];
   var idx = 0;
@@ -441,8 +441,10 @@ function getTournamentTeams(compName, myTeamObj){
   var cfg = TOURNAMENT_FORMATS[compName];
   if (!cfg) return null;
   var homeCont = myTeamObj.cont;
+  var isWorldCup = (compName === 'Copa del Mundo');
   var pool = NATIONAL_TEAMS.filter(function(t){
-    if (t.n === myTeamObj.n || t.cont !== homeCont) return false;
+    if (t.n === myTeamObj.n) return false;
+    if (!isWorldCup && t.cont !== homeCont) return false;
     if (compName === 'Copa América' && (t.n==='Estados Unidos' || t.n==='México')) return false;
     return true;
   });
