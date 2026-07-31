@@ -32,6 +32,7 @@
     --body: 'Work Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
   * { box-sizing: border-box; }
+  html { font-size: 16px; }
   body {
     background: var(--bg);
     background-image:
@@ -41,6 +42,7 @@
     font-family: var(--body);
     margin: 0;
     padding: 24px 16px 64px;
+    line-height: 1.55;
   }
   #layout { max-width: 1300px; margin: 0 auto; display: flex; gap: 24px; align-items: flex-start; }
   #app { flex: 1 1 560px; max-width: 640px; min-width: 0; }
@@ -49,6 +51,14 @@
     #layout { flex-direction: column; }
     #app { max-width: 640px; width: 100%; }
     #timelineSidebar, #nationalSidebar { position: static; max-width: 640px; width: 100%; max-height: none; order: 2; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 72px 12px 48px; }
+    button { min-height: 46px; font-size: 15px; padding: 12px 14px; }
+    h2 { font-size: 1.5em; }
+    h3 { font-size: 1.05em; }
+    p { font-size: 15px; }
+    #homeLogoBtn { top: 12px; left: 12px; width: 46px; height: 46px; }
   }
   h2, h3 {
     font-family: var(--display);
@@ -1196,13 +1206,13 @@ var NATIONAL_BADGES = {
 var teamBadgeCache = {}; // name -> url string, or false if confirmed not found
 var fetchingBadges = {};
 function teamBadge(name, size){
-  size = size || 32;
+  size = size || 38;
   var color = BADGE_COLORS[hashStr(name) % BADGE_COLORS.length];
   var cached = teamBadgeCache[name] !== undefined ? teamBadgeCache[name] : TEAM_BADGES[name];
   var hasImg = cached && cached !== false;
   if (hasImg){
-    var pad = Math.round(size*0.14);
-    return '<span class="teamBadgeSlot" data-club="'+name.replace(/"/g,'&quot;')+'" style="display:inline-flex; align-items:center; justify-content:center; width:'+size+'px; height:'+size+'px; border-radius:7px; background:#ffffff; padding:'+pad+'px; flex-shrink:0; box-sizing:border-box;"><img src="'+cached+'" alt="" style="max-width:100%; max-height:100%; object-fit:contain;" /></span>';
+    var pad = Math.round(size*0.1);
+    return '<span class="teamBadgeSlot" data-club="'+name.replace(/"/g,'&quot;')+'" style="display:inline-flex; align-items:center; justify-content:center; width:'+size+'px; height:'+size+'px; border-radius:8px; background:var(--surface-1); padding:'+pad+'px; flex-shrink:0; box-sizing:border-box;"><img src="'+cached+'" alt="" style="max-width:100%; max-height:100%; object-fit:contain;" /></span>';
   }
   return '<span class="teamBadgeSlot" data-club="'+name.replace(/"/g,'&quot;')+'" style="display:inline-flex; align-items:center; justify-content:center; width:'+size+'px; height:'+size+'px; border-radius:50%; background:'+color+'; color:#fff; font-size:'+Math.round(size*0.38)+'px; font-weight:500; flex-shrink:0; overflow:hidden;">'+initials(name)+'</span>';
 }
@@ -1256,7 +1266,7 @@ var state = {};
 function resetState(){
   state = {
     name:'', nat:'España', team:'', country:'', division:'', totalGames:38, historyMod:0,
-    divisionBase:3, clubBonus:0, clubRating:50, managerRatingValue:50, goodStreak:0, vestuario:50, directiva:50, usedDecisionIds:[], reputation:0, season:1, history:[], retired:false,
+    divisionBase:3, clubBonus:0, clubRating:50, managerRatingValue:50, goodStreak:0, vestuario:50, directiva:50, presupuesto:50, prensa:50, usedDecisionIds:[], reputation:0, season:1, history:[], retired:false,
     lastNational:null, nationalHistory:[], pendingEuroComp:null, pendingEuroClub:null, pendingCWC:null, pendingCWCClub:null,
     pendingCountryChoice:null, pendingMovement:null, pendingIsLast:false, pendingTournamentKind:null,
     lastP:null, lastSeasonResult:null, lastNationalResult:null, lastBracket:null,
@@ -1310,7 +1320,7 @@ function renderNationalTimeline(){
     var won = h.stage === 'Campeón';
     return '<div style="display:flex; align-items:center; gap:10px; padding:10px 4px; border-bottom:1px solid var(--border);">'+
       '<div style="width:32px; height:32px; border-radius:8px; background:var(--surface-1); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:var(--text-secondary); flex-shrink:0;">'+tournamentYearLabel(h.season)+'</div>'+
-      nationalTeamCrest(h.team, 26)+
+      nationalTeamCrest(h.team, 30)+
       '<div style="flex:1; min-width:0;">'+
         '<p style="margin:0; font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+h.team+'</p>'+
         '<p style="margin:0; font-size:11px; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center;">'+h.kind+' · '+h.stage+(won ? titleIconChips([h.kind]) : '')+'</p>'+
@@ -1323,11 +1333,11 @@ function renderNationalTimeline(){
   '</div>';
 }
 var TROPHY_SHAPES = {
-  cup: '<path d="M7 3h10v3.5a5 5 0 01-5 5 5 5 0 01-5-5V3z" fill="currentColor"/><path d="M5 4H3.2C3.2 6 4.6 7.6 6.4 8" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M19 4h1.8c0 2-1.4 3.6-3.2 4" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="10.6" y="11" width="2.8" height="3.4" fill="currentColor"/><path d="M8.5 19.5h7l-.8-3h-5.4z" fill="currentColor"/>',
-  medal: '<path d="M9 13.2L6.5 20l5.5-3 5.5 3-2.5-6.8" fill="currentColor"/><circle cx="12" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 5.5l1.15 2.35 2.6.38-1.88 1.83.44 2.59L12 11.4l-2.31 1.25.44-2.59-1.88-1.83 2.6-.38z" fill="currentColor"/>',
-  globe: '<circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 12h17M12 3.5c2.6 2.2 4 5.3 4 8.5s-1.4 6.3-4 8.5c-2.6-2.2-4-5.3-4-8.5s1.4-6.3 4-8.5z" fill="none" stroke="currentColor" stroke-width="1.4"/>',
-  shield: '<path d="M12 2.5l7.5 2.7v5.6c0 4.6-3.2 7.9-7.5 10.2-4.3-2.3-7.5-5.6-7.5-10.2V5.2z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 7.5v6.4M9 10.5l3-3 3 3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>',
-  ribbon: '<circle cx="12" cy="8.5" r="5.3" fill="currentColor"/><path d="M8.7 12.6L6.5 21l5.5-3.2 5.5 3.2-2.2-8.4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>'
+  cup: '<path d="M6.6 3c0-.7.6-1.2 1.3-1.2h8.2c.7 0 1.3.5 1.3 1.2v3.3c0 4-2.9 6.9-6.4 6.9S6.6 10.3 6.6 6.3V3z" fill="currentColor"/><path d="M9 4.3c-1 .3-1.7.9-1.7 1.7s.9 1.6 2.1 1.9M15 4.3c1 .3 1.7.9 1.7 1.7s-.9 1.6-2.1 1.9" fill="none" stroke="currentColor" stroke-width="1.1"/><path d="M4.6 4.6C2.2 4.9 1.7 8 3.8 9.4c.9.6 2 .7 2.9.3M19.4 4.6c2.4.3 2.9 3.4.8 4.8-.9.6-2 .7-2.9.3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M9.3 8.6c.6.9 1.6 1.5 2.7 1.5s2.1-.6 2.7-1.5" fill="none" stroke="currentColor" stroke-width="0.9" opacity="0.55"/><path d="M11 13h2l.6 3.4h-3.2z" fill="currentColor"/><rect x="8.3" y="16.6" width="7.4" height="1.5" rx="0.6" fill="currentColor"/><path d="M7.3 18.4h9.4l1 2.9H6.3z" fill="currentColor"/>',
+  medal: '<path d="M8.7 12.8L6 21.3l6-3.4 6 3.4-2.7-8.5" fill="currentColor"/><circle cx="12" cy="8.6" r="6.4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="8.6" r="4.9" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.5"/><path d="M12 4.9l1.25 2.55 2.82.41-2.04 1.99.48 2.81L12 11.32l-2.51 1.34.48-2.81-2.04-1.99 2.82-.41z" fill="currentColor"/>',
+  globe: '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 12h18M5.2 7.2h13.6M5.2 16.8h13.6" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/><path d="M12 3c2.7 2.3 4.2 5.6 4.2 9s-1.5 6.7-4.2 9c-2.7-2.3-4.2-5.6-4.2-9s1.5-6.7 4.2-9z" fill="none" stroke="currentColor" stroke-width="1.3"/><ellipse cx="12" cy="12" rx="3.2" ry="9" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.5"/>',
+  shield: '<path d="M12 2.2l8 2.9v5.9c0 4.9-3.4 8.3-8 10.8-4.6-2.5-8-5.9-8-10.8V5.1z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 4.6l6 2.2v4.4c0 3.8-2.6 6.5-6 8.4-3.4-1.9-6-4.6-6-8.4V6.8z" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.5"/><path d="M12 8v6.6M8.8 11l3.2-3.2L15.2 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>',
+  ribbon: '<circle cx="12" cy="8.2" r="5.6" fill="currentColor"/><circle cx="12" cy="8.2" r="3.9" fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.4"/><path d="M8.3 12.6L5.8 21.5l6.2-3.6 6.2 3.6-2.5-8.9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>'
 };
 function svgTrophyIcon(shape, color, size, label){
   return '<svg viewBox="0 0 24 24" width="'+size+'" height="'+size+'" style="color:'+color+'; flex-shrink:0;" aria-hidden="true"><title>'+label.replace(/</g,'')+'</title>'+TROPHY_SHAPES[shape]+'</svg>';
@@ -1371,7 +1381,7 @@ function buildHistoryRow(h, idx){
   return '<div style="display:flex; align-items:center; gap:10px; padding:10px 4px; border-bottom:1px solid var(--border);">'+
     '<div style="width:32px; height:32px; border-radius:8px; background:var(--surface-1); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:var(--text-secondary); flex-shrink:0;">'+h.season+'</div>'+
     '<span style="width:15px; flex-shrink:0; display:inline-flex; justify-content:center;">'+(changedClub ? '<i class="ti ti-corner-down-right" style="color:var(--text-secondary); font-size:15px;" aria-hidden="true"></i>' : '')+'</span>'+
-    teamBadge(h.team, 30)+
+    teamBadge(h.team, 34)+
     '<div style="flex:1; min-width:0;">'+
       '<p style="margin:0; font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:5px;">'+flagEmoji(h.country,16)+'<span style="overflow:hidden; text-overflow:ellipsis;">'+h.team+'</span></p>'+
       '<p style="margin:0; font-size:11px; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center;">'+h.pos+' · '+h.pts+' pts'+titleIconChips(titlesList)+'</p>'+
@@ -1649,6 +1659,7 @@ function playMatches(n){
   var clubStrength = state.clubBonus * 3.2;
   var managerBonus = (managerRating() - 50) * 0.3;
   var moraleBonus = ((state.vestuario||50) - 50) * 0.06;
+  var budgetBonus = ((state.presupuesto||50) - 50) * 0.04;
   var floor = 15 + state.clubBonus * 11;
   var cap = Math.min(92, 62 + state.clubBonus * 6);
   for (var i=0;i<n;i++){
@@ -1656,7 +1667,7 @@ function playMatches(n){
     if (Math.random() < cs.posChance) styleExtra += cs.posBonus;
     if (Math.random() < cs.negChance) styleExtra += cs.negBonus;
     var rand = Math.random()*30;
-    var winProb = Math.max(3, Math.min(cap, rand + base + pressBonus + styleExtra + clubStrength + managerBonus + moraleBonus - leagueDifficulty));
+    var winProb = Math.max(3, Math.min(cap, rand + base + pressBonus + styleExtra + clubStrength + managerBonus + moraleBonus + budgetBonus - leagueDifficulty));
     winProb = Math.max(winProb, floor);
     var drawProb = 25;
     var r = Math.random()*100;
@@ -1795,12 +1806,13 @@ function finalizeSeason(p, playoffLost){
   var actualPercentile = 1 - (p.rank - 1) / (p.teams - 1);
   var expectedPercentile = Math.max(0, Math.min(1, (state.clubRating - 30) / 70));
   var perfDelta = actualPercentile - expectedPercentile;
+  var pressureMult = 1 + ((state.prensa||50) - 50) * 0.01;
   var mrv = state.managerRatingValue;
   if (perfDelta < -0.15){
-    mrv -= 3;
+    mrv -= 3 * pressureMult;
     state.goodStreak = 0;
   } else {
-    if (perfDelta > 0.15) mrv += 3;
+    if (perfDelta > 0.15) mrv += 3 * pressureMult;
     state.goodStreak = (state.goodStreak || 0) + 1;
     if (state.goodStreak >= 4) mrv += 1;
   }
@@ -1884,50 +1896,80 @@ var DECISION_EVENTS = [
     id:'veterano',
     prompt:'Un jugador veterano, referente del vestuario, termina contrato.',
     options:[
-      {label:'Renovarlo dos temporadas', flavor:'El vestuario respira tranquilo con esta continuidad.', vestuario:6, directiva:-2, presupuesto:-3},
-      {label:'Renovarlo solo un año', flavor:'Una solución de compromiso, nadie queda del todo conforme.', vestuario:2, directiva:1},
-      {label:'Dejarlo marchar', flavor:'La directiva valora el ahorro, pero el vestuario lo nota.', vestuario:-5, directiva:5, presupuesto:6},
-      {label:'Ofrecerle un puesto en el cuerpo técnico', flavor:'Una salida elegante que refuerza la formación de jóvenes.', vestuario:4, directiva:0, cantera:5}
+      {label:'Renovarlo dos temporadas', flavor:'El vestuario respira tranquilo con esta continuidad, pero pesa en las cuentas.', vestuario:9, directiva:-3, presupuesto:-8},
+      {label:'Renovarlo solo un año', flavor:'Una solución de compromiso, nadie queda del todo conforme.', vestuario:3, directiva:1, presupuesto:-2},
+      {label:'Dejarlo marchar', flavor:'La directiva valora el ahorro, pero el vestuario lo siente como una traición.', vestuario:-9, directiva:7, presupuesto:10},
+      {label:'Ofrecerle un puesto en el cuerpo técnico', flavor:'Una salida elegante que refuerza la formación de jóvenes.', vestuario:5, cantera:8, presupuesto:-4}
     ]
   },
   {
     id:'cantera',
     prompt:'Un canterano de 18 años está listo para dar el salto.',
     options:[
-      {label:'Convertirlo en titular', flavor:'Una apuesta arriesgada, pero el chico responde con hambre.', cantera:8, vestuario:-2, directiva:-1},
-      {label:'Usarlo como suplente', flavor:'Minutos con cabeza, sin quemar etapas.', cantera:4, vestuario:1},
-      {label:'Cederlo a otro club', flavor:'Necesita rodaje que acá no le podés dar.', cantera:2, presupuesto:3},
-      {label:'Mantenerlo en el filial', flavor:'La directiva prefiere no arriesgar, aunque el chico se impacienta.', cantera:-2, directiva:2}
+      {label:'Convertirlo en titular', flavor:'Una apuesta arriesgada, pero el chico responde con hambre.', cantera:12, vestuario:-4, directiva:-2, prensa:5},
+      {label:'Usarlo como suplente', flavor:'Minutos con cabeza, sin quemar etapas.', cantera:5, vestuario:1},
+      {label:'Cederlo a otro club', flavor:'Necesita rodaje que acá no le podés dar.', cantera:2, presupuesto:5},
+      {label:'Mantenerlo en el filial', flavor:'La directiva prefiere no arriesgar, aunque el chico se impacienta y su entorno hace ruido.', cantera:-4, directiva:3, prensa:-3}
     ]
   },
   {
     id:'fichaje_riesgo',
     prompt:'El director deportivo propone fichar a un delantero veterano de mucho nombre, pero ya con años encima.',
     options:[
-      {label:'Ficharlo', flavor:'Una apuesta cara. La afición se ilusiona, la directiva contiene el aliento.', vestuario:3, directiva:-4, presupuesto:-8},
-      {label:'Buscar una alternativa joven', flavor:'Menos ruido mediático, más margen de crecimiento.', cantera:3, presupuesto:-3},
-      {label:'No fichar a nadie', flavor:'La plantilla queda como está. Prudencia ante todo.', directiva:2},
-      {label:'Esperar al mercado de invierno', flavor:'Ganás tiempo para decidir con más información.', directiva:1, vestuario:-1}
+      {label:'Ficharlo', flavor:'Una apuesta cara. La afición se ilusiona, la directiva contiene el aliento.', vestuario:4, directiva:-6, presupuesto:-14, prensa:6},
+      {label:'Buscar una alternativa joven', flavor:'Menos ruido mediático, más margen de crecimiento.', cantera:5, presupuesto:-5},
+      {label:'No fichar a nadie', flavor:'La plantilla queda como está. Prudencia ante todo.', directiva:3, prensa:-2},
+      {label:'Esperar al mercado de invierno', flavor:'Ganás tiempo para decidir con más información, pero el vestuario nota la indecisión.', directiva:1, vestuario:-3}
     ]
   },
   {
     id:'estrella',
     prompt:'El mejor jugador de la plantilla exige ser el mejor pagado del equipo.',
     options:[
-      {label:'Aceptar su pedido', flavor:'Se queda contento, pero el resto del vestuario lo mira de reojo.', vestuario:-3, directiva:-5, presupuesto:-6},
-      {label:'Negociar un término medio', flavor:'Nadie sale del todo satisfecho, pero se evita el conflicto abierto.', vestuario:1, directiva:1},
-      {label:'Rechazar el pedido', flavor:'Marcás autoridad, aunque el jugador queda dolido.', vestuario:-2, directiva:4},
-      {label:'Ponerlo en el mercado', flavor:'Una decisión audaz que sacude al club entero.', vestuario:-4, directiva:2, presupuesto:10}
+      {label:'Aceptar su pedido', flavor:'Se queda contento, pero el resto del vestuario lo mira de reojo y las cuentas se resienten.', vestuario:-6, directiva:-8, presupuesto:-12},
+      {label:'Negociar un término medio', flavor:'Nadie sale del todo satisfecho, pero se evita el conflicto abierto.', vestuario:2, directiva:2, presupuesto:-4},
+      {label:'Rechazar el pedido', flavor:'Marcás autoridad, aunque el jugador queda dolido y filtra su malestar a la prensa.', vestuario:-4, directiva:6, prensa:-5},
+      {label:'Ponerlo en el mercado', flavor:'Una decisión audaz que sacude al club entero.', vestuario:-8, directiva:4, presupuesto:18, prensa:-6}
     ]
   },
   {
     id:'objetivo_directiva',
     prompt:'La directiva plantea un objetivo ambicioso para la próxima temporada.',
     options:[
-      {label:'Aceptarlo tal cual', flavor:'Te comprometés públicamente. La presión sube, pero también la confianza inicial.', directiva:5, vestuario:-1},
-      {label:'Negociar un objetivo más realista', flavor:'Bajás la presión, aunque quedás como alguien poco ambicioso.', directiva:-1},
-      {label:'Rechazarlo', flavor:'Marcás tu independencia, aunque genera tensión con el club.', directiva:-6, vestuario:2},
-      {label:'Prometer superarlo públicamente', flavor:'Un golpe de efecto que ilusiona a la afición... si sale bien.', directiva:3, vestuario:3}
+      {label:'Aceptarlo tal cual', flavor:'Te comprometés públicamente. La presión sube, pero también la confianza inicial.', directiva:7, vestuario:-2, prensa:4},
+      {label:'Negociar un objetivo más realista', flavor:'Bajás la presión, aunque quedás como alguien poco ambicioso.', directiva:-2, prensa:-2},
+      {label:'Rechazarlo', flavor:'Marcás tu independencia, aunque genera tensión abierta con el club.', directiva:-8, vestuario:3},
+      {label:'Prometer superarlo públicamente', flavor:'Un golpe de efecto que ilusiona a la afición... si sale bien, y te hunde si no.', directiva:5, vestuario:5, prensa:8}
+    ]
+  },
+  {
+    id:'crisis_prensa',
+    prompt:'Un periodista publica una filtración sobre problemas internos en el vestuario. La prensa presiona para que te pronuncies.',
+    options:[
+      {label:'Dar la cara en rueda de prensa', flavor:'Un golpe de mano arriesgado, pero corta los rumores de raíz.', prensa:10, vestuario:-3, directiva:2},
+      {label:'Negar todo y no dar detalles', flavor:'La prensa insiste, y sin respuestas, la historia crece sola.', prensa:-8, directiva:-2},
+      {label:'Reunir al vestuario en privado primero', flavor:'Ganás tiempo y el vestuario lo agradece, aunque la prensa se queja del silencio.', vestuario:6, prensa:-4},
+      {label:'Culpar a la directiva por la filtración', flavor:'Te sacás el problema de encima, pero la relación con el club queda dañada para siempre.', prensa:5, directiva:-15}
+    ]
+  },
+  {
+    id:'crisis_economica',
+    prompt:'El club atraviesa una crisis económica seria. Hay que recortar gastos donde sea.',
+    options:[
+      {label:'Vender a tu mejor jugador', flavor:'Salvás las cuentas del club, pero el equipo pierde su mayor referencia y el vestuario queda golpeado.', presupuesto:20, vestuario:-10, directiva:8},
+      {label:'Recortar en cuerpo técnico y estructura', flavor:'Un ajuste doloroso puertas adentro, casi invisible para la afición.', presupuesto:12, vestuario:-4},
+      {label:'Pedir un préstamo a la directiva', flavor:'Ganás margen inmediato, pero quedás en deuda política con el club.', presupuesto:15, directiva:-10},
+      {label:'Congelar todos los fichajes', flavor:'La medida más conservadora, aunque la plantilla se estanca.', presupuesto:8, cantera:-3}
+    ]
+  },
+  {
+    id:'escandalo_jugador',
+    prompt:'Uno de tus jugadores está en el centro de un escándalo personal fuera de las canchas, y la prensa no lo suelta.',
+    options:[
+      {label:'Respaldarlo públicamente', flavor:'El vestuario valora tu lealtad, aunque la prensa te critica con dureza.', vestuario:8, prensa:-10, directiva:-4},
+      {label:'Suspenderlo hasta que se aclare todo', flavor:'Una decisión dura que calma a la prensa, pero divide al vestuario.', prensa:8, vestuario:-6},
+      {label:'Dejar que la directiva decida', flavor:'Te lavás las manos, y el club nota que evadiste la responsabilidad.', directiva:-3, prensa:-3},
+      {label:'Reunión privada y advertencia interna', flavor:'Manejás el tema con discreción, sin que trascienda del todo.', vestuario:3, prensa:2}
     ]
   }
 ];
@@ -1954,6 +1996,8 @@ function renderDecisionEvent(){
       var opt = state.pendingDecision.options[parseInt(btn.getAttribute('data-idx'),10)];
       state.vestuario = Math.max(0, Math.min(100, (state.vestuario||50) + (opt.vestuario||0)));
       state.directiva = Math.max(0, Math.min(100, (state.directiva||50) + (opt.directiva||0)));
+      state.presupuesto = Math.max(0, Math.min(100, (state.presupuesto||50) + (opt.presupuesto||0)));
+      state.prensa = Math.max(0, Math.min(100, (state.prensa||50) + (opt.prensa||0)));
       if (opt.cantera) state.clubRating = Math.max(1, Math.min(99, state.clubRating + Math.round(opt.cantera*0.3)));
       state.usedDecisionIds = (state.usedDecisionIds || []).concat([state.pendingDecision.id]);
       render(
@@ -1998,7 +2042,7 @@ function renderNationalOffers(){
         var f = nationalForm(o.team.n, o.team.b);
         var compName = tournamentDisplayName(kind, o.team.cont);
         return '<button class="natBtn" data-team="'+o.team.n+'" data-cont="'+o.team.cont+'" data-b="'+o.team.b+'" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px;">'+
-          nationalTeamCrest(o.team.n, 32)+'<span><span style="display:block;">'+o.label+'</span><span style="display:block; font-size:12px; color:var(--text-secondary); font-weight:400;">'+o.team.cont+' · '+compName+' · '+f.label+'</span></span>'+
+          nationalTeamCrest(o.team.n, 36)+'<span><span style="display:block;">'+o.label+'</span><span style="display:block; font-size:12px; color:var(--text-secondary); font-weight:400;">'+o.team.cont+' · '+compName+' · '+f.label+'</span></span>'+
         '</button>';
       }).join('')+
     '</div>'
