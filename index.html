@@ -1574,7 +1574,7 @@ function renderOffers(){
 function headerBanner(){
   return '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:1.25rem; display:flex; gap:10px; align-items:center;">'+
     teamBadge(state.team, 36)+
-    '<p style="font-size:14px; margin:0; color:var(--text-secondary); display:flex; align-items:center; gap:6px; flex-wrap:wrap;">'+flagEmoji(state.nat)+' DT '+state.name+' · Temporada '+state.season+'/'+TOTAL_SEASONS+' · '+flagEmoji(state.country)+' '+state.team+' ('+state.division+', '+state.totalGames+' jornadas) · Media DT '+ratingChip(managerRating())+'</p>'+
+    '<p style="font-size:14px; margin:0; color:var(--text-secondary); display:flex; align-items:center; gap:6px; flex-wrap:wrap;">'+flagEmoji(state.nat)+' DT '+state.name+' · Temporada '+state.season+'/'+TOTAL_SEASONS+' · '+flagEmoji(state.country)+' '+state.team+' ('+state.division+', '+state.totalGames+' jornadas)</p>'+
   '</div>';
 }
 
@@ -1899,7 +1899,7 @@ function renderSeasonEnd(){
         '<i class="ti ti-world" style="font-size:20px; color:var(--text-accent); margin-top:2px;" aria-hidden="true"></i>'+
         '<p style="font-size:14px; margin:0; color:var(--text-secondary);">Clasificaste al Mundial de Clubes de la próxima temporada.</p>'+
       '</div>' : '')+
-      '<p style="font-size:14px; color:var(--text-secondary); margin:0 0 1rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">'+flagEmoji(state.nat)+' '+state.name+', '+state.team+' ('+flagEmoji(state.country)+' '+state.country+'), táctica '+state.formation+', estilo '+state.style+' · Media DT '+ratingChip(managerRating())+'</p>'+
+      '<p style="font-size:14px; color:var(--text-secondary); margin:0 0 1rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">'+flagEmoji(state.nat)+' '+state.name+', '+state.team+' ('+flagEmoji(state.country)+' '+state.country+'), táctica '+state.formation+', estilo '+state.style+'</p>'+
       '<button id="nextBtn" class="primaryBtn" style="width:100%;">Continuar <i class="ti ti-arrow-right" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'+
     '</div>'
   );
@@ -2308,6 +2308,90 @@ function managerOfYearTier(pts){
   if (pts >= 25) return {label:'Entrenador Destacado', icon:'ti-award'};
   return null;
 }
+function generateShareImageBlob(){
+  return new Promise(function(resolve){
+    var W = 1080, H = 1500;
+    var canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    var ctx = canvas.getContext('2d');
+
+    var grad = ctx.createLinearGradient(0,0,W,H);
+    grad.addColorStop(0,'#0B2818'); grad.addColorStop(1,'#1d5636');
+    ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    for (var x=0; x<W; x+=64){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+
+    var amber = '#F2A93B', cream = '#F1F5EC', muted = '#9FB3A6';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = muted; ctx.font = '600 30px Arial'; ctx.fillText('MI CARRERA COMO DT', W/2, 130);
+    ctx.fillStyle = cream; ctx.font = '700 64px Arial'; ctx.fillText(state.name || 'DT', W/2, 210);
+    ctx.fillStyle = amber; ctx.font = '500 34px Arial'; ctx.fillText(state.team ? ('Último club: '+state.team) : '', W/2, 260);
+
+    var titulos = state.history.filter(function(h){ return h.achievement==='Título de Liga'; }).length;
+    var ascensos = state.history.filter(function(h){ return h.achievement==='Ascenso'; }).length;
+    var euroTitulos = state.history.filter(function(h){ return h.euro && h.euro.stage==='Campeón'; }).length;
+    var copaTitulos = state.history.filter(function(h){ return h.cup && h.cup.stage==='Campeón'; }).length;
+    var cwcTitulos = state.history.filter(function(h){ return h.cwc && h.cwc.stage==='Campeón'; }).length;
+    var natTitulos = state.nationalHistory.filter(function(h){ return h.stage==='Campeón'; }).length;
+
+    var stats = [
+      {label:'Ligas', value:titulos},
+      {label:'Ascensos', value:ascensos},
+      {label:'Europa/Sudam.', value:euroTitulos},
+      {label:'Copas', value:copaTitulos},
+      {label:'M. Clubes', value:cwcTitulos},
+      {label:'Selecciones', value:natTitulos}
+    ];
+    var cols = 2, rows = 3, cardW = 440, cardH = 160, gapX = 40, gapY = 30;
+    var startX = (W - (cols*cardW + gapX))/2, startY = 330;
+    stats.forEach(function(s, i){
+      var cx = startX + (i%cols)*(cardW+gapX);
+      var cy = startY + Math.floor(i/cols)*(cardH+gapY);
+      ctx.fillStyle = 'rgba(255,255,255,0.05)';
+      ctx.beginPath(); ctx.roundRect ? ctx.roundRect(cx,cy,cardW,cardH,14) : ctx.rect(cx,cy,cardW,cardH); ctx.fill();
+      ctx.fillStyle = amber; ctx.font = '700 68px Arial'; ctx.fillText(String(s.value), cx+cardW/2, cy+95);
+      ctx.fillStyle = muted; ctx.font = '500 26px Arial'; ctx.fillText(s.label, cx+cardW/2, cy+135);
+    });
+
+    var natWonList = state.nationalHistory.filter(function(h){ return h.stage==='Campeón'; });
+    var natSectionY = startY + rows*(cardH+gapY) + 20;
+    if (natWonList.length){
+      ctx.fillStyle = cream; ctx.font = '600 30px Arial'; ctx.fillText('CON SELECCIONES', W/2, natSectionY);
+      natWonList.forEach(function(h, i){
+        ctx.fillStyle = amber; ctx.font = '500 28px Arial';
+        ctx.fillText(h.kind+' — '+h.team, W/2, natSectionY + 42 + i*40);
+      });
+    }
+    var afterNatY = natSectionY + (natWonList.length ? 42 + natWonList.length*40 + 30 : 20);
+
+    var pts = computeTotalPoints();
+    var tier = managerOfYearTier(pts);
+    if (tier){
+      ctx.fillStyle = cream; ctx.font = '700 40px Arial'; ctx.fillText(tier.label, W/2, afterNatY);
+    }
+    ctx.fillStyle = muted; ctx.font = '500 26px Arial'; ctx.fillText(pts+' puntos de carrera', W/2, afterNatY + 45);
+
+    var lineY = afterNatY + 90;
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(140,lineY); ctx.lineTo(W-140,lineY); ctx.stroke();
+    ctx.fillStyle = amber; ctx.font = '700 32px Arial';
+    ctx.fillText((location.hostname || 'DT · Simulador de carrera') + (location.pathname && location.pathname!=='/' ? location.pathname : ''), W/2, lineY + 50);
+
+    var badgeUrl = (typeof TEAM_BADGES !== 'undefined') ? TEAM_BADGES[state.team] : null;
+    if (badgeUrl){
+      var img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = function(){
+        try { ctx.drawImage(img, W/2-60, 268, 60, 60); } catch(e){}
+        canvas.toBlob(function(blob){ resolve(blob); }, 'image/png');
+      };
+      img.onerror = function(){ canvas.toBlob(function(blob){ resolve(blob); }, 'image/png'); };
+      img.src = badgeUrl;
+    } else {
+      canvas.toBlob(function(blob){ resolve(blob); }, 'image/png');
+    }
+  });
+}
 function buildShareText(){
   var pts = computeTotalPoints();
   var tier = managerOfYearTier(pts);
@@ -2409,13 +2493,22 @@ function renderCareerSummary(){
   });
   el('shareBtn').addEventListener('click', function(){
     var text = buildShareText();
-    if (navigator.share){
-      navigator.share({title:'Mi carrera como entrenador', text:text}).catch(function(){});
-    } else if (navigator.clipboard) {
-      navigator.clipboard.writeText(text).then(function(){ alert('Resumen copiado al portapapeles — pégalo donde quieras compartirlo.'); });
-    } else {
-      alert(text);
-    }
+    var pageUrl = location.href;
+    generateShareImageBlob().then(function(blob){
+      var file = new File([blob], 'mi-carrera-dt.png', {type:'image/png'});
+      if (navigator.canShare && navigator.canShare({files:[file]})){
+        navigator.share({title:'Mi carrera como entrenador', text:text, url:pageUrl, files:[file]}).catch(function(){});
+      } else if (navigator.share){
+        navigator.share({title:'Mi carrera como entrenador', text:text+' '+pageUrl}).catch(function(){});
+      } else {
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'mi-carrera-dt.png';
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        if (navigator.clipboard) navigator.clipboard.writeText(text+' '+pageUrl);
+        alert('Se descargó la imagen de tu carrera. El link de la web se copió al portapapeles para que lo pegues junto a la imagen.');
+      }
+    });
   });
 }
 
