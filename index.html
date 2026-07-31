@@ -380,8 +380,23 @@ function nationalForm(name, bonus){
   return NATIONAL_FORM_TIERS[0];
 }
 
+function knockoutStagesFor(compName){
+  var cfg = (typeof TOURNAMENT_FORMATS !== 'undefined') ? TOURNAMENT_FORMATS[compName] : null;
+  var teams = cfg ? cfg.teams : 24;
+  if (teams >= 40) return ['Fase de grupos','Dieciseisavos de final','Octavos de final','Cuartos de final','Semifinal','Final','Campeón'];
+  if (teams >= 20) return ['Fase de grupos','Octavos de final','Cuartos de final','Semifinal','Final','Campeón'];
+  if (teams >= 12) return ['Fase de grupos','Cuartos de final','Semifinal','Final','Campeón'];
+  return ['Fase de grupos','Semifinal','Final','Campeón'];
+}
 function simulateNationalTournament(team, kind, form){
-  var stages = kind==='Mundial' ? ['Fase de grupos','Octavos','Cuartos','Semifinal','Final','Campeón'] : ['Fase de grupos','Cuartos','Semifinal','Final','Campeón'];
+  var compName = (typeof tournamentDisplayName !== 'undefined') ? tournamentDisplayName(kind, team.cont) : (kind==='Mundial' ? 'Copa del Mundo' : 'Eurocopa');
+  var stages = knockoutStagesFor(compName);
+  var draw = (typeof getTournamentTeams !== 'undefined') ? getTournamentTeams(compName, team) : null;
+  var opponentPool = draw
+    ? draw.groups.reduce(function(acc,g){ return acc.concat(g); }, []).filter(function(t){ return t.n !== team.n; })
+    : NATIONAL_TEAMS.filter(function(t){ return t.cont === team.cont && t.n !== team.n; });
+  var usedOpponents = {};
+  var matchLog = [];
   var idx = 0;
   for (var i=0;i<stages.length-1;i++){
     var chance = kind==='Mundial'
@@ -389,9 +404,17 @@ function simulateNationalTournament(team, kind, form){
       : (0.48 + team.b*0.04 + Math.min(state.reputation,20)*0.003 + form.mod*0.01);
     var cap = kind==='Mundial' ? 0.68 : 0.72;
     chance = Math.max(0.15, Math.min(cap, chance));
-    if (Math.random() < chance) idx++; else break;
+    var won = Math.random() < chance;
+    if (i >= 1){
+      var available = opponentPool.filter(function(t){ return !usedOpponents[t.n]; });
+      if (!available.length) available = opponentPool;
+      var opponent = available.length ? shuffle(available)[0] : null;
+      if (opponent) usedOpponents[opponent.n] = true;
+      matchLog.push({round: stages[i], opponent: opponent ? opponent.n : null, won: won});
+    }
+    if (won) idx++; else break;
   }
-  return {team:team.n, cont:team.cont, kind:kind, stage:stages[idx]};
+  return {team:team.n, cont:team.cont, kind:kind, stage:stages[idx], matchLog:matchLog};
 }
 function nationalCandidate(continent, excludeNames){
   var pool = NATIONAL_TEAMS.filter(function(t){ return t.cont===continent && (!state.lastNational || t.n!==state.lastNational.n) && (!excludeNames || excludeNames.indexOf(t.n)===-1); });
@@ -2056,7 +2079,7 @@ function renderNationalOffers(){
       var displayName = tournamentDisplayName(kind, team.cont);
       state.nationalHistory.push({season:state.season, kind:displayName, team:team.n, cont:team.cont, stage:result.stage, form:form.label});
       checkAchievements();
-      state.lastNationalResult = {team:result.team, stage:result.stage, displayName:displayName};
+      state.lastNationalResult = {team:result.team, stage:result.stage, displayName:displayName, matchLog:result.matchLog};
       navigate('resultado-seleccion');
     });
   });
@@ -2078,10 +2101,24 @@ function renderNationalResult(){
       '</div>';
     }
   }
+  var matchLogHtml = '';
+  if (result.matchLog && result.matchLog.length){
+    matchLogHtml = '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:1rem;">'+
+      '<p style="font-size:12px; color:var(--text-secondary); margin:0 0 6px; text-transform:uppercase; letter-spacing:0.03em; font-family:var(--display);">Recorrido en la eliminatoria</p>'+
+      result.matchLog.map(function(m){
+        return '<div style="display:flex; align-items:center; gap:8px; margin:4px 0;">'+
+          '<span style="font-size:11px; color:var(--text-secondary); min-width:110px;">'+m.round+'</span>'+
+          (m.opponent ? nationalTeamCrest(m.opponent,18) : '')+
+          '<span style="font-size:13px;">'+(m.opponent ? (m.won ? 'Venciste a '+m.opponent : 'Perdiste contra '+m.opponent) : (m.won ? 'Avanzaste' : 'Eliminado'))+'</span>'+
+        '</div>';
+      }).join('')+
+    '</div>';
+  }
   render(
     '<div style="background:var(--surface-2); border-radius:12px; border:0.5px solid var(--border); padding:1rem 1.25rem;">'+
       '<div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">'+nationalTeamCrest(result.team,40)+'<div><p style="font-size:13px; color:var(--text-secondary); margin:0;">'+displayName+' · '+result.team+'</p><h3 style="margin:0;">'+(won ? '¡Campeones de '+displayName+'!' : 'Recorrido: '+result.stage)+'</h3></div></div>'+
       groupHtml+
+      matchLogHtml+
       '<p style="font-size:14px; color:var(--text-secondary); margin:0 0 1rem;">Volvés a tu club para seguir la temporada.</p>'+
       '<button id="natContBtn" class="primaryBtn" style="width:100%;">Continuar <i class="ti ti-arrow-right" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'+
     '</div>'
@@ -2135,13 +2172,21 @@ function renderNextOffers(){
     if (sameCountryPool.length) offers[offers.length-1] = shuffle(sameCountryPool)[0];
   }
 
+  var FILIAL_TEAMS = ['Real Sociedad B','Celta Fortuna','Athletic Club B','Deportivo Fabril','Atlético Madrileño','Real Madrid Castilla','Villarreal CF B'];
   var stayLabel, stayDivision, stayNote, sectionTitle;
   if (movement === 'Ascenso'){
     var upDiv = nextDivisionUp(lastDivisionObj);
-    stayDivision = upDiv;
-    stayLabel = 'Subes con '+state.team+' a '+upDiv.league;
-    stayNote = 'Ascenso conseguido · '+upDiv.league+' ('+upDiv.country+')';
-    sectionTitle = 'Ascenso';
+    if (FILIAL_TEAMS.indexOf(state.team) !== -1 && isTopFlight(upDiv)){
+      stayDivision = lastDivisionObj;
+      stayLabel = 'Seguís con '+state.team+' en '+lastDivisionObj.league;
+      stayNote = 'Como filial, '+state.team+' no puede ascender a Primera — se queda en su categoría actual.';
+      sectionTitle = 'Ascenso bloqueado (filial)';
+    } else {
+      stayDivision = upDiv;
+      stayLabel = 'Subes con '+state.team+' a '+upDiv.league;
+      stayNote = 'Ascenso conseguido · '+upDiv.league+' ('+upDiv.country+')';
+      sectionTitle = 'Ascenso';
+    }
   } else if (movement === 'Descenso'){
     var downDiv = nextDivisionDown(lastDivisionObj);
     if (downDiv){
