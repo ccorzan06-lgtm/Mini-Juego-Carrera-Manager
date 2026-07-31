@@ -303,16 +303,43 @@ var NATIONAL_TEAMS = [
   {n:'Francia', cont:'Europa', b:5}, {n:'España', cont:'Europa', b:5}, {n:'Inglaterra', cont:'Europa', b:4},
   {n:'Portugal', cont:'Europa', b:4}, {n:'Alemania', cont:'Europa', b:4}, {n:'Países Bajos', cont:'Europa', b:3},
   {n:'Italia', cont:'Europa', b:3}, {n:'Bélgica', cont:'Europa', b:2}, {n:'Croacia', cont:'Europa', b:2}, {n:'Dinamarca', cont:'Europa', b:1},
+  {n:'Suiza', cont:'Europa', b:1}, {n:'Austria', cont:'Europa', b:1}, {n:'Polonia', cont:'Europa', b:1},
+  {n:'Suecia', cont:'Europa', b:1}, {n:'Noruega', cont:'Europa', b:1}, {n:'Escocia', cont:'Europa', b:0},
+  {n:'Gales', cont:'Europa', b:0}, {n:'Irlanda', cont:'Europa', b:0}, {n:'Serbia', cont:'Europa', b:1},
+  {n:'Ucrania', cont:'Europa', b:1}, {n:'República Checa', cont:'Europa', b:0}, {n:'Turquía', cont:'Europa', b:1},
+  {n:'Grecia', cont:'Europa', b:1}, {n:'Rumania', cont:'Europa', b:0}, {n:'Hungría', cont:'Europa', b:0},
+  {n:'Eslovaquia', cont:'Europa', b:0}, {n:'Eslovenia', cont:'Europa', b:0}, {n:'Finlandia', cont:'Europa', b:0},
+  {n:'Islandia', cont:'Europa', b:0}, {n:'Bosnia', cont:'Europa', b:0},
   {n:'Argentina', cont:'América', b:5}, {n:'Brasil', cont:'América', b:5}, {n:'Uruguay', cont:'América', b:3},
-  {n:'Colombia', cont:'América', b:2}, {n:'México', cont:'América', b:2}, {n:'Estados Unidos', cont:'América', b:2},
-  {n:'Chile', cont:'América', b:1}, {n:'Ecuador', cont:'América', b:1}
+  {n:'Colombia', cont:'América', b:2},
+  {n:'México', cont:'CONCACAF', b:2}, {n:'Estados Unidos', cont:'CONCACAF', b:2}, {n:'Costa Rica', cont:'CONCACAF', b:1},
+  {n:'Canadá', cont:'CONCACAF', b:1}, {n:'Panamá', cont:'CONCACAF', b:0}, {n:'Honduras', cont:'CONCACAF', b:0}, {n:'Jamaica', cont:'CONCACAF', b:0},
+  {n:'Chile', cont:'América', b:1}, {n:'Ecuador', cont:'América', b:1}, {n:'Paraguay', cont:'América', b:1},
+  {n:'Perú', cont:'América', b:1}, {n:'Bolivia', cont:'América', b:0}, {n:'Venezuela', cont:'América', b:0},
+  {n:'Japón', cont:'Asia', b:2}, {n:'Corea del Sur', cont:'Asia', b:2}, {n:'Irán', cont:'Asia', b:1},
+  {n:'Arabia Saudita', cont:'Asia', b:1}, {n:'Australia', cont:'Asia', b:1}, {n:'Catar', cont:'Asia', b:1},
+  {n:'Irak', cont:'Asia', b:0}, {n:'Emiratos Árabes Unidos', cont:'Asia', b:0}, {n:'Uzbekistán', cont:'Asia', b:0},
+  {n:'China', cont:'Asia', b:0},
+  {n:'Marruecos', cont:'África', b:2}, {n:'Senegal', cont:'África', b:2}, {n:'Nigeria', cont:'África', b:2},
+  {n:'Egipto', cont:'África', b:1}, {n:'Argelia', cont:'África', b:1}, {n:'Costa de Marfil', cont:'África', b:1},
+  {n:'Camerún', cont:'África', b:1}, {n:'Ghana', cont:'África', b:1}, {n:'Túnez', cont:'África', b:0},
+  {n:'Sudáfrica', cont:'África', b:0}, {n:'Malí', cont:'África', b:0}, {n:'RD Congo', cont:'África', b:0},
+  {n:'Nueva Zelanda', cont:'Oceanía', b:1}, {n:'Fiyi', cont:'Oceanía', b:0}, {n:'Islas Salomón', cont:'Oceanía', b:0},
+  {n:'Papúa Nueva Guinea', cont:'Oceanía', b:0}, {n:'Tahití', cont:'Oceanía', b:0}, {n:'Nueva Caledonia', cont:'Oceanía', b:0},
+  {n:'Vanuatu', cont:'Oceanía', b:0}
 ];
 var WORLD_CUP_SEASONS = [4,8,12,16,20];
 var CONTINENTAL_SEASONS = [2,6,10,14,18];
 
 function tournamentDisplayName(kind, cont){
   if (kind === 'Mundial') return 'Copa del Mundo';
-  return cont === 'Europa' ? 'Eurocopa' : 'Copa América';
+  if (cont === 'Europa') return 'Eurocopa';
+  if (cont === 'América') return 'Copa América';
+  if (cont === 'CONCACAF') return 'Copa Oro';
+  if (cont === 'Asia') return 'Copa Asiática';
+  if (cont === 'África') return 'Copa Africana de Naciones';
+  if (cont === 'Oceanía') return 'Copa de Naciones OFC';
+  return 'Torneo Continental';
 }
 
 var NATIONAL_FORM_TIERS = [
@@ -342,13 +369,60 @@ function simulateNationalTournament(team, kind, form){
   }
   return {team:team.n, cont:team.cont, kind:kind, stage:stages[idx]};
 }
-function nationalCandidate(continent){
-  var pool = NATIONAL_TEAMS.filter(function(t){ return t.cont===continent && (!state.lastNational || t.n!==state.lastNational.n); });
+function nationalCandidate(continent, excludeNames){
+  var pool = NATIONAL_TEAMS.filter(function(t){ return t.cont===continent && (!state.lastNational || t.n!==state.lastNational.n) && (!excludeNames || excludeNames.indexOf(t.n)===-1); });
   var lo = state.reputation - 6, hi = state.reputation + 8;
   var band = pool.filter(function(t){ var s=t.b*3; return s>=lo && s<=hi; });
   if (!band.length) band = pool.filter(function(t){ return t.b<=2; });
   if (!band.length) band = pool;
   return shuffle(band)[0];
+}
+
+var TOURNAMENT_FORMATS = {
+  'Copa del Mundo':               {confed:'FIFA',    organizador:'FIFA',    freq:'cada 4 años', teams:48, groups:12, perGroup:4, advance:2},
+  'Eurocopa':                     {confed:'UEFA',    organizador:'UEFA',    freq:'cada 4 años', teams:24, groups:6,  perGroup:4, advance:2},
+  'Copa América':                 {confed:'CONMEBOL',organizador:'CONMEBOL',freq:'variable, normalmente cada 2-4 años', teams:16, groups:4, perGroup:4, advance:2},
+  'Copa Africana de Naciones':    {confed:'CAF',     organizador:'CAF',     freq:'cada 2 años',  teams:24, groups:6,  perGroup:4, advance:2},
+  'Copa Asiática':                {confed:'AFC',     organizador:'AFC',     freq:'cada 4 años',  teams:24, groups:6,  perGroup:4, advance:2},
+  'Copa de Naciones OFC':         {confed:'OFC',     organizador:'OFC',     freq:'cada 4 años',  teams:8,  groups:2,  perGroup:4, advance:2},
+  'Copa Oro':                     {confed:'CONCACAF',organizador:'CONCACAF',freq:'cada 2 años',  teams:16, groups:4,  perGroup:4, advance:2}
+};
+
+// Genera proceduralmente qué selecciones entran en el torneo y en qué grupo cae la del jugador,
+// pesando la prestigio/historia de cada selección (campo 'b'), no datos reales de clasificación en vivo.
+function getTournamentTeams(compName, myTeamObj){
+  var cfg = TOURNAMENT_FORMATS[compName];
+  if (!cfg) return null;
+  var homeCont = myTeamObj.cont;
+  var pool = NATIONAL_TEAMS.filter(function(t){
+    if (t.n === myTeamObj.n || t.cont !== homeCont) return false;
+    if (compName === 'Copa América' && (t.n==='Estados Unidos' || t.n==='México')) return false;
+    return true;
+  });
+  // pondera por prestigio: más 'b' = más probabilidad de aparecer, con algo de azar para que no sea siempre el mismo cartel
+  var weighted = [];
+  pool.forEach(function(t){
+    var weight = 1 + t.b * 2;
+    for (var i=0;i<weight;i++) weighted.push(t);
+  });
+  var picked = [myTeamObj];
+  var used = {}; used[myTeamObj.n] = true;
+  var shuffled = shuffle(weighted);
+  for (var j=0;j<shuffled.length && picked.length < cfg.teams; j++){
+    if (!used[shuffled[j].n]){ picked.push(shuffled[j]); used[shuffled[j].n] = true; }
+  }
+  picked = shuffle(picked.slice(1));
+  picked.unshift(myTeamObj);
+  var groups = [];
+  for (var g=0; g<cfg.groups; g++) groups.push([]);
+  var myGroupIdx = 0;
+  groups[myGroupIdx].push(myTeamObj);
+  var idx = 1;
+  for (var g2=0; g2<cfg.groups; g2++){
+    var start = groups[g2].length;
+    for (var s=start; s<cfg.perGroup && idx<picked.length; s++){ groups[g2].push(picked[idx]); idx++; }
+  }
+  return {config:cfg, groups:groups, myGroupIndex:myGroupIdx};
 }
 
 var CLUB_EURO_STATUS = {
@@ -532,7 +606,501 @@ function initials(name){
   var letters = parts.slice(0,2).map(function(w){ return w.charAt(0).toUpperCase(); }).join('');
   return letters || name.substring(0,2).toUpperCase();
 }
-var TEAM_BADGES = {};
+var TEAM_BADGES = {
+  "Manchester City": "escudos/manchester_city.png",
+  "Liverpool": "escudos/liverpool.png",
+  "Manchester United": "escudos/manchester_united.png",
+  "Arsenal": "escudos/arsenal.png",
+  "Chelsea": "escudos/chelsea.png",
+  "Tottenham Hotspur": "escudos/tottenham_hotspur.png",
+  "Newcastle United": "escudos/newcastle_united.png",
+  "Everton": "escudos/everton.png",
+  "Aston Villa": "escudos/aston_villa.png",
+  "Crystal Palace": "escudos/crystal_palace.png",
+  "Bournemouth": "escudos/bournemouth.png",
+  "Brentford": "escudos/brentford.png",
+  "Brighton & Hove Albion": "escudos/brighton_hove_albion.png",
+  "Coventry City": "escudos/coventry_city.png",
+  "Fulham": "escudos/fulham.png",
+  "Hull City": "escudos/hull_city.png",
+  "Ipswich Town": "escudos/ipswich_town.png",
+  "Leeds United": "escudos/leeds_united.png",
+  "Nottingham Forest": "escudos/nottingham_forest.png",
+  "Sunderland": "escudos/sunderland.png",
+  "Birmingham City": "escudos/birmingham_city.png",
+  "Blackburn Rovers": "escudos/blackburn_rovers.png",
+  "Bolton Wanderers": "escudos/bolton_wanderers.png",
+  "Bristol City": "escudos/bristol_city.png",
+  "Burnley": "escudos/burnley.png",
+  "Cardiff City": "escudos/cardiff_city.png",
+  "Charlton Athletic": "escudos/charlton_athletic.png",
+  "Derby County": "escudos/derby_county.png",
+  "Lincoln City": "escudos/lincoln_city.png",
+  "Middlesbrough": "escudos/middlesbrough.png",
+  "Millwall": "escudos/millwall.png",
+  "Norwich City": "escudos/norwich_city.png",
+  "Portsmouth": "escudos/portsmouth.png",
+  "Preston North End": "escudos/preston_north_end.png",
+  "Queens Park Rangers": "escudos/queens_park_rangers.png",
+  "Sheffield United": "escudos/sheffield_united.png",
+  "Southampton": "escudos/southampton.png",
+  "Stoke City": "escudos/stoke_city.png",
+  "Swansea City": "escudos/swansea_city.png",
+  "Watford": "escudos/watford.png",
+  "West Bromwich Albion": "escudos/west_bromwich_albion.png",
+  "West Ham United": "escudos/west_ham_united.png",
+  "Wolverhampton Wanderers": "escudos/wolverhampton_wanderers.png",
+  "Wrexham": "escudos/wrexham.png",
+  "AFC Wimbledon": "escudos/afc_wimbledon.png",
+  "Barnsley": "escudos/barnsley.png",
+  "Blackpool": "escudos/blackpool.png",
+  "Bradford City": "escudos/bradford_city.png",
+  "Bromley": "escudos/bromley.png",
+  "Burton Albion": "escudos/burton_albion.png",
+  "Cambridge United": "escudos/cambridge_united.png",
+  "Doncaster Rovers": "escudos/doncaster_rovers.png",
+  "Huddersfield Town": "escudos/huddersfield_town.png",
+  "Leicester City": "escudos/leicester_city.png",
+  "Leyton Orient": "escudos/leyton_orient.png",
+  "Luton Town": "escudos/luton_town.png",
+  "Mansfield Town": "escudos/mansfield_town.png",
+  "Milton Keynes Dons": "escudos/milton_keynes_dons.png",
+  "Notts County": "escudos/notts_county.png",
+  "Oxford United": "escudos/oxford_united.png",
+  "Peterborough United": "escudos/peterborough_united.png",
+  "Plymouth Argyle": "escudos/plymouth_argyle.png",
+  "Reading": "escudos/reading.png",
+  "Sheffield Wednesday": "escudos/sheffield_wednesday.png",
+  "Stevenage": "escudos/stevenage.png",
+  "Stockport County": "escudos/stockport_county.png",
+  "Wigan Athletic": "escudos/wigan_athletic.png",
+  "Wycombe Wanderers": "escudos/wycombe_wanderers.png",
+  "Accrington Stanley": "escudos/accrington_stanley.png",
+  "Barnet": "escudos/barnet.png",
+  "Bristol Rovers": "escudos/bristol_rovers.png",
+  "Cheltenham Town": "escudos/cheltenham_town.png",
+  "Chesterfield": "escudos/chesterfield.png",
+  "Colchester United": "escudos/colchester_united.png",
+  "Crawley Town": "escudos/crawley_town.png",
+  "Crewe Alexandra": "escudos/crewe_alexandra.png",
+  "Exeter City": "escudos/exeter_city.png",
+  "Fleetwood Town": "escudos/fleetwood_town.png",
+  "Gillingham": "escudos/gillingham.png",
+  "Grimsby Town": "escudos/grimsby_town.png",
+  "Newport County": "escudos/newport_county.png",
+  "Northampton Town": "escudos/northampton_town.png",
+  "Oldham Athletic": "escudos/oldham_athletic.png",
+  "Port Vale": "escudos/port_vale.png",
+  "Rochdale": "escudos/rochdale.png",
+  "Rotherham United": "escudos/rotherham_united.png",
+  "Salford City": "escudos/salford_city.png",
+  "Shrewsbury Town": "escudos/shrewsbury_town.png",
+  "Swindon Town": "escudos/swindon_town.png",
+  "Tranmere Rovers": "escudos/tranmere_rovers.png",
+  "Walsall": "escudos/walsall.png",
+  "York City": "escudos/york_city.png",
+  "Deportivo Alavés": "escudos/deportivo_alaves.png",
+  "Athletic Club": "escudos/athletic_club.png",
+  "Atlético de Madrid": "escudos/atletico_de_madrid.png",
+  "FC Barcelona": "escudos/fc_barcelona.png",
+  "Celta de Vigo": "escudos/celta_de_vigo.png",
+  "Deportivo de La Coruña": "escudos/deportivo_de_la_coruna.png",
+  "Elche CF": "escudos/elche_cf.png",
+  "RCD Espanyol": "escudos/rcd_espanyol.png",
+  "Getafe CF": "escudos/getafe_cf.png",
+  "Levante UD": "escudos/levante_ud.png",
+  "Málaga CF": "escudos/malaga_cf.png",
+  "CA Osasuna": "escudos/ca_osasuna.png",
+  "Racing de Santander": "escudos/racing_de_santander.png",
+  "Rayo Vallecano": "escudos/rayo_vallecano.png",
+  "Real Betis": "escudos/real_betis.png",
+  "Real Madrid": "escudos/real_madrid.png",
+  "Real Sociedad": "escudos/real_sociedad.png",
+  "Sevilla FC": "escudos/sevilla_fc.png",
+  "Valencia CF": "escudos/valencia_cf.png",
+  "Villarreal CF": "escudos/villarreal_cf.png",
+  "Real Oviedo": "escudos/real_oviedo.png",
+  "RCD Mallorca": "escudos/rcd_mallorca.png",
+  "Girona FC": "escudos/girona_fc.png",
+  "UD Almería": "escudos/ud_almeria.png",
+  "UD Las Palmas": "escudos/ud_las_palmas.png",
+  "CD Castellón": "escudos/cd_castellon.png",
+  "Burgos CF": "escudos/burgos_cf.png",
+  "SD Eibar": "escudos/sd_eibar.png",
+  "Córdoba CF": "escudos/cordoba_cf.png",
+  "Real Sporting de Gijón": "escudos/real_sporting_de_gijon.png",
+  "AD Ceuta": "escudos/ad_ceuta.png",
+  "Albacete Balompié": "escudos/albacete_balompie.png",
+  "FC Andorra": "escudos/fc_andorra.png",
+  "Granada CF": "escudos/granada_cf.png",
+  "Real Sociedad B": "escudos/real_sociedad_b.png",
+  "CD Leganés": "escudos/cd_leganes.png",
+  "Real Valladolid": "escudos/real_valladolid.png",
+  "Cádiz CF": "escudos/cadiz_cf.png",
+  "CD Tenerife": "escudos/cd_tenerife.png",
+  "CD Eldense": "escudos/cd_eldense.png",
+  "Celta Fortuna": "escudos/celta_fortuna.png",
+  "CE Sabadell": "escudos/ce_sabadell.png",
+  "AD Mérida": "escudos/ad_merida.png",
+  "Arenas Club de Getxo": "escudos/arenas_club_de_getxo.png",
+  "Athletic Club B": "escudos/athletic_club_b.png",
+  "Barakaldo CF": "escudos/barakaldo_cf.png",
+  "CD Coria": "escudos/cd_coria.png",
+  "CD Extremadura": "escudos/cd_extremadura.png",
+  "CD Lugo": "escudos/cd_lugo.png",
+  "CD Mirandés": "escudos/cd_mirandes.png",
+  "CP Cacereño": "escudos/cp_cacereno.png",
+  "Cultural Leonesa": "escudos/cultural_leonesa.png",
+  "Pontevedra CF": "escudos/pontevedra_cf.png",
+  "Racing Club Ferrol": "escudos/racing_club_ferrol.png",
+  "Deportivo Fabril": "escudos/deportivo_fabril.png",
+  "Real Avilés Industrial": "escudos/real_aviles_industrial.png",
+  "Real Unión": "escudos/real_union.png",
+  "SD Ponferradina": "escudos/sd_ponferradina.png",
+  "UD Logroñés": "escudos/ud_logrones.png",
+  "UD Ourense": "escudos/ud_ourense.png",
+  "Unionistas de Salamanca": "escudos/unionistas_de_salamanca.png",
+  "Zamora CF": "escudos/zamora_cf.png",
+  "AD Alcorcón": "escudos/ad_alcorcon.png",
+  "Águilas FC": "escudos/aguilas_fc.png",
+  "Algeciras CF": "escudos/algeciras_cf.png",
+  "Antequera CF": "escudos/antequera_cf.png",
+  "Atlético Madrileño": "escudos/atletico_madrileno.png",
+  "CD Teruel": "escudos/cd_teruel.png",
+  "CE Europa": "escudos/ce_europa.png",
+  "CF Rayo Majadahonda": "escudos/cf_rayo_majadahonda.png",
+  "FC Cartagena": "escudos/fc_cartagena.png",
+  "Gimnàstic de Tarragona": "escudos/gimnastic_de_tarragona.png",
+  "Hércules CF": "escudos/hercules_cf.png",
+  "Juventud de Torremolinos": "escudos/juventud_de_torremolinos.png",
+  "Real Jaén": "escudos/real_jaen.png",
+  "Real Madrid Castilla": "escudos/real_madrid_castilla.png",
+  "Real Murcia": "escudos/real_murcia.png",
+  "Real Zaragoza": "escudos/real_zaragoza.png",
+  "SD Huesca": "escudos/sd_huesca.png",
+  "UD Ibiza": "escudos/ud_ibiza.png",
+  "UE Sant Andreu": "escudos/ue_sant_andreu.png",
+  "Villarreal CF B": "escudos/villarreal_cf_b.png",
+  "Bayern München": "escudos/bayern_munchen.png",
+  "Borussia Dortmund": "escudos/borussia_dortmund.png",
+  "RB Leipzig": "escudos/rb_leipzig.png",
+  "VfB Stuttgart": "escudos/vfb_stuttgart.png",
+  "TSG 1899 Hoffenheim": "escudos/tsg_1899_hoffenheim.png",
+  "Bayer Leverkusen": "escudos/bayer_leverkusen.png",
+  "SC Freiburg": "escudos/sc_freiburg.png",
+  "Eintracht Frankfurt": "escudos/eintracht_frankfurt.png",
+  "FC Augsburg": "escudos/fc_augsburg.png",
+  "1. FSV Mainz 05": "escudos/1_fsv_mainz_05.png",
+  "1. FC Union Berlin": "escudos/1_fc_union_berlin.png",
+  "Borussia Mönchengladbach": "escudos/borussia_monchengladbach.png",
+  "Hamburger SV": "escudos/hamburger_sv.png",
+  "1. FC Köln": "escudos/1_fc_koln.png",
+  "SV Werder Bremen": "escudos/sv_werder_bremen.png",
+  "FC Schalke 04": "escudos/fc_schalke_04.png",
+  "SV Elversberg": "escudos/sv_elversberg.png",
+  "SC Paderborn 07": "escudos/sc_paderborn_07.png",
+  "Hertha BSC": "escudos/hertha_bsc.png",
+  "Hannover 96": "escudos/hannover_96.png",
+  "SV Darmstadt 98": "escudos/sv_darmstadt_98.png",
+  "1. FC Kaiserslautern": "escudos/1_fc_kaiserslautern.png",
+  "1. FC Nürnberg": "escudos/1_fc_nurnberg.png",
+  "VfL Bochum": "escudos/vfl_bochum.png",
+  "Karlsruher SC": "escudos/karlsruher_sc.png",
+  "Dynamo Dresden": "escudos/dynamo_dresden.png",
+  "Holstein Kiel": "escudos/holstein_kiel.png",
+  "Arminia Bielefeld": "escudos/arminia_bielefeld.png",
+  "1. FC Magdeburg": "escudos/1_fc_magdeburg.png",
+  "Eintracht Braunschweig": "escudos/eintracht_braunschweig.png",
+  "SpVgg Greuther Fürth": "escudos/spvgg_greuther_furth.png",
+  "VfL Wolfsburg": "escudos/vfl_wolfsburg.png",
+  "1. FC Heidenheim": "escudos/1_fc_heidenheim.png",
+  "FC St. Pauli": "escudos/fc_st_pauli.png",
+  "VfL Osnabrück": "escudos/vfl_osnabruck.png",
+  "FC Energie Cottbus": "escudos/fc_energie_cottbus.png",
+  "Atalanta": "escudos/atalanta.png",
+  "Bologna": "escudos/bologna.png",
+  "Cagliari": "escudos/cagliari.png",
+  "Como": "escudos/como.png",
+  "Fiorentina": "escudos/fiorentina.png",
+  "Frosinone": "escudos/frosinone.png",
+  "Genoa": "escudos/genoa.png",
+  "Inter": "escudos/inter.png",
+  "Juventus": "escudos/juventus.png",
+  "Lazio": "escudos/lazio.png",
+  "Lecce": "escudos/lecce.png",
+  "Milan": "escudos/milan.png",
+  "Monza": "escudos/monza.png",
+  "Napoli": "escudos/napoli.png",
+  "Parma": "escudos/parma.png",
+  "Roma": "escudos/roma.png",
+  "Sassuolo": "escudos/sassuolo.png",
+  "Torino": "escudos/torino.png",
+  "Udinese": "escudos/udinese.png",
+  "Venezia": "escudos/venezia.png",
+  "Arezzo": "escudos/arezzo.png",
+  "Ascoli": "escudos/ascoli.png",
+  "Avellino": "escudos/avellino.png",
+  "Benevento": "escudos/benevento.png",
+  "Carrarese": "escudos/carrarese.png",
+  "Catanzaro": "escudos/catanzaro.png",
+  "Cesena": "escudos/cesena.png",
+  "Cremonese": "escudos/cremonese.png",
+  "Empoli": "escudos/empoli.png",
+  "Hellas Verona": "escudos/hellas_verona.png",
+  "Juve Stabia": "escudos/juve_stabia.png",
+  "Mantova": "escudos/mantova.png",
+  "Modena": "escudos/modena.png",
+  "Padova": "escudos/padova.png",
+  "Palermo": "escudos/palermo.png",
+  "Pisa": "escudos/pisa.png",
+  "Sampdoria": "escudos/sampdoria.png",
+  "Südtirol": "escudos/sudtirol.png",
+  "Virtus Entella": "escudos/virtus_entella.png",
+  "Vicenza": "escudos/vicenza.png",
+  "Angers SCO": "escudos/angers_sco.png",
+  "AJ Auxerre": "escudos/aj_auxerre.png",
+  "Stade Brestois 29": "escudos/stade_brestois_29.png",
+  "Le Havre AC": "escudos/le_havre_ac.png",
+  "Le Mans FC": "escudos/le_mans_fc.png",
+  "RC Lens": "escudos/rc_lens.png",
+  "LOSC Lille": "escudos/losc_lille.png",
+  "FC Lorient": "escudos/fc_lorient.png",
+  "Olympique Lyonnais": "escudos/olympique_lyonnais.png",
+  "Olympique de Marseille": "escudos/olympique_de_marseille.png",
+  "AS Monaco": "escudos/as_monaco.png",
+  "OGC Nice": "escudos/ogc_nice.png",
+  "Paris FC": "escudos/paris_fc.png",
+  "Paris Saint-Germain": "escudos/paris_saint_germain.png",
+  "Stade Rennais FC": "escudos/stade_rennais_fc.png",
+  "RC Strasbourg": "escudos/rc_strasbourg.png",
+  "Toulouse FC": "escudos/toulouse_fc.png",
+  "ESTAC Troyes": "escudos/estac_troyes.png",
+  "FC Annecy": "escudos/fc_annecy.png",
+  "US Boulogne": "escudos/us_boulogne.png",
+  "Clermont Foot": "escudos/clermont_foot.png",
+  "Dijon FCO": "escudos/dijon_fco.png",
+  "USL Dunkerque": "escudos/usl_dunkerque.png",
+  "Grenoble Foot 38": "escudos/grenoble_foot_38.png",
+  "EA Guingamp": "escudos/ea_guingamp.png",
+  "Stade Lavallois": "escudos/stade_lavallois.png",
+  "FC Metz": "escudos/fc_metz.png",
+  "Montpellier HSC": "escudos/montpellier_hsc.png",
+  "AS Nancy-Lorraine": "escudos/as_nancy_lorraine.png",
+  "FC Nantes": "escudos/fc_nantes.png",
+  "Pau FC": "escudos/pau_fc.png",
+  "Red Star FC": "escudos/red_star_fc.png",
+  "Stade de Reims": "escudos/stade_de_reims.png",
+  "Rodez AF": "escudos/rodez_af.png",
+  "AS Saint-Étienne": "escudos/as_saint_etienne.png",
+  "FC Sochaux-Montbéliard": "escudos/fc_sochaux_montbeliard.png",
+  "River Plate": "escudos/river_plate.png",
+  "Boca Juniors": "escudos/boca_juniors.png",
+  "Racing Club": "escudos/racing_club.png",
+  "Independiente": "escudos/independiente.png",
+  "San Lorenzo": "escudos/san_lorenzo.png",
+  "Vélez Sarsfield": "escudos/velez_sarsfield.png",
+  "Estudiantes (LP)": "escudos/estudiantes_lp.png",
+  "Talleres": "escudos/talleres.png",
+  "Platense": "escudos/platense.png",
+  "Barracas Central": "escudos/barracas_central.png",
+  "Central Córdoba (SdE)": "escudos/central_cordoba_sde.png",
+  "Defensa y Justicia": "escudos/defensa_y_justicia.png",
+  "Deportivo Riestra": "escudos/deportivo_riestra.png",
+  "Gimnasia y Esgrima (Mza)": "escudos/gimnasia_y_esgrima_mza.png",
+  "Instituto": "escudos/instituto.png",
+  "Lanús": "escudos/lanus.png",
+  "Unión": "escudos/union.png",
+  "Aldosivi": "escudos/aldosivi.png",
+  "Argentinos Juniors": "escudos/argentinos_juniors.png",
+  "Atlético Tucumán": "escudos/atletico_tucuman.png",
+  "Banfield": "escudos/banfield.png",
+  "Belgrano": "escudos/belgrano.png",
+  "Estudiantes (Río Cuarto)": "escudos/estudiantes_rio_cuarto.png",
+  "Gimnasia y Esgrima (LP)": "escudos/gimnasia_y_esgrima_lp.png",
+  "Huracán": "escudos/huracan.png",
+  "Independiente Rivadavia": "escudos/independiente_rivadavia.png",
+  "Rosario Central": "escudos/rosario_central.png",
+  "Sarmiento (Junín)": "escudos/sarmiento_junin.png",
+  "Tigre": "escudos/tigre.png",
+  "Atlético Mineiro": "escudos/atletico_mineiro.png",
+  "Bahia": "escudos/bahia.png",
+  "Botafogo": "escudos/botafogo.png",
+  "Red Bull Bragantino": "escudos/red_bull_bragantino.png",
+  "Chapecoense": "escudos/chapecoense.png",
+  "Corinthians": "escudos/corinthians.png",
+  "Coritiba": "escudos/coritiba.png",
+  "Athletico Paranaense": "escudos/athletico_paranaense.png",
+  "Cruzeiro": "escudos/cruzeiro.png",
+  "Flamengo": "escudos/flamengo.png",
+  "Fluminense": "escudos/fluminense.png",
+  "Grêmio": "escudos/gremio.png",
+  "Internacional": "escudos/internacional.png",
+  "Mirassol": "escudos/mirassol.png",
+  "Palmeiras": "escudos/palmeiras.png",
+  "Remo": "escudos/remo.png",
+  "Santos": "escudos/santos.png",
+  "São Paulo": "escudos/sao_paulo.png",
+  "Vasco da Gama": "escudos/vasco_da_gama.png",
+  "Vitória": "escudos/vitoria.png",
+  "Atlanta United": "escudos/atlanta_united.png",
+  "Charlotte FC": "escudos/charlotte_fc.png",
+  "Chicago Fire": "escudos/chicago_fire.png",
+  "FC Cincinnati": "escudos/fc_cincinnati.png",
+  "Columbus Crew": "escudos/columbus_crew.png",
+  "D.C. United": "escudos/d_c_united.png",
+  "Inter Miami CF": "escudos/inter_miami_cf.png",
+  "CF Montréal": "escudos/cf_montreal.png",
+  "Nashville SC": "escudos/nashville_sc.png",
+  "New England Revolution": "escudos/new_england_revolution.png",
+  "New York City FC": "escudos/new_york_city_fc.png",
+  "New York Red Bulls": "escudos/new_york_red_bulls.png",
+  "Orlando City SC": "escudos/orlando_city_sc.png",
+  "Philadelphia Union": "escudos/philadelphia_union.png",
+  "Toronto FC": "escudos/toronto_fc.png",
+  "Austin FC": "escudos/austin_fc.png",
+  "Colorado Rapids": "escudos/colorado_rapids.png",
+  "FC Dallas": "escudos/fc_dallas.png",
+  "Houston Dynamo": "escudos/houston_dynamo.png",
+  "LA Galaxy": "escudos/la_galaxy.png",
+  "Los Angeles FC": "escudos/los_angeles_fc.png",
+  "Minnesota United": "escudos/minnesota_united.png",
+  "Portland Timbers": "escudos/portland_timbers.png",
+  "Real Salt Lake": "escudos/real_salt_lake.png",
+  "San Diego FC": "escudos/san_diego_fc.png",
+  "San Jose Earthquakes": "escudos/san_jose_earthquakes.png",
+  "Seattle Sounders": "escudos/seattle_sounders.png",
+  "Sporting Kansas City": "escudos/sporting_kansas_city.png",
+  "St. Louis City SC": "escudos/st_louis_city_sc.png",
+  "Vancouver Whitecaps": "escudos/vancouver_whitecaps.png",
+  "FC Porto": "escudos/fc_porto.png",
+  "Sporting CP": "escudos/sporting_cp.png",
+  "Benfica": "escudos/benfica.png",
+  "SC Braga": "escudos/sc_braga.png",
+  "Famalicão": "escudos/famalicao.png",
+  "Gil Vicente": "escudos/gil_vicente.png",
+  "Moreirense": "escudos/moreirense.png",
+  "Arouca": "escudos/arouca.png",
+  "Vitória Guimarães": "escudos/vitoria_guimaraes.png",
+  "Estoril": "escudos/estoril.png",
+  "Alverca": "escudos/alverca.png",
+  "Rio Ave": "escudos/rio_ave.png",
+  "Santa Clara": "escudos/santa_clara.png",
+  "Nacional": "escudos/nacional.png",
+  "Estrela Amadora": "escudos/estrela_amadora.png",
+  "Casa Pia": "escudos/casa_pia.png",
+  "Marítimo": "escudos/maritimo.png",
+  "Académico de Viseu": "escudos/academico_de_viseu.png",
+  "PSV Eindhoven": "escudos/psv_eindhoven.png",
+  "Feyenoord": "escudos/feyenoord.png",
+  "NEC Nijmegen": "escudos/nec_nijmegen.png",
+  "Twente": "escudos/twente.png",
+  "Ajax": "escudos/ajax.png",
+  "AZ Alkmaar": "escudos/az_alkmaar.png",
+  "Heerenveen": "escudos/heerenveen.png",
+  "Groningen": "escudos/groningen.png",
+  "Sparta Rotterdam": "escudos/sparta_rotterdam.png",
+  "Fortuna Sittard": "escudos/fortuna_sittard.png",
+  "Go Ahead Eagles": "escudos/go_ahead_eagles.png",
+  "Excelsior": "escudos/excelsior.png",
+  "Telstar": "escudos/telstar.png",
+  "PEC Zwolle": "escudos/pec_zwolle.png",
+  "Utrecht": "escudos/utrecht.png",
+  "ADO Den Haag": "escudos/ado_den_haag.png",
+  "Cambuur": "escudos/cambuur.png",
+  "Willem II": "escudos/willem_ii.png",
+  "Club América": "escudos/club_america.png",
+  "Atlas": "escudos/atlas.png",
+  "Atlético San Luis": "escudos/atletico_san_luis.png",
+  "Cruz Azul": "escudos/cruz_azul.png",
+  "Chivas Guadalajara": "escudos/chivas_guadalajara.png",
+  "FC Juárez": "escudos/fc_juarez.png",
+  "León": "escudos/leon.png",
+  "Monterrey": "escudos/monterrey.png",
+  "Necaxa": "escudos/necaxa.png",
+  "Pachuca": "escudos/pachuca.png",
+  "Puebla": "escudos/puebla.png",
+  "Pumas UNAM": "escudos/pumas_unam.png",
+  "Querétaro": "escudos/queretaro.png",
+  "Santos Laguna": "escudos/santos_laguna.png",
+  "Tigres UANL": "escudos/tigres_uanl.png",
+  "Tijuana": "escudos/tijuana.png",
+  "Toluca": "escudos/toluca.png",
+  "Atlante": "escudos/atlante.png",
+  "Club Brugge": "escudos/club_brugge.png",
+  "Union SG": "escudos/union_sg.png",
+  "Anderlecht": "escudos/anderlecht.png",
+  "Genk": "escudos/genk.png",
+  "Gent": "escudos/gent.png",
+  "Antwerp": "escudos/antwerp.png",
+  "Standard Liège": "escudos/standard_liege.png",
+  "Cercle Brugge": "escudos/cercle_brugge.png",
+  "Sint-Truiden": "escudos/sint_truiden.png",
+  "Westerlo": "escudos/westerlo.png",
+  "OH Leuven": "escudos/oh_leuven.png",
+  "Charleroi": "escudos/charleroi.png",
+  "KV Mechelen": "escudos/kv_mechelen.png",
+  "Zulte Waregem": "escudos/zulte_waregem.png",
+  "La Louvière": "escudos/la_louviere.png",
+  "Beveren": "escudos/beveren.png",
+  "KV Kortrijk": "escudos/kv_kortrijk.png",
+  "Lommel": "escudos/lommel.png",
+  "Galatasaray": "escudos/galatasaray.png",
+  "Fenerbahçe": "escudos/fenerbahce.png",
+  "Beşiktaş": "escudos/besiktas.png",
+  "Trabzonspor": "escudos/trabzonspor.png",
+  "Alanyaspor": "escudos/alanyaspor.png",
+  "Amedspor": "escudos/amedspor.png",
+  "Çorum FK": "escudos/corum_fk.png",
+  "Erzurumspor": "escudos/erzurumspor.png",
+  "Eyüpspor": "escudos/eyupspor.png",
+  "Gaziantep FK": "escudos/gaziantep_fk.png",
+  "Gençlerbirliği": "escudos/genclerbirligi.png",
+  "Göztepe": "escudos/goztepe.png",
+  "İstanbul Başakşehir": "escudos/istanbul_basaksehir.png",
+  "Kocaelispor": "escudos/kocaelispor.png",
+  "Konyaspor": "escudos/konyaspor.png",
+  "Rizespor": "escudos/rizespor.png",
+  "Samsunspor": "escudos/samsunspor.png",
+  "Al Nassr": "escudos/al_nassr.png",
+  "Al Hilal": "escudos/al_hilal.png",
+  "Al Ittihad": "escudos/al_ittihad.png",
+  "Al Ahli": "escudos/al_ahli.png",
+  "Al Qadsiah": "escudos/al_qadsiah.png",
+  "Al Taawoun": "escudos/al_taawoun.png",
+  "Al Ettifaq": "escudos/al_ettifaq.png",
+  "Al Khaleej": "escudos/al_khaleej.png",
+  "Al Fateh": "escudos/al_fateh.png",
+  "Al Fayha": "escudos/al_fayha.png",
+  "Al Shabab": "escudos/al_shabab.png",
+  "Al Riyadh": "escudos/al_riyadh.png",
+  "Al Kholood": "escudos/al_kholood.png",
+  "NEOM SC": "escudos/neom_sc.png",
+  "Al Hazem": "escudos/al_hazem.png",
+  "Abha": "escudos/abha.png",
+  "Al Faisaly": "escudos/al_faisaly.png",
+  "Al Diriyah": "escudos/al_diriyah.png",
+  "Kashima Antlers": "escudos/kashima_antlers.png",
+  "Urawa Red Diamonds": "escudos/urawa_red_diamonds.png",
+  "Kashiwa Reysol": "escudos/kashiwa_reysol.png",
+  "FC Tokyo": "escudos/fc_tokyo.png",
+  "Tokyo Verdy": "escudos/tokyo_verdy.png",
+  "Machida Zelvia": "escudos/machida_zelvia.png",
+  "Kawasaki Frontale": "escudos/kawasaki_frontale.png",
+  "Yokohama F. Marinos": "escudos/yokohama_f_marinos.png",
+  "Shimizu S-Pulse": "escudos/shimizu_s_pulse.png",
+  "Nagoya Grampus": "escudos/nagoya_grampus.png",
+  "Kyoto Sanga": "escudos/kyoto_sanga.png",
+  "Gamba Osaka": "escudos/gamba_osaka.png",
+  "Cerezo Osaka": "escudos/cerezo_osaka.png",
+  "Vissel Kobe": "escudos/vissel_kobe.png",
+  "Fagiano Okayama": "escudos/fagiano_okayama.png",
+  "Sanfrecce Hiroshima": "escudos/sanfrecce_hiroshima.png",
+  "Avispa Fukuoka": "escudos/avispa_fukuoka.png",
+  "Mito HollyHock": "escudos/mito_hollyhock.png",
+  "V-Varen Nagasaki": "escudos/v_varen_nagasaki.png",
+  "JEF United Chiba": "escudos/jef_united_chiba.png",
+  "Kasımpaşa": "escudos/kasmpasa.png"
+};
 var teamBadgeCache = {}; // name -> url string, or false if confirmed not found
 var fetchingBadges = {};
 function teamBadge(name, size){
@@ -596,7 +1164,7 @@ var state = {};
 function resetState(){
   state = {
     name:'', nat:'España', team:'', country:'', division:'', totalGames:38, historyMod:0,
-    divisionBase:3, clubBonus:0, clubRating:50, managerRatingValue:50, goodStreak:0, reputation:0, season:1, history:[], retired:false,
+    divisionBase:3, clubBonus:0, clubRating:50, managerRatingValue:50, goodStreak:0, vestuario:50, directiva:50, usedDecisionIds:[], reputation:0, season:1, history:[], retired:false,
     lastNational:null, nationalHistory:[], pendingEuroComp:null, pendingEuroClub:null, pendingCWC:null, pendingCWCClub:null,
     pendingCountryChoice:null, pendingMovement:null, pendingIsLast:false, pendingTournamentKind:null,
     lastP:null, lastSeasonResult:null, lastNationalResult:null, lastBracket:null,
@@ -615,6 +1183,7 @@ function renderScreen(id){
   else if (id==='equipo') renderConfig();
   else if (id==='playoff') renderPlayoffScreen();
   else if (id==='resumen-temporada') renderSeasonEnd();
+  else if (id==='decision-temporada') renderDecisionEvent();
   else if (id==='selecciones') renderNationalOffers();
   else if (id==='resultado-seleccion') renderNationalResult();
   else if (id==='ofertas-siguiente') renderNextOffers();
@@ -987,6 +1556,7 @@ function playMatches(n){
   var leagueDifficulty = Math.max(0, state.divisionBase - 6) * 1.4;
   var clubStrength = state.clubBonus * 3.2;
   var managerBonus = (managerRating() - 50) * 0.3;
+  var moraleBonus = ((state.vestuario||50) - 50) * 0.06;
   var floor = 15 + state.clubBonus * 11;
   var cap = Math.min(92, 62 + state.clubBonus * 6);
   for (var i=0;i<n;i++){
@@ -994,7 +1564,7 @@ function playMatches(n){
     if (Math.random() < cs.posChance) styleExtra += cs.posBonus;
     if (Math.random() < cs.negChance) styleExtra += cs.negBonus;
     var rand = Math.random()*30;
-    var winProb = Math.max(3, Math.min(cap, rand + base + pressBonus + styleExtra + clubStrength + managerBonus - leagueDifficulty));
+    var winProb = Math.max(3, Math.min(cap, rand + base + pressBonus + styleExtra + clubStrength + managerBonus + moraleBonus - leagueDifficulty));
     winProb = Math.max(winProb, floor);
     var drawProb = 25;
     var r = Math.random()*100;
@@ -1213,16 +1783,118 @@ function renderSeasonEnd(){
   });
 }
 
+function afterDecisionEvent(){
+  navigate('equipo');
+}
+
+var DECISION_EVENTS = [
+  {
+    id:'veterano',
+    prompt:'Un jugador veterano, referente del vestuario, termina contrato.',
+    options:[
+      {label:'Renovarlo dos temporadas', flavor:'El vestuario respira tranquilo con esta continuidad.', vestuario:6, directiva:-2, presupuesto:-3},
+      {label:'Renovarlo solo un año', flavor:'Una solución de compromiso, nadie queda del todo conforme.', vestuario:2, directiva:1},
+      {label:'Dejarlo marchar', flavor:'La directiva valora el ahorro, pero el vestuario lo nota.', vestuario:-5, directiva:5, presupuesto:6},
+      {label:'Ofrecerle un puesto en el cuerpo técnico', flavor:'Una salida elegante que refuerza la formación de jóvenes.', vestuario:4, directiva:0, cantera:5}
+    ]
+  },
+  {
+    id:'cantera',
+    prompt:'Un canterano de 18 años está listo para dar el salto.',
+    options:[
+      {label:'Convertirlo en titular', flavor:'Una apuesta arriesgada, pero el chico responde con hambre.', cantera:8, vestuario:-2, directiva:-1},
+      {label:'Usarlo como suplente', flavor:'Minutos con cabeza, sin quemar etapas.', cantera:4, vestuario:1},
+      {label:'Cederlo a otro club', flavor:'Necesita rodaje que acá no le podés dar.', cantera:2, presupuesto:3},
+      {label:'Mantenerlo en el filial', flavor:'La directiva prefiere no arriesgar, aunque el chico se impacienta.', cantera:-2, directiva:2}
+    ]
+  },
+  {
+    id:'fichaje_riesgo',
+    prompt:'El director deportivo propone fichar a un delantero veterano de mucho nombre, pero ya con años encima.',
+    options:[
+      {label:'Ficharlo', flavor:'Una apuesta cara. La afición se ilusiona, la directiva contiene el aliento.', vestuario:3, directiva:-4, presupuesto:-8},
+      {label:'Buscar una alternativa joven', flavor:'Menos ruido mediático, más margen de crecimiento.', cantera:3, presupuesto:-3},
+      {label:'No fichar a nadie', flavor:'La plantilla queda como está. Prudencia ante todo.', directiva:2},
+      {label:'Esperar al mercado de invierno', flavor:'Ganás tiempo para decidir con más información.', directiva:1, vestuario:-1}
+    ]
+  },
+  {
+    id:'estrella',
+    prompt:'El mejor jugador de la plantilla exige ser el mejor pagado del equipo.',
+    options:[
+      {label:'Aceptar su pedido', flavor:'Se queda contento, pero el resto del vestuario lo mira de reojo.', vestuario:-3, directiva:-5, presupuesto:-6},
+      {label:'Negociar un término medio', flavor:'Nadie sale del todo satisfecho, pero se evita el conflicto abierto.', vestuario:1, directiva:1},
+      {label:'Rechazar el pedido', flavor:'Marcás autoridad, aunque el jugador queda dolido.', vestuario:-2, directiva:4},
+      {label:'Ponerlo en el mercado', flavor:'Una decisión audaz que sacude al club entero.', vestuario:-4, directiva:2, presupuesto:10}
+    ]
+  },
+  {
+    id:'objetivo_directiva',
+    prompt:'La directiva plantea un objetivo ambicioso para la próxima temporada.',
+    options:[
+      {label:'Aceptarlo tal cual', flavor:'Te comprometés públicamente. La presión sube, pero también la confianza inicial.', directiva:5, vestuario:-1},
+      {label:'Negociar un objetivo más realista', flavor:'Bajás la presión, aunque quedás como alguien poco ambicioso.', directiva:-1},
+      {label:'Rechazarlo', flavor:'Marcás tu independencia, aunque genera tensión con el club.', directiva:-6, vestuario:2},
+      {label:'Prometer superarlo públicamente', flavor:'Un golpe de efecto que ilusiona a la afición... si sale bien.', directiva:3, vestuario:3}
+    ]
+  }
+];
+
+function renderDecisionEvent(){
+  var used = state.usedDecisionIds || [];
+  var pool = DECISION_EVENTS.filter(function(d){ return used.indexOf(d.id)===-1; });
+  if (!pool.length){ pool = DECISION_EVENTS; used = []; }
+  var ev = shuffle(pool)[0];
+  state.pendingDecision = ev;
+  render(
+    '<div style="background:var(--surface-2); border-radius:12px; border:0.5px solid var(--border); padding:1rem 1.25rem;">'+
+      '<p style="font-size:12px; color:var(--text-accent); text-transform:uppercase; letter-spacing:0.04em; font-family:var(--display); margin:0 0 6px;">Decisión de temporada</p>'+
+      '<p style="font-size:15px; margin:0 0 1.25rem; line-height:1.5;">'+ev.prompt+'</p>'+
+      '<div style="display:grid; gap:8px;">'+
+        ev.options.map(function(o, i){
+          return '<button class="decisionOptBtn" data-idx="'+i+'" style="width:100%; text-align:left;">'+String.fromCharCode(65+i)+') '+o.label+'</button>';
+        }).join('')+
+      '</div>'+
+    '</div>'
+  );
+  document.querySelectorAll('.decisionOptBtn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var opt = state.pendingDecision.options[parseInt(btn.getAttribute('data-idx'),10)];
+      state.vestuario = Math.max(0, Math.min(100, (state.vestuario||50) + (opt.vestuario||0)));
+      state.directiva = Math.max(0, Math.min(100, (state.directiva||50) + (opt.directiva||0)));
+      if (opt.cantera) state.clubRating = Math.max(1, Math.min(99, state.clubRating + Math.round(opt.cantera*0.3)));
+      state.usedDecisionIds = (state.usedDecisionIds || []).concat([state.pendingDecision.id]);
+      render(
+        '<div style="background:var(--surface-2); border-radius:12px; border:0.5px solid var(--border); padding:1rem 1.25rem;">'+
+          '<p style="font-size:15px; margin:0 0 1.25rem; line-height:1.5;">'+opt.flavor+'</p>'+
+          '<button id="decisionContinue" class="primaryBtn" style="width:100%;">Continuar <i class="ti ti-arrow-right" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'+
+        '</div>'
+      );
+      el('decisionContinue').addEventListener('click', afterDecisionEvent);
+    });
+  });
+}
+
 function renderNationalOffers(){
   var kind = state.pendingTournamentKind;
   var americaTeam = nationalCandidate('América');
   var europaTeam = nationalCandidate('Europa');
+  var concacafTeam = nationalCandidate('CONCACAF');
+  var asiaTeam = nationalCandidate('Asia');
+  var africaTeam = nationalCandidate('África');
+  var oceaniaTeam = nationalCandidate('Oceanía');
   var options = [];
   if (state.lastNational) options.push({label:'Renovar con '+state.lastNational.n, team: state.lastNational});
   options.push({label: americaTeam.n, team: americaTeam});
   options.push({label: europaTeam.n, team: europaTeam});
+  if (kind === 'Continental'){
+    options.push({label: concacafTeam.n, team: concacafTeam});
+    options.push({label: asiaTeam.n, team: asiaTeam});
+    options.push({label: africaTeam.n, team: africaTeam});
+    options.push({label: oceaniaTeam.n, team: oceaniaTeam});
+  }
 
-  var kindLabel = kind==='Mundial' ? 'la Copa del Mundo' : 'la Eurocopa / Copa América';
+  var kindLabel = kind==='Mundial' ? 'la Copa del Mundo' : 'el torneo continental de tu zona';
   render(
     '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:1.25rem; display:flex; gap:10px; align-items:flex-start;">'+
       '<i class="ti ti-world" style="font-size:20px; color:var(--text-accent); margin-top:2px;" aria-hidden="true"></i>'+
@@ -1232,9 +1904,9 @@ function renderNationalOffers(){
     '<div style="display:grid; gap:8px;">'+
       options.map(function(o){
         var f = nationalForm(o.team.n, o.team.b);
-        var naNote = (kind==='Continental' && o.team.cont==='América' && (o.team.n==='Estados Unidos' || o.team.n==='México')) ? ' · invitada a la Copa América' : '';
+        var compName = tournamentDisplayName(kind, o.team.cont);
         return '<button class="natBtn" data-team="'+o.team.n+'" data-cont="'+o.team.cont+'" data-b="'+o.team.b+'" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px;">'+
-          flagEmoji(o.team.n, 32)+'<span><span style="display:block;">'+o.label+'</span><span style="display:block; font-size:12px; color:var(--text-secondary); font-weight:400;">'+o.team.cont+' · '+f.label+naNote+'</span></span>'+
+          flagEmoji(o.team.n, 32)+'<span><span style="display:block;">'+o.label+'</span><span style="display:block; font-size:12px; color:var(--text-secondary); font-weight:400;">'+o.team.cont+' · '+compName+' · '+f.label+'</span></span>'+
         '</button>';
       }).join('')+
     '</div>'
@@ -1258,9 +1930,22 @@ function renderNationalResult(){
   var result = state.lastNationalResult;
   var displayName = result.displayName;
   var won = result.stage === 'Campeón';
+  var teamObj = NATIONAL_TEAMS.find(function(t){ return t.n === result.team; });
+  var groupHtml = '';
+  if (teamObj){
+    var draw = getTournamentTeams(displayName, teamObj);
+    if (draw){
+      var myGroup = draw.groups[draw.myGroupIndex];
+      groupHtml = '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:1rem;">'+
+        '<p style="font-size:12px; color:var(--text-secondary); margin:0 0 6px; text-transform:uppercase; letter-spacing:0.03em; font-family:var(--display);">Tu grupo</p>'+
+        myGroup.map(function(t){ return '<span style="display:inline-flex; align-items:center; gap:5px; margin:2px 8px 2px 0;">'+flagEmoji(t.n,18)+'<span style="font-size:13px;">'+t.n+'</span></span>'; }).join('')+
+      '</div>';
+    }
+  }
   render(
     '<div style="background:var(--surface-2); border-radius:12px; border:0.5px solid var(--border); padding:1rem 1.25rem;">'+
       '<div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">'+flagEmoji(result.team,40)+'<div><p style="font-size:13px; color:var(--text-secondary); margin:0;">'+displayName+' · '+result.team+'</p><h3 style="margin:0;">'+(won ? '¡Campeones de '+displayName+'!' : 'Recorrido: '+result.stage)+'</h3></div></div>'+
+      groupHtml+
       '<p style="font-size:14px; color:var(--text-secondary); margin:0 0 1rem;">Volvés a tu club para seguir la temporada.</p>'+
       '<button id="natContBtn" class="primaryBtn" style="width:100%;">Continuar <i class="ti ti-arrow-right" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'+
     '</div>'
@@ -1375,7 +2060,7 @@ function renderNextOffers(){
     if (movement === 'Ascenso' || movement === 'Descenso'){
       state.clubRating = Math.max(ratingFloorFor(state.clubBonus, isTopFlight(stayDivision)), Math.min(99, state.clubRating));
     }
-    navigate('equipo');
+    navigate('decision-temporada');
   });
   document.querySelectorAll('.offerBtn2').forEach(function(btn){
     btn.addEventListener('click', function(){
@@ -1388,7 +2073,7 @@ function renderNextOffers(){
       state.clubRating = baselineClubRating(bonus, isTopFlight(division), division.base);
       state.historyMod = historyFor(teamName, bonus).mod;
       if (CLUB_EURO_STATUS[teamName]){ state.pendingEuroComp = CLUB_EURO_STATUS[teamName]; state.pendingEuroClub = teamName; }
-      navigate('equipo');
+      navigate('decision-temporada');
     });
   });
   if (el('retireBtn')) el('retireBtn').addEventListener('click', function(){ state.retired = true; navigate('palmares'); });
