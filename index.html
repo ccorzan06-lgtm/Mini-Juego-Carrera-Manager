@@ -1340,6 +1340,24 @@ function fetchTeamBadge(name){
     return null;
   }).catch(function(){ return null; });
 }
+function tintFromImage(elm, imgUrl){
+  var img = new Image();
+  img.onload = function(){
+    getDominantColor(img).then(function(color){
+      if (!color) return;
+      var m = color.match(/rgb\((\d+),(\d+),(\d+)\)/);
+      if (!m) return;
+      var r=parseInt(m[1],10), g=parseInt(m[2],10), b=parseInt(m[3],10);
+      var baseR=18, baseG=52, baseB=35;
+      var mix = 0.35;
+      var br = Math.round(r*mix + baseR*(1-mix));
+      var bg2 = Math.round(g*mix + baseG*(1-mix));
+      var bb = Math.round(b*mix + baseB*(1-mix));
+      elm.style.background = 'rgb('+br+','+bg2+','+bb+')';
+    });
+  };
+  img.src = imgUrl;
+}
 function processBadges(){
   document.querySelectorAll('.clubTintCard').forEach(function(elm){
     var name = elm.getAttribute('data-tint-club');
@@ -1347,22 +1365,15 @@ function processBadges(){
     var badgeUrl = TEAM_BADGES[name] || (teamBadgeCache[name] && teamBadgeCache[name] !== false ? teamBadgeCache[name] : null);
     if (!badgeUrl) return;
     elm.setAttribute('data-tinted','1');
-    var img = new Image();
-    img.onload = function(){
-      getDominantColor(img).then(function(color){
-        if (!color) return;
-        var m = color.match(/rgb\((\d+),(\d+),(\d+)\)/);
-        if (!m) return;
-        var r=parseInt(m[1],10), g=parseInt(m[2],10), b=parseInt(m[3],10);
-        var baseR=18, baseG=52, baseB=35;
-        var mix = 0.35;
-        var br = Math.round(r*mix + baseR*(1-mix));
-        var bg2 = Math.round(g*mix + baseG*(1-mix));
-        var bb = Math.round(b*mix + baseB*(1-mix));
-        elm.style.background = 'rgb('+br+','+bg2+','+bb+')';
-      });
-    };
-    img.src = badgeUrl;
+    tintFromImage(elm, badgeUrl);
+  });
+  document.querySelectorAll('.natTintCard').forEach(function(elm){
+    var name = elm.getAttribute('data-tint-nat');
+    if (!name || elm.getAttribute('data-tinted')) return;
+    var badgeUrl = (typeof NATIONAL_BADGES !== 'undefined') ? NATIONAL_BADGES[name] : null;
+    if (!badgeUrl) return;
+    elm.setAttribute('data-tinted','1');
+    tintFromImage(elm, badgeUrl);
   });
   document.querySelectorAll('.natBadgeSlot').forEach(function(elm){
     var img = elm.querySelector('img');
@@ -1519,7 +1530,7 @@ function renderNationalTimeline(){
   }
   var rowsHtml = state.nationalHistory.slice().reverse().map(function(h){
     var won = h.stage === 'Campeón';
-    return '<div style="display:flex; align-items:center; gap:10px; padding:10px 4px; border-bottom:1px solid var(--border);">'+
+    return '<div class="natTintCard" data-tint-nat="'+h.team.replace(/"/g,'&quot;')+'" style="display:flex; align-items:center; gap:10px; padding:10px 4px; border-bottom:1px solid var(--border); border-radius:6px;">'+
       '<div style="width:32px; height:32px; border-radius:8px; background:var(--surface-1); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:var(--text-secondary); flex-shrink:0;">'+tournamentYearLabel(h.season)+'</div>'+
       nationalTeamCrest(h.team, 30)+
       '<div style="flex:1; min-width:0;">'+
@@ -1597,7 +1608,7 @@ function buildHistoryRow(h, idx){
   if (h.cup && h.cup.stage==='Campeón') titlesList.push(h.cup.name);
   var changedClub = idx>0 && state.history[idx-1].team !== h.team;
   var mr = h.mrSnapshot!=null ? h.mrSnapshot : managerRating();
-  return '<div style="display:flex; align-items:center; gap:10px; padding:10px 4px; border-bottom:1px solid var(--border);">'+
+  return '<div class="clubTintCard" data-tint-club="'+h.team.replace(/"/g,'&quot;')+'" style="display:flex; align-items:center; gap:10px; padding:10px 4px; border-bottom:1px solid var(--border); border-radius:6px;">'+
     '<div style="width:32px; height:32px; border-radius:8px; background:var(--surface-1); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:var(--text-secondary); flex-shrink:0;">'+h.season+'</div>'+
     '<span style="width:15px; flex-shrink:0; display:inline-flex; justify-content:center;">'+(changedClub ? '<i class="ti ti-corner-down-right" style="color:var(--text-secondary); font-size:15px;" aria-hidden="true"></i>' : '')+'</span>'+
     teamBadge(h.team, 34)+
@@ -1759,7 +1770,7 @@ function renderOffers(){
       offers.map(function(t){
         var h = historyFor(t.n, t.b);
         var rating = baselineClubRating(t.b, isTopFlight(division), division.base);
-        return '<button class="offerBtn" data-team="'+t.n+'" data-b="'+t.b+'" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px; justify-content:space-between;">'+
+        return '<button class="offerBtn clubTintCard" data-tint-club="'+t.n+'" data-team="'+t.n+'" data-b="'+t.b+'" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px; justify-content:space-between;">'+
           '<span style="display:flex; align-items:center; gap:10px;">'+teamBadge(t.n)+'<span><span style="display:flex; align-items:center; gap:6px;">'+flagEmoji(division.country,18)+' '+t.n+'</span><span style="display:block; font-size:12px; color:var(--text-secondary); font-weight:400;">'+h.label+'</span></span></span>'+
         '</button>';
       }).join('')+
@@ -2372,7 +2383,7 @@ function renderNationalOffers(){
       options.map(function(o){
         var f = nationalForm(o.team.n, o.team.b);
         var compName = tournamentDisplayName(kind, o.team.cont);
-        return '<button class="natBtn" data-team="'+o.team.n+'" data-cont="'+o.team.cont+'" data-b="'+o.team.b+'" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px;">'+
+        return '<button class="natBtn natTintCard" data-tint-nat="'+o.team.n+'" data-team="'+o.team.n+'" data-cont="'+o.team.cont+'" data-b="'+o.team.b+'" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px;">'+
           nationalTeamCrest(o.team.n, 36)+'<span><span style="display:block;">'+o.label+'</span><span style="display:block; font-size:12px; color:var(--text-secondary); font-weight:400;">'+o.team.cont+' · '+compName+' · '+f.label+'</span></span>'+
         '</button>';
       }).join('')+
@@ -2528,7 +2539,7 @@ function renderNextOffers(){
     '<div style="display:grid; gap:8px; margin-bottom:'+(state.season>=RETIRE_FROM_SEASON ? '16px' : '0')+';">'+
       offers.map(function(o){
         var h = historyFor(o.team, o.bonus);
-        return '<button class="offerBtn2" data-team="'+o.team+'" data-b="'+o.bonus+'" data-lg="'+o.division.league+'" data-c="'+o.division.country+'" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px;">'+
+        return '<button class="offerBtn2 clubTintCard" data-tint-club="'+o.team+'" data-team="'+o.team+'" data-b="'+o.bonus+'" data-lg="'+o.division.league+'" data-c="'+o.division.country+'" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px;">'+
           teamBadge(o.team)+'<span style="flex:1;"><span style="display:block;">'+flagEmoji(o.division.country)+' '+o.team+'</span><span style="display:block; font-size:12px; color:var(--text-secondary); font-weight:400;">'+o.division.league+' ('+o.division.country+') · '+h.label+'</span></span>'+
         '</button>';
       }).join('')+
@@ -2848,18 +2859,34 @@ function renderCareerSummary(){
         (count>1 ? '<span style="position:absolute; bottom:-4px; right:-6px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:0 4px; font-size:10px; font-weight:700; color:var(--text-accent);">x'+count+'</span>' : '')+
       '</span>';
     }).join('');
-    return '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.9rem; margin-bottom:8px; text-align:center;">'+
+    return '<div class="clubTintCard" data-tint-club="'+club.replace(/"/g,'&quot;')+'" style="background:var(--surface-1); border-radius:var(--radius); padding:0.9rem; margin-bottom:8px; text-align:center;">'+
       '<div style="display:flex; justify-content:center; margin-bottom:6px;">'+teamBadge(club, 46)+'</div>'+
       '<p style="margin:0 0 8px; font-size:14px; font-weight:500;">'+club+'</p>'+
       '<div style="display:flex; justify-content:center; flex-wrap:wrap; gap:10px;">'+icons+'</div>'+
     '</div>';
   }).join('') : '<p style="font-size:14px; color:var(--text-secondary);">Sin títulos ni ascensos en esta carrera.</p>';
 
-  var natPalmares = natTitles.length ? natTitles.map(function(h){
-    return '<div style="display:flex; align-items:center; gap:10px; background:var(--surface-1); border-radius:var(--radius); padding:0.6rem 0.85rem; margin-bottom:8px;">'+
-      trophyIcon(h.kind, 40)+
-      '<div><p style="margin:0; font-size:14px; font-weight:500;">'+h.kind+' — Campeón con '+h.team+'</p>'+
-      '<p style="margin:0; font-size:12px; color:var(--text-secondary);">'+tournamentYearLabel(h.season)+'</p></div>'+
+  var natGroups = {};
+  natTitles.forEach(function(h){
+    if (!natGroups[h.team]) natGroups[h.team] = {};
+    if (!natGroups[h.team][h.kind]) natGroups[h.team][h.kind] = [];
+    natGroups[h.team][h.kind].push(h.season);
+  });
+  var natClubNames = Object.keys(natGroups);
+  var natPalmares = natClubNames.length ? natClubNames.map(function(team){
+    var labels = natGroups[team];
+    var icons = Object.keys(labels).map(function(label){
+      var seasons = labels[label];
+      var count = seasons.length;
+      return '<span style="position:relative; display:inline-flex;" title="'+label.replace(/"/g,'&quot;')+' — '+seasons.map(tournamentYearLabel).join(', ')+'">'+
+        trophyIcon(label, 34)+
+        (count>1 ? '<span style="position:absolute; bottom:-4px; right:-6px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:0 4px; font-size:10px; font-weight:700; color:var(--text-accent);">x'+count+'</span>' : '')+
+      '</span>';
+    }).join('');
+    return '<div class="natTintCard" data-tint-nat="'+team.replace(/"/g,'&quot;')+'" style="background:var(--surface-1); border-radius:var(--radius); padding:0.9rem; margin-bottom:8px; text-align:center;">'+
+      '<div style="display:flex; justify-content:center; margin-bottom:6px;">'+nationalTeamCrest(team, 46)+'</div>'+
+      '<p style="margin:0 0 8px; font-size:14px; font-weight:500;">'+team+'</p>'+
+      '<div style="display:flex; justify-content:center; flex-wrap:wrap; gap:10px;">'+icons+'</div>'+
     '</div>';
   }).join('') : '';
 
