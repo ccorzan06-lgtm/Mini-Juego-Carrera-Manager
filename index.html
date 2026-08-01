@@ -1868,15 +1868,37 @@ function selectOptions(options, current){
   return options.map(function(o){ return '<option'+(o===current?' selected':'')+'>'+o+'</option>'; }).join('');
 }
 
+function directivaMessage(){
+  var last = state.history[state.history.length-1];
+  if (!last) return 'La directiva confía en el proyecto que estás por arrancar.';
+  if (last.achievement === 'Título de Liga') return 'La directiva llega eufórica tras el título — las expectativas suben.';
+  if (last.achievement === 'Ascenso') return 'El ascenso conseguido genera ilusión de cara a esta nueva etapa.';
+  if (last.tag === 'Zona de descenso') return 'La directiva llega con dudas después del bajón de la temporada pasada.';
+  if (last.tag === 'Pelea por la permanencia') return 'Quedan algunas dudas sueltas tras una temporada ajustada.';
+  return 'La directiva sigue con normalidad, atenta a cómo arranca el proyecto.';
+}
+function statBar(label, value, color){
+  return '<div style="margin-bottom:6px;"><div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary); margin-bottom:2px;"><span>'+label+'</span><span>'+Math.round(value)+'</span></div><div style="background:var(--surface-2); border-radius:6px; height:6px; overflow:hidden;"><div style="width:'+Math.max(2,Math.min(100,value))+'%; height:100%; background:'+color+';"></div></div></div>';
+}
 function renderConfig(){
   render(
     headerBanner()+
+    '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:12px;">'+
+      '<p style="font-size:13px; color:var(--text-secondary); margin:0 0 10px; font-style:italic;">"'+directivaMessage()+'"</p>'+
+      statBar('Vestuario', state.vestuario||50, '#4dd68a')+
+      statBar('Presupuesto', state.presupuesto||50, '#E8A33D')+
+      statBar('Prensa', state.prensa||50, '#5ec9f2')+
+    '</div>'+
     '<h3 style="margin:0 0 6px;">Define tu equipo</h3>'+
     '<p style="font-size:12px; color:var(--text-secondary); margin:0 0 12px;">Recuerda que las primeras divisiones europeas no tienen playoff.</p>'+
     '<div style="display:grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap:12px; margin-bottom:12px;">'+
       fieldRow('Táctica', '<select id="dtForm" style="width:100%;">'+selectOptions(['4-3-3','4-4-2','4-2-3-1','3-5-2','5-3-2'], state.formation)+'</select>')+
       fieldRow('Estilo de juego', '<select id="dtStyle" style="width:100%;">'+selectOptions(['Posesión','Contraataque','Presión alta','Juego directo'], state.style)+'</select>')+
       fieldRow('Tipo de presión', '<select id="dtPress" style="width:100%;">'+selectOptions(['Baja','Media','Alta','Asfixiante'], state.press)+'</select>')+
+      fieldRow('Capitán', '<select id="dtCaptain" style="width:100%;">'+selectOptions(['Veterano con galones','Joven promesa'], state.captainChoice||'Veterano con galones')+'</select>')+
+      fieldRow('Tu personalidad como DT', '<select id="dtPersonality" style="width:100%;">'+selectOptions(['Ambicioso','Tranquilo','Disciplinado','Cercano'], state.coachPersonality||'Tranquilo')+'</select>')+
+      fieldRow('Foco de pretemporada', '<select id="dtFocus" style="width:100%;">'+selectOptions(['Físico','Táctico','Mental'], state.preseasonFocus||'Táctico')+'</select>')+
+      fieldRow('Segundo entrenador', '<select id="dtAssistant" style="width:100%;">'+selectOptions(['Motivador','Disciplinario','Especialista en jóvenes'], state.assistantChoice||'Motivador')+'</select>')+
     '</div>'+
     '<div style="margin-bottom:0.5rem;">'+
       '<div style="display:flex; align-items:center; gap:12px;">'+
@@ -1896,6 +1918,27 @@ function renderConfig(){
     state.style = el('dtStyle').value;
     state.press = el('dtPress').value;
     state.days = parseInt(el('dtDays').value, 10);
+    state.captainChoice = el('dtCaptain').value;
+    state.coachPersonality = el('dtPersonality').value;
+    state.preseasonFocus = el('dtFocus').value;
+    state.assistantChoice = el('dtAssistant').value;
+
+    if (state.captainChoice === 'Veterano con galones'){ state.vestuario = Math.min(100,(state.vestuario||50)+3); state.directiva = Math.min(100,(state.directiva||50)+1); }
+    else { state.clubRating = Math.max(1,Math.min(99,state.clubRating+1)); state.vestuario = Math.max(0,(state.vestuario||50)-1); }
+
+    if (state.coachPersonality === 'Ambicioso'){ state.directiva = Math.min(100,(state.directiva||50)+3); state.prensa = Math.max(0,(state.prensa||50)-2); }
+    else if (state.coachPersonality === 'Tranquilo'){ state.vestuario = Math.min(100,(state.vestuario||50)+2); state.prensa = Math.min(100,(state.prensa||50)+2); }
+    else if (state.coachPersonality === 'Disciplinado'){ state.vestuario = Math.min(100,(state.vestuario||50)+1); state.directiva = Math.min(100,(state.directiva||50)+2); }
+    else { state.vestuario = Math.min(100,(state.vestuario||50)+4); }
+
+    if (state.preseasonFocus === 'Físico'){ state.vestuario = Math.min(100,(state.vestuario||50)+2); state.presupuesto = Math.max(0,(state.presupuesto||50)-3); }
+    else if (state.preseasonFocus === 'Táctico'){ state.directiva = Math.min(100,(state.directiva||50)+2); }
+    else { state.vestuario = Math.min(100,(state.vestuario||50)+3); }
+
+    if (state.assistantChoice === 'Motivador'){ state.vestuario = Math.min(100,(state.vestuario||50)+3); }
+    else if (state.assistantChoice === 'Disciplinario'){ state.directiva = Math.min(100,(state.directiva||50)+3); }
+    else { state.clubRating = Math.max(1,Math.min(99,state.clubRating+1)); }
+
     state.pts=0; state.w=0; state.d=0; state.l=0; state.played=0;
     playMatches(state.totalGames);
     var p = positionInfo();
