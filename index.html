@@ -1502,7 +1502,7 @@ var state = {};
 function resetState(){
   state = {
     name:'', nat:'España', team:'', country:'', division:'', totalGames:38, historyMod:0,
-    divisionBase:3, clubBonus:0, clubRating:50, managerRatingValue:50, goodStreak:0, vestuario:50, directiva:50, presupuesto:50, prensa:50, usedDecisionIds:[], reputation:0, season:1, history:[], retired:false,
+    divisionBase:3, clubBonus:0, clubRating:50, managerRatingValue:50, goodStreak:0, vestuario:70, directiva:70, presupuesto:70, prensa:70, usedDecisionIds:[], reputation:0, season:1, history:[], retired:false,
     lastNational:null, nationalHistory:[], pendingEuroComp:null, pendingEuroClub:null, pendingCWC:null, pendingCWCClub:null,
     pendingCountryChoice:null, pendingMovement:null, pendingIsLast:false, pendingTournamentKind:null,
     lastP:null, lastSeasonResult:null, lastNationalResult:null, lastBracket:null,
@@ -1612,7 +1612,8 @@ var TROPHY_SHAPES = {
   medal: '<path d="M8.7 12.8L6 21.3l6-3.4 6 3.4-2.7-8.5" fill="currentColor"/><circle cx="12" cy="8.6" r="6.4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="8.6" r="4.9" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.5"/><path d="M12 4.9l1.25 2.55 2.82.41-2.04 1.99.48 2.81L12 11.32l-2.51 1.34.48-2.81-2.04-1.99 2.82-.41z" fill="currentColor"/>',
   globe: '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 12h18M5.2 7.2h13.6M5.2 16.8h13.6" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/><path d="M12 3c2.7 2.3 4.2 5.6 4.2 9s-1.5 6.7-4.2 9c-2.7-2.3-4.2-5.6-4.2-9s1.5-6.7 4.2-9z" fill="none" stroke="currentColor" stroke-width="1.3"/><ellipse cx="12" cy="12" rx="3.2" ry="9" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.5"/>',
   shield: '<path d="M12 2.2l8 2.9v5.9c0 4.9-3.4 8.3-8 10.8-4.6-2.5-8-5.9-8-10.8V5.1z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 4.6l6 2.2v4.4c0 3.8-2.6 6.5-6 8.4-3.4-1.9-6-4.6-6-8.4V6.8z" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.5"/><path d="M12 8v6.6M8.8 11l3.2-3.2L15.2 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>',
-  ribbon: '<circle cx="12" cy="8.2" r="5.6" fill="currentColor"/><circle cx="12" cy="8.2" r="3.9" fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.4"/><path d="M8.3 12.6L5.8 21.5l6.2-3.6 6.2 3.6-2.5-8.9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>'
+  ribbon: '<circle cx="12" cy="8.2" r="5.6" fill="currentColor"/><circle cx="12" cy="8.2" r="3.9" fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.4"/><path d="M8.3 12.6L5.8 21.5l6.2-3.6 6.2 3.6-2.5-8.9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>',
+  star: '<path d="M12 2.5l1.9 5.1 5.4.3-4.2 3.5 1.4 5.3-4.5-3-4.5 3 1.4-5.3-4.2-3.5 5.4-.3z" fill="currentColor"/><circle cx="12" cy="9.3" r="2.1" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.5"/><path d="M6.3 19.5L4 22M17.7 19.5L20 22" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>'
 };
 function svgTrophyIcon(shape, color, size, label){
   return '<svg viewBox="0 0 24 24" width="'+size+'" height="'+size+'" style="color:'+color+'; flex-shrink:0;" aria-hidden="true"><title>'+label.replace(/</g,'')+'</title>'+TROPHY_SHAPES[shape]+'</svg>';
@@ -1870,12 +1871,12 @@ function selectOptions(options, current){
 
 function directivaMessage(){
   var last = state.history[state.history.length-1];
-  if (!last) return 'La directiva confía en el proyecto que estás por arrancar.';
-  if (last.achievement === 'Título de Liga') return 'La directiva llega eufórica tras el título — las expectativas suben.';
-  if (last.achievement === 'Ascenso') return 'El ascenso conseguido genera ilusión de cara a esta nueva etapa.';
-  if (last.tag === 'Zona de descenso') return 'La directiva llega con dudas después del bajón de la temporada pasada.';
-  if (last.tag === 'Pelea por la permanencia') return 'Quedan algunas dudas sueltas tras una temporada ajustada.';
-  return 'La directiva sigue con normalidad, atenta a cómo arranca el proyecto.';
+  if (!last) return 'Confían en ti.';
+  if (last.achievement === 'Título de Liga') return 'Están eufóricos con vos.';
+  if (last.achievement === 'Ascenso') return 'Llegan con ilusión.';
+  if (last.tag === 'Zona de descenso') return 'Tienen dudas.';
+  if (last.tag === 'Pelea por la permanencia') return 'Quedan algunas dudas.';
+  return 'Confían en ti.';
 }
 function statBar(label, value, color){
   return '<div style="margin-bottom:6px;"><div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary); margin-bottom:2px;"><span>'+label+'</span><span>'+Math.round(value)+'</span></div><div style="background:var(--surface-2); border-radius:6px; height:6px; overflow:hidden;"><div style="width:'+Math.max(2,Math.min(100,value))+'%; height:100%; background:'+color+';"></div></div></div>';
@@ -1884,6 +1885,7 @@ function renderConfig(){
   render(
     headerBanner()+
     '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:12px;">'+
+      '<p style="font-size:11px; color:var(--text-accent); text-transform:uppercase; letter-spacing:0.03em; font-family:var(--display); margin:0 0 4px;">La directiva</p>'+
       '<p style="font-size:13px; color:var(--text-secondary); margin:0 0 10px; font-style:italic;">"'+directivaMessage()+'"</p>'+
       statBar('Vestuario', state.vestuario||50, '#4dd68a')+
       statBar('Presupuesto', state.presupuesto||50, '#E8A33D')+
@@ -2205,7 +2207,7 @@ function finalizeSeason(p, playoffLost){
   var seasonAward = computeSeasonAward(p, currentDivisionObj);
   if (seasonAward.playerWon){
     state.individualAwards = state.individualAwards || [];
-    state.individualAwards.push({season: state.season, label: 'Mejor Entrenador de la Liga', division: state.division, country: state.country});
+    state.individualAwards.push({season: state.season, label: 'Mejor Entrenador de la Liga', division: state.division, country: state.country, team: state.team});
   }
   var entry = {season:state.season, team:state.team, country:state.country, division:state.division, pos:p.pos, tag:p.tag, pts:state.pts, achievement:achievement, euro:resolvedEuro, cup:cup, cwc:resolvedCWC, mrSnapshot: managerRating(), w:state.w, d:state.d, l:state.l};
   state.history.push(entry);
@@ -2650,7 +2652,7 @@ var DECISION_EVENTS = [
   {
     id:'salida_director_deportivo',
     prompt:'El director deportivo deja el club de forma inesperada, justo antes del mercado de fichajes.',
-    optionA:{label:'Asumir vos las decisiones de fichajes por ahora', chance:0.5,
+    optionA:{label:'Asumir tú las decisiones de fichajes por ahora', chance:0.5,
       successText:'Manejás bien el mercado pese a la falta de apoyo.', successEffect:{directiva:5},
       failText:'Sin esa figura, se cometen errores en el mercado.', failEffect:{presupuesto:-8},
       silent:{}},
@@ -2874,7 +2876,7 @@ function renderNextOffers(){
     if (!sameLeaguePool.length) sameLeaguePool = buildPool(lo-10, hi+10, function(div){ return div.league===state.division && div.country===state.country; });
     if (sameLeaguePool.length) offers.push(shuffle(sameLeaguePool)[0]);
 
-    // Oferta B: mismo país, categoría superior si venís de buenos resultados, si no misma categoría
+    // Oferta B: mismo país, categoría superior si vienes de buenos resultados, si no misma categoría
     var upDivSameCountry = lastDivisionObj ? nextDivisionUp(lastDivisionObj) : null;
     var targetDivB = (goodResults && upDivSameCountry && upDivSameCountry.league !== lastDivisionObj.league) ? upDivSameCountry : lastDivisionObj;
     var poolB = targetDivB ? buildPool(lo, hi, function(div){ return div.league===targetDivB.league && div.country===targetDivB.country; }) : [];
@@ -2886,7 +2888,7 @@ function renderNextOffers(){
     }
     if (poolB.length) offers.push(shuffle(poolB)[0]);
 
-    // Oferta C: club del extranjero — categoría superior si venís bien, si no misma o inferior
+    // Oferta C: club del extranjero — categoría superior si vienes bien, si no misma o inferior
     var foreignPoolHigh = buildPool(lo, hi, function(div){ return div.country!==state.country && div.base > state.divisionBase; });
     var foreignPoolSame = buildPool(lo, hi, function(div){ return div.country!==state.country && div.base <= state.divisionBase; });
     var foreignPool = goodResults ? (foreignPoolHigh.length ? foreignPoolHigh : foreignPoolSame) : (foreignPoolSame.length ? foreignPoolSame : foreignPoolHigh);
@@ -2995,7 +2997,7 @@ function renderNextOffers(){
     state.country = stayDivision.country; state.division = stayDivision.league;
     state.totalGames = stayDivision.matchdays; state.divisionBase = stayDivision.base;
     state.historyMod = historyFor(state.team, state.clubBonus).mod;
-    if (movement === 'Ascenso'){ state.clubRating = state.clubRating + 2; }
+    if (movement === 'Ascenso'){ state.clubRating = state.clubRating + 2; state.vestuario = Math.min(100, (state.vestuario||70) + 8); }
     else if (movement === 'Descenso'){ state.clubRating = state.clubRating - 5; }
     if (movement === 'Ascenso' || movement === 'Descenso'){
       state.clubRating = Math.max(ratingFloorFor(state.clubBonus, isTopFlight(stayDivision)), Math.min(99, state.clubRating));
@@ -3014,6 +3016,7 @@ function renderNextOffers(){
       state.historyMod = historyFor(teamName, bonus).mod;
       if (CLUB_EURO_STATUS[teamName]){ state.pendingEuroComp = CLUB_EURO_STATUS[teamName]; state.pendingEuroClub = teamName; }
       state.consecutiveMrvDrops = 0;
+      state.vestuario = 70; state.directiva = 70; state.presupuesto = 70; state.prensa = 70;
       if (state.season % 3 === 0){ navigate('decision-temporada'); } else { navigate('equipo'); }
     });
   });
@@ -3361,15 +3364,30 @@ function renderCareerSummary(){
       }).join('')+
     '</div>'+
     ((state.individualAwards && state.individualAwards.length) ?
-      '<h3 style="margin:0 0 8px;">Premios individuales</h3>'+
-      '<div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:1.5rem;">'+
-        state.individualAwards.map(function(a){
-          return '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.6rem 0.9rem; display:flex; align-items:center; gap:8px;">'+
-            '<i class="ti ti-award" style="font-size:20px; color:var(--text-accent);" aria-hidden="true"></i>'+
-            '<span><span style="display:block; font-size:13px; font-weight:500;">'+a.label+'</span><span style="display:block; font-size:11px; color:var(--text-secondary);">'+seasonYearLabel(a.season)+' · '+a.division+'</span></span>'+
+      (function(){
+        var groups = {};
+        state.individualAwards.forEach(function(a){
+          if (!groups[a.team]) groups[a.team] = [];
+          groups[a.team].push(a);
+        });
+        var cards = Object.keys(groups).map(function(team){
+          var awards = groups[team];
+          var count = awards.length;
+          var seasons = awards.map(function(a){ return a.season; });
+          return '<div class="clubTintCard" data-tint-club="'+team.replace(/"/g,'&quot;')+'" style="background:var(--surface-1); border-radius:var(--radius); padding:0.9rem; margin-bottom:8px; text-align:center;">'+
+            '<div style="display:flex; justify-content:center; margin-bottom:6px;">'+teamBadge(team, 46)+'</div>'+
+            '<p style="margin:0 0 8px; font-size:14px; font-weight:500;">'+team+'</p>'+
+            '<div style="display:flex; justify-content:center;">'+
+              '<span style="position:relative; display:inline-flex;" title="Mejor Entrenador de la Liga — '+seasons.map(seasonYearLabel).join(', ')+'">'+
+                svgTrophyIcon('star', '#E8A33D', 34, 'Mejor Entrenador de la Liga')+
+                (count>1 ? '<span style="position:absolute; bottom:-4px; right:-6px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:0 4px; font-size:10px; font-weight:700; color:var(--text-accent);">x'+count+'</span>' : '')+
+              '</span>'+
+            '</div>'+
           '</div>';
-        }).join('')+
-      '</div>' : '')+
+        }).join('');
+        return '<h3 style="margin:0 0 8px;">Premios individuales</h3>'+
+          '<div style="margin-bottom:1.5rem;">'+cards+'</div>';
+      })() : '')+
     '<h3 style="margin:0 0 8px;">Palmarés por club</h3>'+
     '<div style="margin-bottom:1.5rem;">'+palmaresByClub+'</div>'+
     (natPalmares ? '<h3 style="margin:0 0 8px;">Palmarés con selecciones</h3><div style="margin-bottom:1.5rem;">'+natPalmares+'</div>' : '')+
@@ -3396,7 +3414,7 @@ function renderCareerSummary(){
   el('feedbackSend').addEventListener('click', function(){
     var msg = el('feedbackText').value.trim();
     var statusEl = el('feedbackStatus');
-    if (!msg){ statusEl.textContent = 'Escribí algo antes de enviar.'; return; }
+    if (!msg){ statusEl.textContent = 'Escribe algo antes de enviar.'; return; }
     statusEl.textContent = 'Enviando...';
     fetch(FORMSPREE_ENDPOINT, {
       method: 'POST',
