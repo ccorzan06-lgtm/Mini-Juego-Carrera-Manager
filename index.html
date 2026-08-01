@@ -1415,20 +1415,7 @@ function applyBadgeImage(elm, url){
   elm.appendChild(img);
 }
 function blendWithSurface(color, mix){
-  var m = color.match(/rgb\((\d+),(\d+),(\d+)\)/);
-  if (!m) return color;
-  var r=parseInt(m[1],10), g=parseInt(m[2],10), b=parseInt(m[3],10);
-  var baseR=52, baseG=57, baseB=65;
-  var br = Math.round(r*mix + baseR*(1-mix));
-  var bg = Math.round(g*mix + baseG*(1-mix));
-  var bb = Math.round(b*mix + baseB*(1-mix));
-  var luminance = 0.299*br + 0.587*bg + 0.114*bb;
-  var maxLuminance = 100;
-  if (luminance > maxLuminance){
-    var scale = maxLuminance / luminance;
-    br = Math.round(br*scale); bg = Math.round(bg*scale); bb = Math.round(bb*scale);
-  }
-  return 'rgb('+br+','+bg+','+bb+')';
+  return 'rgb(38,44,54)';
 }
 var dominantColorCache = {};
 function getDominantColor(img){
