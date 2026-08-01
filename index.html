@@ -38,14 +38,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0B2818;
-    --surface-1: #123423;
-    --surface-2: #17402B;
-    --border: #2A5B3E;
-    --text: #F1F5EC;
-    --text-secondary: #9FB3A6;
-    --text-accent: #F2A93B;
-    --positive: #5FCB84;
+    --bg: #0D1015;
+    --surface-1: #171B22;
+    --surface-2: #1E232C;
+    --border: #2E3540;
+    --text: #F4F1EA;
+    --text-secondary: #8B93A0;
+    --text-accent: #E8A33D;
+    --positive: #4DD68A;
     --negative: #E2574C;
     --radius: 10px;
     --display: 'Oswald', Impact, "Arial Narrow", sans-serif;
@@ -56,7 +56,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   body {
     background: var(--bg);
     background-image:
-      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(242,169,59,0.07), transparent 60%),
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(232,163,61,0.06), transparent 60%),
       repeating-linear-gradient(90deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 64px);
     color: var(--text);
     font-family: var(--body);
@@ -188,7 +188,7 @@ function flagEmoji(country, size){
 function nationalTeamCrest(teamName, size){
   size = size || 20;
   if (typeof NATIONAL_BADGES !== 'undefined' && NATIONAL_BADGES[teamName]){
-    return '<span class="natBadgeSlot" style="display:inline-flex; align-items:center; justify-content:center; width:'+size+'px; height:'+size+'px; border-radius:6px; background:var(--surface-1); flex-shrink:0; overflow:hidden;"><img src="'+NATIONAL_BADGES[teamName]+'" alt="'+teamName+'" style="width:100%; height:100%; object-fit:contain;" /></span>';
+    return '<span class="natBadgeSlot" style="display:inline-flex; align-items:center; justify-content:center; width:'+size+'px; height:'+size+'px; border-radius:6px; background:var(--surface-1); flex-shrink:0; overflow:hidden;"><img src="'+NATIONAL_BADGES[teamName]+'" alt="'+teamName+'" style="width:100%; height:100%; object-fit:contain; mix-blend-mode:multiply;" /></span>';
   }
   return flagEmoji(teamName, size);
 }
@@ -1404,7 +1404,7 @@ function applyBadgeImage(elm, url){
   elm.style.background = 'var(--surface-1)';
   var img = document.createElement('img');
   img.alt = '';
-  img.style.cssText = 'width:100%; height:100%; object-fit:contain; position:relative; z-index:1;';
+  img.style.cssText = 'width:100%; height:100%; object-fit:contain; position:relative; z-index:1; mix-blend-mode:multiply;';
   img.onload = function(){
     getDominantColor(img).then(function(color){
       if (color) elm.style.background = blendWithSurface(color, 0.5);
@@ -1418,7 +1418,7 @@ function blendWithSurface(color, mix){
   var m = color.match(/rgb\((\d+),(\d+),(\d+)\)/);
   if (!m) return color;
   var r=parseInt(m[1],10), g=parseInt(m[2],10), b=parseInt(m[3],10);
-  var baseR=18, baseG=52, baseB=35;
+  var baseR=23, baseG=27, baseB=34;
   var br = Math.round(r*mix + baseR*(1-mix));
   var bg = Math.round(g*mix + baseG*(1-mix));
   var bb = Math.round(b*mix + baseB*(1-mix));
@@ -1696,14 +1696,14 @@ function renderLanding(){
   var coachSvg = '<svg viewBox="0 0 200 200" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">'+
         '<rect width="200" height="200" fill="url(#pitchGrad)"/>'+
         '<defs><linearGradient id="pitchGrad" x1="0" y1="0" x2="1" y2="1">'+
-          '<stop offset="0%" stop-color="#0B2818"/><stop offset="100%" stop-color="#1d5636"/>'+
+          '<stop offset="0%" stop-color="#0D1015"/><stop offset="100%" stop-color="#1d5636"/>'+
         '</linearGradient></defs>'+
-        '<g fill="none" stroke="#F1F5EC" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+
+        '<g fill="none" stroke="#F4F1EA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+
           '<path d="M78 195v-45c0-18 10-28 22-28s22 10 22 28v45"/>'+
           '<path d="M80 122l-2-54"/><path d="M120 122l2-54"/>'+
           '<circle cx="100" cy="107" r="15"/>'+
         '</g>'+
-        '<g fill="none" stroke="#F2A93B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">'+
+        '<g fill="none" stroke="#E8A33D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">'+
           '<path d="M76 18h48c1 16-6 30-24 30S75 34 76 18z"/>'+
           '<path d="M76 23c-14-1-14 16 0 15"/>'+
           '<path d="M124 23c14-1 14 16 0 15"/>'+
@@ -2675,12 +2675,12 @@ function generateShareImageBlob(){
     var ctx = canvas.getContext('2d');
 
     var grad = ctx.createLinearGradient(0,0,W,H);
-    grad.addColorStop(0,'#0B2818'); grad.addColorStop(1,'#1d5636');
+    grad.addColorStop(0,'#0D1015'); grad.addColorStop(1,'#1d5636');
     ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
     ctx.strokeStyle = 'rgba(255,255,255,0.04)';
     for (var x=0; x<W; x+=64){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
 
-    var amber = '#F2A93B', cream = '#F1F5EC', muted = '#9FB3A6';
+    var amber = '#E8A33D', cream = '#F4F1EA', muted = '#8B93A0';
     ctx.textAlign = 'center';
     ctx.fillStyle = muted; ctx.font = '600 30px Arial'; ctx.fillText('MI CARRERA COMO DT', W/2, 130);
     ctx.fillStyle = cream; ctx.font = '700 64px Arial'; ctx.fillText(state.name || 'DT', W/2, 275);
