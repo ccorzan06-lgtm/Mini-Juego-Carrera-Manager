@@ -188,7 +188,7 @@ function flagEmoji(country, size){
 function nationalTeamCrest(teamName, size){
   size = size || 20;
   if (typeof NATIONAL_BADGES !== 'undefined' && NATIONAL_BADGES[teamName]){
-    return '<span class="natBadgeSlot" style="display:inline-flex; align-items:center; justify-content:center; width:'+size+'px; height:'+size+'px; border-radius:6px; background:var(--surface-1); flex-shrink:0; overflow:hidden;"><img src="'+NATIONAL_BADGES[teamName]+'" alt="'+teamName+'" style="width:100%; height:100%; object-fit:contain; mix-blend-mode:multiply;" /></span>';
+    return '<span class="natBadgeSlot" style="display:inline-flex; align-items:center; justify-content:center; width:'+size+'px; height:'+size+'px; border-radius:6px; background:var(--surface-1); flex-shrink:0; overflow:hidden;"><img src="'+NATIONAL_BADGES[teamName]+'" alt="'+teamName+'" style="width:100%; height:100%; object-fit:contain;" /></span>';
   }
   return flagEmoji(teamName, size);
 }
@@ -1347,7 +1347,7 @@ function tintFromImage(elm, imgUrl){
   img.onload = function(){
     getDominantColor(img).then(function(color){
       if (!color) return;
-      elm.style.background = blendWithSurface(color, 0.45);
+      elm.style.background = blendWithSurface(color, 0.22);
     });
   };
   img.src = imgUrl;
@@ -1374,7 +1374,7 @@ function processBadges(){
     if (!img || elm.getAttribute('data-colored')) return;
     elm.setAttribute('data-colored','1');
     function applyColor(){
-      getDominantColor(img).then(function(color){ if (color) elm.style.background = blendWithSurface(color, 0.5); });
+      getDominantColor(img).then(function(color){ if (color) elm.style.background = blendWithSurface(color, 0.25); });
     }
     if (img.complete && img.naturalWidth > 0) applyColor(); else img.addEventListener('load', applyColor);
   });
@@ -1407,7 +1407,7 @@ function applyBadgeImage(elm, url){
   img.style.cssText = 'width:100%; height:100%; object-fit:contain; position:relative; z-index:1; mix-blend-mode:multiply;';
   img.onload = function(){
     getDominantColor(img).then(function(color){
-      if (color) elm.style.background = blendWithSurface(color, 0.5);
+      if (color) elm.style.background = blendWithSurface(color, 0.25);
     });
   };
   img.src = url;
@@ -1418,12 +1418,12 @@ function blendWithSurface(color, mix){
   var m = color.match(/rgb\((\d+),(\d+),(\d+)\)/);
   if (!m) return color;
   var r=parseInt(m[1],10), g=parseInt(m[2],10), b=parseInt(m[3],10);
-  var baseR=23, baseG=27, baseB=34;
+  var baseR=52, baseG=57, baseB=65;
   var br = Math.round(r*mix + baseR*(1-mix));
   var bg = Math.round(g*mix + baseG*(1-mix));
   var bb = Math.round(b*mix + baseB*(1-mix));
   var luminance = 0.299*br + 0.587*bg + 0.114*bb;
-  var maxLuminance = 145;
+  var maxLuminance = 100;
   if (luminance > maxLuminance){
     var scale = maxLuminance / luminance;
     br = Math.round(br*scale); bg = Math.round(bg*scale); bb = Math.round(bb*scale);
