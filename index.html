@@ -1508,7 +1508,7 @@ function resetState(){
     lastP:null, lastSeasonResult:null, lastNationalResult:null, lastBracket:null,
     narrativeBias: pickNarrativeBias(),
     formation:'4-3-3', style:'Posesión', press:'Media', days:3, coachStyle:Object.keys(COACH_STYLES)[0],
-    pts:0, w:0, d:0, l:0, played:0, unlockedAchievements:[], newlyUnlocked:[]
+    pts:0, w:0, d:0, l:0, played:0, unlockedAchievements:[], newlyUnlocked:[], individualAwards:[]
   };
 }
 resetState();
@@ -2160,6 +2160,10 @@ function finalizeSeason(p, playoffLost){
   else if (state.consecutiveMrvDrops >= 3){ fired = true; }
 
   var seasonAward = computeSeasonAward(p, currentDivisionObj);
+  if (seasonAward.playerWon){
+    state.individualAwards = state.individualAwards || [];
+    state.individualAwards.push({season: state.season, label: 'Mejor Entrenador de la Liga', division: state.division, country: state.country});
+  }
   var entry = {season:state.season, team:state.team, country:state.country, division:state.division, pos:p.pos, tag:p.tag, pts:state.pts, achievement:achievement, euro:resolvedEuro, cup:cup, cwc:resolvedCWC, mrSnapshot: managerRating(), w:state.w, d:state.d, l:state.l};
   state.history.push(entry);
   checkAchievements();
@@ -2213,9 +2217,9 @@ function renderSeasonEnd(){
         '<i class="ti ti-tournament" style="font-size:20px; color:var(--text-accent); margin-top:2px;" aria-hidden="true"></i>'+
         '<p style="font-size:14px; margin:0; color:var(--text-secondary);">Playoffs: <strong>'+state.lastBracket.stage+'</strong></p>'+
       '</div>' : '')+
-      (r.seasonAward ? '<div style="background:'+(r.seasonAward.playerWon?'rgba(232,163,61,0.12)':'var(--surface-1)')+'; border:'+(r.seasonAward.playerWon?'1px solid var(--text-accent)':'none')+'; border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:0.75rem; display:flex; gap:10px; align-items:flex-start;">'+
+      (r.seasonAward && r.seasonAward.playerWon ? '<div style="background:rgba(232,163,61,0.12); border:1px solid var(--text-accent); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:0.75rem; display:flex; gap:10px; align-items:flex-start;">'+
         '<i class="ti ti-award" style="font-size:20px; color:var(--text-accent); margin-top:2px;" aria-hidden="true"></i>'+
-        '<p style="font-size:14px; margin:0; color:var(--text-secondary);">Mejor Entrenador de la Liga: <strong style="color:'+(r.seasonAward.playerWon?'var(--text-accent)':'var(--text)')+';">'+r.seasonAward.winnerName+'</strong> ('+r.seasonAward.winnerClub+')'+(r.seasonAward.playerWon?' — ¡eres tú!':'')+'</p>'+
+        '<p style="font-size:14px; margin:0; color:var(--text-secondary);"><strong style="color:var(--text-accent);">Mejor Entrenador de la Liga</strong> — ¡ganaste el premio individual de la temporada!</p>'+
       '</div>' : '')+
       '<p style="font-size:14px; color:var(--text-secondary); margin:0 0 1rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">'+flagEmoji(state.nat)+' '+state.name+', '+state.team+' ('+flagEmoji(state.country)+' '+state.country+'), táctica '+state.formation+', estilo '+state.style+'</p>'+
       '<button id="nextBtn" class="primaryBtn" style="width:100%;">'+(r.fired ? 'Ver resumen de carrera' : 'Continuar')+' <i class="ti ti-arrow-right" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'+
@@ -2226,8 +2230,9 @@ function renderSeasonEnd(){
   el('nextBtn').addEventListener('click', function(){
     var finishedSeason = state.season;
     state.pendingIsLast = state.pendingIsLast || (finishedSeason >= TOTAL_SEASONS);
-    if (WORLD_CUP_SEASONS.indexOf(finishedSeason) !== -1){ state.pendingTournamentKind = 'Mundial'; navigate('selecciones'); }
-    else if (CONTINENTAL_SEASONS.indexOf(finishedSeason) !== -1){ state.pendingTournamentKind = 'Continental'; navigate('selecciones'); }
+    var eligibleForNational = managerRating() > 70;
+    if (eligibleForNational && WORLD_CUP_SEASONS.indexOf(finishedSeason) !== -1){ state.pendingTournamentKind = 'Mundial'; navigate('selecciones'); }
+    else if (eligibleForNational && CONTINENTAL_SEASONS.indexOf(finishedSeason) !== -1){ state.pendingTournamentKind = 'Continental'; navigate('selecciones'); }
     else { continueAfterTournament(); }
   });
 }
@@ -2345,6 +2350,270 @@ var DECISION_EVENTS = [
     optionB:{label:'Suspenderlo hasta que se aclare todo', chance:0.60,
       successText:'Una decisión dura que calma a la prensa.', successEffect:{prensa:5},
       failText:'La suspensión divide al vestuario.', failEffect:{vestuario:-5},
+      silent:{}}
+  },
+  {
+    id:'renovacion_propia',
+    prompt:'Tu contrato está por vencer y la directiva quiere hablar de tu futuro.',
+    optionA:{label:'Pedir un contrato largo (3 años)', chance:0.5,
+      successText:'La directiva confía en el proyecto a largo plazo.', successEffect:{directiva:6},
+      failText:'Te ven pidiendo demasiado sin haber demostrado tanto.', failEffect:{directiva:-5},
+      silent:{}},
+    optionB:{label:'Aceptar solo un año, sin presionar', chance:0.75,
+      successText:'La directiva valora tu humildad.', successEffect:{directiva:3},
+      failText:'Igual quedan dudas sobre tu compromiso real.', failEffect:{directiva:-1},
+      silent:{}}
+  },
+  {
+    id:'capitan',
+    prompt:'El vestuario necesita un nuevo capitán tras la salida del anterior.',
+    optionA:{label:'Elegir al veterano de más experiencia', chance:0.65,
+      successText:'Aporta calma y orden al grupo.', successEffect:{vestuario:5},
+      failText:'Le cuesta conectar con los jugadores más jóvenes.', failEffect:{vestuario:-3},
+      silent:{}},
+    optionB:{label:'Elegir a una voz joven y emergente', chance:0.45,
+      successText:'Renueva la energía del vestuario.', successEffect:{vestuario:4, cantera:2},
+      failText:'Le falta peso para hacerse respetar en los momentos difíciles.', failEffect:{vestuario:-4},
+      silent:{}}
+  },
+  {
+    id:'lesion_larga',
+    prompt:'Tu figura principal sufre una lesión de larga duración.',
+    optionA:{label:'Dar galones a un suplente para cubrirlo', chance:0.5,
+      successText:'El suplente responde mejor de lo esperado.', successEffect:{vestuario:4, cantera:3},
+      failText:'Se nota el hueco que deja la ausencia.', failEffect:{vestuario:-4},
+      silent:{}},
+    optionB:{label:'Cambiar el sistema táctico sin él', chance:0.45,
+      successText:'El equipo se adapta bien al nuevo planteamiento.', successEffect:{directiva:3},
+      failText:'El cambio brusco desconcierta a la plantilla.', failEffect:{vestuario:-3, directiva:-2},
+      silent:{}}
+  },
+  {
+    id:'oferta_por_jugador',
+    prompt:'Un club rival hace una oferta importante por tu mejor jugador.',
+    optionA:{label:'Venderlo y reforzar las cuentas', chance:0.7,
+      successText:'La venta fortalece las finanzas sin que se note demasiado en la cancha.', successEffect:{presupuesto:14},
+      failText:'El equipo lo extraña más de lo previsto.', failEffect:{vestuario:-5},
+      silent:{directiva:5}},
+    optionB:{label:'Rechazar la oferta y retenerlo', chance:0.55,
+      successText:'El vestuario valora que no lo vendieras.', successEffect:{vestuario:5},
+      failText:'La directiva no entiende por qué rechazaste ese dinero.', failEffect:{directiva:-6},
+      silent:{}}
+  },
+  {
+    id:'motin_sistema',
+    prompt:'Varios jugadores piden en privado un cambio de sistema táctico.',
+    optionA:{label:'Escuchar y adaptar el planteamiento', chance:0.6,
+      successText:'El vestuario agradece que los tengas en cuenta.', successEffect:{vestuario:5},
+      failText:'El cambio no mejora el rendimiento y quedás expuesto.', failEffect:{directiva:-4},
+      silent:{}},
+    optionB:{label:'Mantener tu idea original', chance:0.5,
+      successText:'Los resultados te terminan dando la razón.', successEffect:{directiva:4},
+      failText:'El malestar interno crece en silencio.', failEffect:{vestuario:-5},
+      silent:{}}
+  },
+  {
+    id:'polemica_arbitral',
+    prompt:'Un fallo arbitral polémico te costó puntos importantes.',
+    optionA:{label:'Reclamar públicamente ante la prensa', chance:0.5,
+      successText:'La afición se identifica con tu enojo.', successEffect:{prensa:4},
+      failText:'La federación te sanciona por las declaraciones.', failEffect:{prensa:-6, directiva:-3},
+      silent:{}},
+    optionB:{label:'No hacer comentarios y seguir adelante', chance:0.7,
+      successText:'Tu perfil bajo es bien visto puertas adentro.', successEffect:{directiva:3},
+      failText:'La afición te acusa de no defender al club.', failEffect:{prensa:-3},
+      silent:{}}
+  },
+  {
+    id:'cantera_vs_mercado',
+    prompt:'Hay presupuesto limitado: ¿invertir en la academia o en el mercado de fichajes?',
+    optionA:{label:'Invertir en la cantera', chance:0.65,
+      successText:'Empiezan a asomar promesas interesantes.', successEffect:{cantera:6},
+      failText:'Los resultados a corto plazo no acompañan.', failEffect:{directiva:-3},
+      silent:{presupuesto:-6}},
+    optionB:{label:'Invertir en fichajes inmediatos', chance:0.55,
+      successText:'El equipo mejora de forma notoria y rápida.', successEffect:{vestuario:4},
+      failText:'Los fichajes no rinden lo esperado.', failEffect:{presupuesto:-10},
+      silent:{presupuesto:-8}}
+  },
+  {
+    id:'galactico_fallido',
+    prompt:'Un club rival se bajó de fichar a una estrella libre en el mercado. Podrías intentarlo vos.',
+    optionA:{label:'Intentar convencerlo de venir', chance:0.35,
+      successText:'Se suma al proyecto, generando ilusión en la afición.', successEffect:{vestuario:6, prensa:5},
+      failText:'Elige otro destino y quedás expuesto por el intento fallido.', failEffect:{directiva:-4},
+      silent:{presupuesto:-6}},
+    optionB:{label:'No arriesgar recursos en esa apuesta', chance:0.8,
+      successText:'La directiva valora la prudencia.', successEffect:{directiva:2},
+      failText:'La afición se queda con las ganas.', failEffect:{prensa:-2},
+      silent:{}}
+  },
+  {
+    id:'presion_hinchas',
+    prompt:'Los hinchas organizan una protesta antes del próximo partido.',
+    optionA:{label:'Salir a hablar con ellos antes del partido', chance:0.5,
+      successText:'El gesto calma los ánimos.', successEffect:{prensa:5},
+      failText:'La protesta se vuelve más fuerte tras el cruce.', failEffect:{prensa:-6},
+      silent:{}},
+    optionB:{label:'Enfocarte solo en el equipo, sin salir a hablar', chance:0.6,
+      successText:'El vestuario se cierra en torno tuyo.', successEffect:{vestuario:4},
+      failText:'La afición interpreta el silencio como desprecio.', failEffect:{prensa:-4},
+      silent:{}}
+  },
+  {
+    id:'patrocinador',
+    prompt:'Aparece un nuevo patrocinador dispuesto a pagar bien, aunque genera dudas entre los hinchas.',
+    optionA:{label:'Aceptar el acuerdo', chance:0.7,
+      successText:'El dinero entra sin mayores problemas.', successEffect:{presupuesto:12},
+      failText:'La afición critica con dureza la decisión.', failEffect:{prensa:-5},
+      silent:{directiva:4}},
+    optionB:{label:'Rechazarlo por la imagen del club', chance:0.6,
+      successText:'La afición valora la postura.', successEffect:{prensa:4},
+      failText:'La directiva no entiende por qué rechazaste ese ingreso.', failEffect:{directiva:-5},
+      silent:{}}
+  },
+  {
+    id:'pretemporada',
+    prompt:'Toca planificar la pretemporada.',
+    optionA:{label:'Pretemporada exigente y física', chance:0.55,
+      successText:'El equipo llega fuerte a la competencia.', successEffect:{vestuario:3},
+      failText:'Aparecen lesiones por la sobrecarga.', failEffect:{vestuario:-4},
+      silent:{}},
+    optionB:{label:'Pretemporada suave, con foco en lo táctico', chance:0.6,
+      successText:'El equipo entiende bien las ideas de juego.', successEffect:{directiva:2},
+      failText:'Llega con poco ritmo físico al arranque.', failEffect:{directiva:-2},
+      silent:{}}
+  },
+  {
+    id:'rumor_venta',
+    prompt:'Corren rumores de que el club podría cambiar de dueños.',
+    optionA:{label:'Pedir explicaciones claras a la directiva', chance:0.5,
+      successText:'Te confirman que el proyecto sigue firme.', successEffect:{directiva:4},
+      failText:'La respuesta es evasiva y la incertidumbre crece.', failEffect:{directiva:-4},
+      silent:{}},
+    optionB:{label:'Ignorar los rumores y seguir trabajando', chance:0.65,
+      successText:'El vestuario sigue tu ejemplo de foco.', successEffect:{vestuario:3},
+      failText:'La incertidumbre termina filtrándose al equipo igual.', failEffect:{vestuario:-3},
+      silent:{}}
+  },
+  {
+    id:'derbi',
+    prompt:'Se acerca el partido más importante del año para la afición.',
+    optionA:{label:'Cargar el partido de motivación especial', chance:0.5,
+      successText:'El equipo sale con una energía extra.', successEffect:{vestuario:5},
+      failText:'La presión extra termina jugando en contra.', failEffect:{vestuario:-4},
+      silent:{}},
+    optionB:{label:'Tratarlo como un partido más', chance:0.6,
+      successText:'El equipo llega relajado y concentrado.', successEffect:{directiva:2},
+      failText:'La afición siente que no le diste la importancia debida.', failEffect:{prensa:-3},
+      silent:{}}
+  },
+  {
+    id:'veterano_protagonismo',
+    prompt:'Un jugador veterano, con menos minutos últimamente, pide más protagonismo.',
+    optionA:{label:'Darle más minutos', chance:0.5,
+      successText:'Responde bien y aporta experiencia clave.', successEffect:{vestuario:4},
+      failText:'Su nivel ya no acompaña el pedido.', failEffect:{vestuario:-3},
+      silent:{}},
+    optionB:{label:'Mantener la rotación actual', chance:0.55,
+      successText:'El resto del plantel valora la coherencia.', successEffect:{vestuario:3},
+      failText:'El veterano queda dolido y lo hace notar.', failEffect:{vestuario:-4},
+      silent:{}}
+  },
+  {
+    id:'filtracion_alineacion',
+    prompt:'La alineación del próximo partido se filtró a la prensa antes de tiempo.',
+    optionA:{label:'Investigar quién filtró la información', chance:0.45,
+      successText:'Encontrás al responsable y cortás el problema de raíz.', successEffect:{vestuario:4},
+      failText:'La investigación genera más tensión interna de la que resuelve.', failEffect:{vestuario:-5},
+      silent:{}},
+    optionB:{label:'Dejarlo pasar sin hacer ruido', chance:0.65,
+      successText:'El episodio queda en el olvido rápido.', successEffect:{prensa:1},
+      failText:'Vuelve a pasar en las siguientes semanas.', failEffect:{prensa:-3},
+      silent:{}}
+  },
+  {
+    id:'llamado_seleccion',
+    prompt:'Un jugador clave recibe su primer llamado a la selección nacional, justo antes de un partido importante para el club.',
+    optionA:{label:'Apoyar el llamado sin condicionamientos', chance:0.7,
+      successText:'El jugador vuelve motivado y agradecido.', successEffect:{vestuario:4},
+      failText:'Vuelve físicamente exigido y rinde peor por un tiempo.', failEffect:{vestuario:-2},
+      silent:{}},
+    optionB:{label:'Pedirle a la federación que cuide su carga física', chance:0.5,
+      successText:'La federación entiende y reduce sus minutos.', successEffect:{directiva:2},
+      failText:'El pedido cae mal en la federación y en el propio jugador.', failEffect:{prensa:-3},
+      silent:{}}
+  },
+  {
+    id:'sequia_gol',
+    prompt:'Tu delantero titular lleva varios partidos sin convertir.',
+    optionA:{label:'Mantenerle la confianza pública', chance:0.55,
+      successText:'Vuelve a convertir y te lo agradece.', successEffect:{vestuario:5},
+      failText:'La sequía se extiende y la crítica crece.', failEffect:{prensa:-4},
+      silent:{}},
+    optionB:{label:'Rotarlo y probar una alternativa', chance:0.5,
+      successText:'El cambio le sienta bien al equipo.', successEffect:{cantera:3, directiva:2},
+      failText:'El delantero se siente desplazado sin motivo real.', failEffect:{vestuario:-4},
+      silent:{}}
+  },
+  {
+    id:'reestructuracion_cuerpo_tecnico',
+    prompt:'La directiva sugiere renovar parte de tu cuerpo técnico.',
+    optionA:{label:'Aceptar la renovación sugerida', chance:0.6,
+      successText:'Los nuevos ayudantes aportan ideas frescas.', successEffect:{directiva:4},
+      failText:'Cuesta acoplar al nuevo cuerpo técnico.', failEffect:{vestuario:-3},
+      silent:{}},
+    optionB:{label:'Defender a tu equipo actual', chance:0.55,
+      successText:'La directiva respeta tu lealtad al grupo.', successEffect:{vestuario:3},
+      failText:'La directiva lo interpreta como resistencia al cambio.', failEffect:{directiva:-4},
+      silent:{}}
+  },
+  {
+    id:'polemica_redes',
+    prompt:'Un jugador protagoniza una polémica en redes sociales que llega a los medios.',
+    optionA:{label:'Hablar con él en privado, sin sanción pública', chance:0.55,
+      successText:'El jugador entiende el mensaje y baja el perfil.', successEffect:{vestuario:3},
+      failText:'La prensa interpreta el silencio como encubrimiento.', failEffect:{prensa:-5},
+      silent:{}},
+    optionB:{label:'Sancionarlo para dar un mensaje claro', chance:0.5,
+      successText:'Marcás una postura firme que se respeta.', successEffect:{prensa:4},
+      failText:'El jugador y parte del vestuario lo sienten como excesivo.', failEffect:{vestuario:-5},
+      silent:{}}
+  },
+  {
+    id:'objetivo_descenso',
+    prompt:'El equipo está metido en zona de descenso a mitad de temporada.',
+    optionA:{label:'Reforzar el equipo en el mercado de invierno', chance:0.6,
+      successText:'Los refuerzos ayudan a salir de la zona roja.', successEffect:{vestuario:5},
+      failText:'Los fichajes no llegan a tiempo de adaptarse.', failEffect:{presupuesto:-10},
+      silent:{presupuesto:-8}},
+    optionB:{label:'Confiar en la plantilla actual', chance:0.45,
+      successText:'El grupo se une y responde mejor de lo esperado.', successEffect:{vestuario:6},
+      failText:'La falta de refuerzos termina pasando factura.', failEffect:{directiva:-5},
+      silent:{}}
+  },
+  {
+    id:'aniversario_club',
+    prompt:'El club celebra un aniversario importante, con la afición pidiendo un gesto especial.',
+    optionA:{label:'Organizar un homenaje a la vieja guardia', chance:0.7,
+      successText:'La afición se emociona con el gesto.', successEffect:{prensa:5},
+      failText:'El evento pasa sin mayor repercusión.', failEffect:{prensa:-1},
+      silent:{presupuesto:-3}},
+    optionB:{label:'Enfocar todo en el próximo partido, sin distracciones', chance:0.65,
+      successText:'El equipo agradece que no lo saques del foco competitivo.', successEffect:{vestuario:2},
+      failText:'La afición siente que el club le dio la espalda a la fecha.', failEffect:{prensa:-3},
+      silent:{}}
+  },
+  {
+    id:'salida_director_deportivo',
+    prompt:'El director deportivo deja el club de forma inesperada, justo antes del mercado de fichajes.',
+    optionA:{label:'Asumir vos las decisiones de fichajes por ahora', chance:0.5,
+      successText:'Manejás bien el mercado pese a la falta de apoyo.', successEffect:{directiva:5},
+      failText:'Sin esa figura, se cometen errores en el mercado.', failEffect:{presupuesto:-8},
+      silent:{}},
+    optionB:{label:'Pedirle a la directiva que designe un reemplazo urgente', chance:0.55,
+      successText:'Llega alguien de confianza rápido.', successEffect:{directiva:3},
+      failText:'La búsqueda se demora y el mercado se complica.', failEffect:{directiva:-4},
       silent:{}}
   }
 ];
@@ -2523,6 +2792,9 @@ function renderNextOffers(){
   if (wasFired){
     hi = state.clubRating - 6;
     lo = hi - 25;
+  } else if (mr > 80){
+    lo = Math.max(lo, state.clubRating);
+    hi = Math.max(hi, state.clubRating + 15);
   }
   function buildPool(lo, hi, filterFn){
     var p = [];
@@ -2537,40 +2809,57 @@ function renderNextOffers(){
     return p;
   }
 
+  var lastEntry = state.history[state.history.length-1];
+  var goodResults = lastEntry && (
+    lastEntry.achievement === 'Título de Liga' || lastEntry.achievement === 'Ascenso' ||
+    lastEntry.tag === 'Ascenso directo' || lastEntry.tag === 'Mitad de tabla'
+  );
+
   var offers;
   if (wasFired){
     var firedPool = buildPool(lo, hi);
     while (firedPool.length < 3){ lo -= 5; firedPool = buildPool(lo, hi); }
     offers = shuffle(firedPool).slice(0,3);
+  } else if (mr > 80){
+    var openPool = buildPool(lo, hi);
+    while (openPool.length < 3){ lo -= 5; hi += 5; openPool = buildPool(lo, hi); }
+    offers = shuffle(openPool).slice(0,3);
   } else {
-  // Ofertas 1 y 2: mismo país donde entrenás ahora
-  var sameCountryFilter = function(div){ return div.country===state.country; };
-  var sameCountryPool = buildPool(lo, hi, sameCountryFilter);
-  while (sameCountryPool.length < 2){ lo -= 5; hi += 5; sameCountryPool = buildPool(lo, hi, sameCountryFilter); }
-  offers = shuffle(sameCountryPool).slice(0,2);
+    offers = [];
+    // Oferta A: club de la misma liga (mismo país, misma categoría)
+    var sameLeaguePool = buildPool(lo, hi, function(div){ return div.league===state.division && div.country===state.country; });
+    if (!sameLeaguePool.length) sameLeaguePool = buildPool(lo-10, hi+10, function(div){ return div.league===state.division && div.country===state.country; });
+    if (sameLeaguePool.length) offers.push(shuffle(sameLeaguePool)[0]);
 
-  // Oferta 3: un club de una categoría más, según cómo te fue esta temporada
-  var upDiv = lastDivisionObj ? nextDivisionUp(lastDivisionObj) : null;
-  if (upDiv && upDiv.league !== lastDivisionObj.league){
-    var upPool = buildPool(lo, hi, function(div){ return div.league===upDiv.league && div.country===upDiv.country; });
-    if (!upPool.length){
-      upPool = [];
-      CLUBDB.filter(function(d){ return d.league===upDiv.league && d.country===upDiv.country; }).forEach(function(div){
+    // Oferta B: mismo país, categoría superior si venís de buenos resultados, si no misma categoría
+    var upDivSameCountry = lastDivisionObj ? nextDivisionUp(lastDivisionObj) : null;
+    var targetDivB = (goodResults && upDivSameCountry && upDivSameCountry.league !== lastDivisionObj.league) ? upDivSameCountry : lastDivisionObj;
+    var poolB = targetDivB ? buildPool(lo, hi, function(div){ return div.league===targetDivB.league && div.country===targetDivB.country; }) : [];
+    if (!poolB.length && targetDivB){
+      CLUBDB.filter(function(d){ return d.league===targetDivB.league && d.country===targetDivB.country; }).forEach(function(div){
         var isTop = isTopFlight(div);
-        div.teams.forEach(function(t){ upPool.push({team:t.n, bonus:t.b, division:div, rating:baselineClubRating(t.b, isTop, div.base)}); });
+        div.teams.forEach(function(t){ if (!(t.n===state.team && div.league===state.division)) poolB.push({team:t.n, bonus:t.b, division:div, rating:baselineClubRating(t.b, isTop, div.base)}); });
       });
     }
-    if (upPool.length) offers.push(shuffle(upPool)[0]);
-  }
-  // Respaldo si no se pudo armar la de categoría superior (ya estás en la más alta, etc.)
-  while (offers.length < 3){
-    var fallbackPool = buildPool(lo, hi);
-    if (!fallbackPool.length) break;
-    offers.push(shuffle(fallbackPool)[0]);
+    if (poolB.length) offers.push(shuffle(poolB)[0]);
+
+    // Oferta C: club del extranjero — categoría superior si venís bien, si no misma o inferior
+    var foreignPoolHigh = buildPool(lo, hi, function(div){ return div.country!==state.country && div.base > state.divisionBase; });
+    var foreignPoolSame = buildPool(lo, hi, function(div){ return div.country!==state.country && div.base <= state.divisionBase; });
+    var foreignPool = goodResults ? (foreignPoolHigh.length ? foreignPoolHigh : foreignPoolSame) : (foreignPoolSame.length ? foreignPoolSame : foreignPoolHigh);
+    if (!foreignPool.length) foreignPool = buildPool(lo-10, hi+10, function(div){ return div.country!==state.country; });
+    if (foreignPool.length) offers.push(shuffle(foreignPool)[0]);
+
+    // Respaldo si alguna categoría no pudo completarse
+    while (offers.length < 3){
+      var fallbackPool = buildPool(lo, hi);
+      if (!fallbackPool.length) break;
+      offers.push(shuffle(fallbackPool)[0]);
+    }
   }
 
+  if (!wasFired){
   var bigClubChance = achievementBonus >= 15 ? 1 : 0.2;
-  var lastEntry = state.history[state.history.length-1];
   var didSomethingBigThisSeason = lastEntry && (
     lastEntry.achievement === 'Título de Liga' ||
     (lastEntry.euro && lastEntry.euro.stage === 'Campeón') ||
@@ -3028,6 +3317,16 @@ function renderCareerSummary(){
         '</div>';
       }).join('')+
     '</div>'+
+    ((state.individualAwards && state.individualAwards.length) ?
+      '<h3 style="margin:0 0 8px;">Premios individuales</h3>'+
+      '<div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:1.5rem;">'+
+        state.individualAwards.map(function(a){
+          return '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.6rem 0.9rem; display:flex; align-items:center; gap:8px;">'+
+            '<i class="ti ti-award" style="font-size:20px; color:var(--text-accent);" aria-hidden="true"></i>'+
+            '<span><span style="display:block; font-size:13px; font-weight:500;">'+a.label+'</span><span style="display:block; font-size:11px; color:var(--text-secondary);">'+seasonYearLabel(a.season)+' · '+a.division+'</span></span>'+
+          '</div>';
+        }).join('')+
+      '</div>' : '')+
     '<h3 style="margin:0 0 8px;">Palmarés por club</h3>'+
     '<div style="margin-bottom:1.5rem;">'+palmaresByClub+'</div>'+
     (natPalmares ? '<h3 style="margin:0 0 8px;">Palmarés con selecciones</h3><div style="margin-bottom:1.5rem;">'+natPalmares+'</div>' : '')+
