@@ -20,12 +20,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-WNVD58T4');</script>
 <!-- End Google Tag Manager -->
-<meta name="description" content="Creá tu entrenador, dirigí clubes reales desde la categoría más baja y escribí tu propia leyenda del banquillo en 20 temporadas." />
+<meta name="description" content="Creá tu entrenador, dirigí clubes reales desde la categoría más baja y escribe tu propia leyenda del banquillo en 20 temporadas." />
 <meta property="og:title" content="DT · Crea tu Manager y haz Historia" />
-<meta property="og:description" content="16 categorías, 493 clubes reales, 20 temporadas. Empezá desde abajo y escribí tu propia leyenda del banquillo." />
+<meta property="og:description" content="16 categorías, 493 clubes reales, 20 temporadas. Empezá desde abajo y escribe tu propia leyenda del banquillo." />
 <meta property="og:type" content="website" />
 <meta name="twitter:title" content="DT · Crea tu Manager y haz Historia" />
-<meta name="twitter:description" content="16 categorías, 493 clubes reales, 20 temporadas. Empezá desde abajo y escribí tu propia leyenda del banquillo." />
+<meta name="twitter:description" content="16 categorías, 493 clubes reales, 20 temporadas. Empezá desde abajo y escribe tu propia leyenda del banquillo." />
 <meta property="og:image" content="https://haztuleyenda.com/og-image.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -592,8 +592,10 @@ var ACHIEVEMENTS = [
    check: function(){ return state.nationalHistory.some(function(h){ return h.stage==='Campeón' && h.kind==='Copa del Mundo'; }); }},
   {id:'maestro', label:'Maestro continental', desc:'Ganaste la Champions League o la Copa Libertadores.', shape:'medal', color:'#9d7bff',
    check: function(){ return state.history.some(function(h){ return h.euro && h.euro.stage==='Campeón' && (h.euro.comp.indexOf('Champions League')!==-1 || h.euro.comp.indexOf('Copa Libertadores')!==-1); }); }},
-  {id:'perfeccion', label:'Perfección absoluta', desc:'Desbloqueaste los otros 10 logros en la misma carrera.', shape:'medal', color:'#ffd700',
-   check: function(){ return ACHIEVEMENTS.slice(0,10).every(function(a){ return state.unlockedAchievements.indexOf(a.id)!==-1; }); }}
+  {id:'fiel', label:'Toda una vida', desc:'Dirigiste al mismo club las 20 temporadas de tu carrera.', shape:'ribbon', color:'#4dd68a',
+   check: function(){ if (state.history.length<20) return false; var team=state.history[0].team; return state.history.every(function(h){ return h.team===team; }); }},
+  {id:'perfeccion', label:'Perfección absoluta', desc:'Desbloqueaste los otros 11 logros en la misma carrera.', shape:'medal', color:'#ffd700',
+   check: function(){ return ACHIEVEMENTS.slice(0,11).every(function(a){ return state.unlockedAchievements.indexOf(a.id)!==-1; }); }}
 ];
 var LIFETIME_KEY = 'dtLifetimeAchievements';
 function getLifetimeAchievements(){
@@ -1426,22 +1428,34 @@ function getDominantColor(img){
   return new Promise(function(resolve){
     try {
       var canvas = document.createElement('canvas');
-      var size = 24;
+      var size = 32;
       canvas.width = size; canvas.height = size;
       var ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, size, size);
       var data = ctx.getImageData(0, 0, size, size).data;
-      var r=0, g=0, b=0, count=0;
+      var buckets = {};
       for (var i=0; i<data.length; i+=4){
         var alpha = data[i+3];
         if (alpha < 120) continue;
         var rr=data[i], gg=data[i+1], bb=data[i+2];
-        if (rr>238 && gg>238 && bb>238) continue;
-        if (rr<12 && gg<12 && bb<12) continue;
-        r+=rr; g+=gg; b+=bb; count++;
+        if (rr>235 && gg>235 && bb>235) continue;
+        if (rr<15 && gg<15 && bb<15) continue;
+        var mx = Math.max(rr,gg,bb), mn = Math.min(rr,gg,bb);
+        var sat = mx===0 ? 0 : (mx-mn)/mx;
+        if (sat < 0.12 && mx > 60 && mx < 200) continue;
+        var key = Math.round(rr/24)+'_'+Math.round(gg/24)+'_'+Math.round(bb/24);
+        if (!buckets[key]) buckets[key] = {r:0,g:0,b:0,count:0,satSum:0};
+        buckets[key].r+=rr; buckets[key].g+=gg; buckets[key].b+=bb; buckets[key].count++; buckets[key].satSum+=sat;
       }
-      if (count===0){ resolve(null); return; }
-      r=Math.round(r/count); g=Math.round(g/count); b=Math.round(b/count);
+      var best = null, bestScore = -1;
+      Object.keys(buckets).forEach(function(key){
+        var bkt = buckets[key];
+        var avgSat = bkt.satSum/bkt.count;
+        var score = bkt.count * (0.5 + avgSat);
+        if (score > bestScore){ bestScore = score; best = bkt; }
+      });
+      if (!best){ resolve(null); return; }
+      var r=Math.round(best.r/best.count), g=Math.round(best.g/best.count), b=Math.round(best.b/best.count);
       var color = 'rgb('+r+','+g+','+b+')';
       dominantColorCache[img.src] = color;
       resolve(color);
@@ -1535,7 +1549,7 @@ function renderNationalTimeline(){
       nationalTeamCrest(h.team, 30)+
       '<div style="flex:1; min-width:0;">'+
         '<p style="margin:0; font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'+h.team+'</p>'+
-        '<p style="margin:0; font-size:11px; color:var(--text-secondary); white-space:normal; overflow:visible; display:flex; align-items:center; flex-wrap:wrap; row-gap:4px;">'+h.kind+' · '+h.stage+(won ? titleIconChips([h.kind]) : '')+'</p>'+
+        '<p style="margin:0; font-size:11px; color:var(--text-secondary); white-space:normal; overflow:visible; display:flex; align-items:center; flex-wrap:wrap; row-gap:4px;">'+h.kind+' · '+h.stage+(won ? titleIconChips([h.kind], h.team, true) : '')+'</p>'+
       '</div>'+
     '</div>';
   }).join('');
@@ -1592,11 +1606,13 @@ function trophyIcon(label, size){
   var t = titleIconFor(label);
   return svgTrophyIcon(t.shape, t.color, size, label);
 }
-function titleIconChips(titlesList){
+function titleIconChips(titlesList, teamName, isNational){
   if (!titlesList.length) return '';
+  var tintClass = isNational ? 'natTintCard' : 'clubTintCard';
+  var tintAttr = isNational ? 'data-tint-nat' : 'data-tint-club';
   return '<span style="display:inline-flex; gap:6px; align-items:center; margin-left:5px;">'+
     titlesList.map(function(label){
-      return trophyIcon(label, 20);
+      return '<span class="'+tintClass+'" '+tintAttr+'="'+(teamName||'').replace(/"/g,'&quot;')+'" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:var(--surface-1);">'+trophyIcon(label, 18)+'</span>';
     }).join('')+
   '</span>';
 }
@@ -1614,7 +1630,7 @@ function buildHistoryRow(h, idx){
     teamBadge(h.team, 34)+
     '<div style="flex:1; min-width:0;">'+
       '<p style="margin:0; font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:5px;">'+flagEmoji(h.country,16)+'<span style="overflow:hidden; text-overflow:ellipsis;">'+h.team+'</span></p>'+
-      '<p style="margin:0; font-size:11px; color:var(--text-secondary); white-space:normal; overflow:visible; display:flex; align-items:center; flex-wrap:wrap; row-gap:4px;">'+h.pos+' · '+h.pts+' pts'+titleIconChips(titlesList)+'</p>'+
+      '<p style="margin:0; font-size:11px; color:var(--text-secondary); white-space:normal; overflow:visible; display:flex; align-items:center; flex-wrap:wrap; row-gap:4px;">'+h.pos+' · '+h.pts+' pts'+titleIconChips(titlesList, h.team, false)+'</p>'+
     '</div>'+
     ratingChip(mr)+
   '</div>';
@@ -1696,7 +1712,7 @@ function renderLanding(){
           '<div style="height:150px; position:relative;">'+coachSvg+'</div>'+
           '<div style="padding:0.9rem 1rem;">'+
             '<p style="margin:0 0 3px; font-family:var(--display); text-transform:uppercase; letter-spacing:0.01em; font-size:1.05em;">Crea tu Manager y haz Historia</p>'+
-            '<p style="margin:0; font-size:12.5px; color:var(--text-secondary); line-height:1.4;">16 categorías, 493 clubes reales y 20 temporadas. Empieza desde abajo y escribí tu propia leyenda del banquillo.</p>'+
+            '<p style="margin:0; font-size:12.5px; color:var(--text-secondary); line-height:1.4;">16 categorías, 493 clubes reales y 20 temporadas. Empieza desde abajo y escribe tu propia leyenda del banquillo.</p>'+
           '</div>'+
         '</button>'+
         '<div style="border-radius:14px; background:var(--surface-1); border:1px solid var(--border); display:flex; flex-direction:column; opacity:0.55;">'+
@@ -1724,7 +1740,7 @@ function renderLanding(){
       navigate(saved.screenId || 'inicio');
     });
     el('deleteSaveBtn').addEventListener('click', function(){
-      if (confirm('¿Seguro que querés borrar la partida guardada? No se puede deshacer.')){
+      if (confirm('¿Seguro que quieres borrar la partida guardada? No se puede deshacer.')){
         deleteSave();
         renderLanding();
       }
@@ -1745,7 +1761,7 @@ function renderSetup(){
     '<div style="display:grid; gap:12px; margin-bottom:1rem;">'+
       fieldRow('Nombre', '<input id="dtName" type="text" placeholder="Tu apellido de DT" style="width:100%;" />')+
       fieldRow('Nacionalidad', '<div style="display:flex; align-items:center; gap:8px;"><span id="natFlag" style="font-size:20px;">🏳️</span><input id="dtNat" list="countryList" type="text" placeholder="Buscá tu país" value="España" style="flex:1;" /></div><datalist id="countryList">'+countryOpts+'</datalist>')+
-      fieldRow('País donde querés dirigir', '<select id="dtLiga" style="width:100%;">'+ligaOpts+'</select>')+
+      fieldRow('País donde quieres dirigir', '<select id="dtLiga" style="width:100%;">'+ligaOpts+'</select>')+
     '</div>'+
     '<button id="toStep2" style="width:100%;">Continuar <i class="ti ti-arrow-right" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'
   );
@@ -1975,7 +1991,7 @@ function renderPlayoffScreen(){
     statCards(p)+
     '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:1rem; display:flex; gap:10px; align-items:flex-start;">'+
       '<i class="ti ti-ball-football" style="font-size:20px; color:var(--text-accent); margin-top:2px;" aria-hidden="true"></i>'+
-      '<p style="font-size:14px; margin:0; color:var(--text-secondary);">Terminaste en zona de playoff. Te jugás el ascenso en la eliminatoria.</p>'+
+      '<p style="font-size:14px; margin:0; color:var(--text-secondary);">Terminaste en zona de playoff. Te juegas el ascenso en la eliminatoria.</p>'+
     '</div>'+
     '<button id="playoffBtn" class="primaryBtn" style="width:100%;">Simular playoff <i class="ti ti-ball-football" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'
   );
@@ -2122,7 +2138,7 @@ function renderSeasonEnd(){
       statCards(p)+
       (r.resolvedEuro ? '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:0.75rem; display:flex; gap:10px; align-items:flex-start;">'+
         '<i class="ti ti-ball-football" style="font-size:20px; color:var(--text-accent); margin-top:2px;" aria-hidden="true"></i>'+
-        '<p style="font-size:14px; margin:0; color:var(--text-secondary);">Recorrido en la '+r.resolvedEuro.comp.split(' (')[0]+' de esta temporada (clasificaste el año pasado): <strong>'+r.resolvedEuro.stage+'</strong>.</p>'+
+        '<p style="font-size:14px; margin:0; color:var(--text-secondary);">'+r.resolvedEuro.comp.split(' (')[0]+': <strong>'+r.resolvedEuro.stage+'</strong></p>'+
       '</div>' : '')+
       (r.resolvedBet ? '<div style="background:'+(r.resolvedBet.won?'rgba(77,214,138,0.12)':'rgba(226,87,76,0.12)')+'; border:1px solid '+(r.resolvedBet.won?'#4dd68a':'#e2574c')+'; border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:0.75rem;">'+
         '<p style="margin:0 0 4px; font-family:var(--display); font-weight:700; font-size:13px; color:'+(r.resolvedBet.won?'#4dd68a':'#e2574c')+';">'+(r.resolvedBet.won?'✔ Cumpliste lo prometido':'✘ No se cumplió')+'</p>'+
@@ -2130,7 +2146,7 @@ function renderSeasonEnd(){
       '</div>' : '')+
       (r.resolvedCWC ? '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:0.75rem; display:flex; gap:10px; align-items:flex-start;">'+
         '<i class="ti ti-world" style="font-size:20px; color:var(--text-accent); margin-top:2px;" aria-hidden="true"></i>'+
-        '<p style="font-size:14px; margin:0; color:var(--text-secondary);">Mundial de Clubes: <strong>'+r.resolvedCWC.stage+'</strong>.</p>'+
+        '<p style="font-size:14px; margin:0; color:var(--text-secondary);">Mundial de Clubes: <strong>'+r.resolvedCWC.stage+'</strong></p>'+
       '</div>' : '')+
       (r.lostCWC ? '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:0.75rem; display:flex; gap:10px; align-items:flex-start;">'+
         '<i class="ti ti-alert-triangle" style="font-size:20px; color:var(--text-accent); margin-top:2px;" aria-hidden="true"></i>'+
@@ -2138,19 +2154,11 @@ function renderSeasonEnd(){
       '</div>' : '')+
       (r.cup ? '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:0.75rem; display:flex; gap:10px; align-items:flex-start;">'+
         '<i class="ti ti-trophy" style="font-size:20px; color:var(--text-accent); margin-top:2px;" aria-hidden="true"></i>'+
-        '<p style="font-size:14px; margin:0; color:var(--text-secondary);">'+r.cup.name+': <strong>'+r.cup.stage+'</strong>.</p>'+
+        '<p style="font-size:14px; margin:0; color:var(--text-secondary);">'+r.cup.name+': <strong>'+r.cup.stage+'</strong></p>'+
       '</div>' : '')+
       (state.lastBracket ? '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:0.75rem; display:flex; gap:10px; align-items:flex-start;">'+
         '<i class="ti ti-tournament" style="font-size:20px; color:var(--text-accent); margin-top:2px;" aria-hidden="true"></i>'+
-        '<p style="font-size:14px; margin:0; color:var(--text-secondary);">Playoffs: llegaste hasta <strong>'+state.lastBracket.stage+'</strong>.</p>'+
-      '</div>' : '')+
-      (r.newEuroQualified ? '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:0.75rem; display:flex; gap:10px; align-items:flex-start;">'+
-        '<i class="ti ti-calendar-event" style="font-size:20px; color:var(--text-accent); margin-top:2px;" aria-hidden="true"></i>'+
-        '<p style="font-size:14px; margin:0; color:var(--text-secondary);">Clasificaste a la '+r.newEuroQualified.split(' (')[0]+(r.newEuroQualified.indexOf('copa')!==-1 ? ' vía copa doméstica' : '')+'. Se juega la próxima temporada.</p>'+
-      '</div>' : '')+
-      (r.cwcEligible ? '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:1rem; display:flex; gap:10px; align-items:flex-start;">'+
-        '<i class="ti ti-world" style="font-size:20px; color:var(--text-accent); margin-top:2px;" aria-hidden="true"></i>'+
-        '<p style="font-size:14px; margin:0; color:var(--text-secondary);">Clasificaste al Mundial de Clubes de la próxima temporada.</p>'+
+        '<p style="font-size:14px; margin:0; color:var(--text-secondary);">Playoffs: <strong>'+state.lastBracket.stage+'</strong></p>'+
       '</div>' : '')+
       '<p style="font-size:14px; color:var(--text-secondary); margin:0 0 1rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">'+flagEmoji(state.nat)+' '+state.name+', '+state.team+' ('+flagEmoji(state.country)+' '+state.country+'), táctica '+state.formation+', estilo '+state.style+'</p>'+
       '<button id="nextBtn" class="primaryBtn" style="width:100%;">Continuar <i class="ti ti-arrow-right" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'+
@@ -2216,7 +2224,7 @@ var DECISION_EVENTS = [
       failText:'El fichaje no termina de arrancar — se lesiona en pretemporada y pasa meses sin aportar nada.', failEffect:{vestuario:-3},
       silent:{presupuesto:-12}},
     optionB:{label:'Buscar una alternativa joven', chance:0.75,
-      successText:'El pibe responde mejor de lo esperado, y sale barato.', successEffect:{cantera:5},
+      successText:'El joven responde mejor de lo esperado, y sale barato.', successEffect:{cantera:5},
       failText:'No está a la altura todavía, y hay que fichar otro en enero de urgencia.', failEffect:{presupuesto:-8},
       silent:{}}
   },
@@ -2252,7 +2260,7 @@ var DECISION_EVENTS = [
       failText:'La conferencia quedó como un error de cálculo.', failEffect:{prensa:-4},
       silent:{}},
     optionB:{label:'Reunión privada, sin prensa', chance:0.65,
-      successText:'Ganás tiempo y el vestuario lo agradece.', successEffect:{vestuario:4},
+      successText:'Ganas tiempo y el vestuario lo agradece.', successEffect:{vestuario:4},
       failText:'La prensa se queja del silencio y sigue especulando.', failEffect:{prensa:-3},
       silent:{}}
   },
@@ -2496,7 +2504,7 @@ function renderNextOffers(){
     var upDiv = nextDivisionUp(lastDivisionObj);
     if (FILIAL_TEAMS.indexOf(state.team) !== -1 && isTopFlight(upDiv)){
       stayDivision = lastDivisionObj;
-      stayLabel = 'Seguís con '+state.team+' en '+lastDivisionObj.league;
+      stayLabel = 'Sigues con '+state.team+' en '+lastDivisionObj.league;
       stayNote = 'Como filial, '+state.team+' no puede ascender a Primera — se queda en su categoría actual.';
       sectionTitle = 'Ascenso bloqueado (filial)';
     } else {
@@ -2513,7 +2521,7 @@ function renderNextOffers(){
       stayNote = 'Descenso confirmado · '+downDiv.league+' ('+downDiv.country+')';
     } else {
       stayDivision = lastDivisionObj;
-      stayLabel = 'Seguís con '+state.team+' (ya es la categoría más baja registrada)';
+      stayLabel = 'Sigues con '+state.team+' (ya es la categoría más baja registrada)';
       stayNote = state.division+' ('+state.country+') · no hay una categoría inferior en los datos';
     }
     sectionTitle = 'Descenso';
@@ -2920,7 +2928,7 @@ function renderCareerSummary(){
     '<h3 style="margin:0 0 8px;">Palmarés por club</h3>'+
     '<div style="margin-bottom:1.5rem;">'+palmaresByClub+'</div>'+
     (natPalmares ? '<h3 style="margin:0 0 8px;">Palmarés con selecciones</h3><div style="margin-bottom:1.5rem;">'+natPalmares+'</div>' : '')+
-    '<p style="font-size:13px; color:var(--text-secondary); margin:0 0 1.5rem;">Tenés el historial completo de las 20 temporadas en el panel de la derecha (o debajo, en el móvil).</p>'+
+    '<p style="font-size:13px; color:var(--text-secondary); margin:0 0 1.5rem;">Tienes el historial completo de las 20 temporadas en el panel de la derecha (o debajo, en el móvil).</p>'+
     '<h3 style="margin:0 0 8px;">¿Alguna sugerencia?</h3>'+
     '<div style="background:var(--surface-2); border-radius:12px; border:0.5px solid var(--border); padding:1rem 1.25rem;">'+
       '<p style="font-size:13px; color:var(--text-secondary); margin:0 0 8px;">Contanos qué mejorarías del juego.</p>'+
@@ -2951,8 +2959,8 @@ function renderCareerSummary(){
       body: JSON.stringify({ mensaje: msg })
     }).then(function(res){
       if (res.ok){ statusEl.textContent = '¡Gracias por tu sugerencia!'; el('feedbackText').value=''; }
-      else { statusEl.textContent = 'No se pudo enviar, probá más tarde.'; }
-    }).catch(function(){ statusEl.textContent = 'No se pudo enviar, probá más tarde.'; });
+      else { statusEl.textContent = 'No se pudo enviar, prueba más tarde.'; }
+    }).catch(function(){ statusEl.textContent = 'No se pudo enviar, prueba más tarde.'; });
   });
   el('shareBtn').addEventListener('click', function(){
     var text = buildShareText();
