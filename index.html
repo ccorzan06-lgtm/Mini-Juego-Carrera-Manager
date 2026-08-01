@@ -1613,7 +1613,7 @@ var TROPHY_SHAPES = {
   globe: '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 12h18M5.2 7.2h13.6M5.2 16.8h13.6" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/><path d="M12 3c2.7 2.3 4.2 5.6 4.2 9s-1.5 6.7-4.2 9c-2.7-2.3-4.2-5.6-4.2-9s1.5-6.7 4.2-9z" fill="none" stroke="currentColor" stroke-width="1.3"/><ellipse cx="12" cy="12" rx="3.2" ry="9" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.5"/>',
   shield: '<path d="M12 2.2l8 2.9v5.9c0 4.9-3.4 8.3-8 10.8-4.6-2.5-8-5.9-8-10.8V5.1z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 4.6l6 2.2v4.4c0 3.8-2.6 6.5-6 8.4-3.4-1.9-6-4.6-6-8.4V6.8z" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.5"/><path d="M12 8v6.6M8.8 11l3.2-3.2L15.2 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>',
   ribbon: '<circle cx="12" cy="8.2" r="5.6" fill="currentColor"/><circle cx="12" cy="8.2" r="3.9" fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.4"/><path d="M8.3 12.6L5.8 21.5l6.2-3.6 6.2 3.6-2.5-8.9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>',
-  star: '<path d="M12 2.5l1.9 5.1 5.4.3-4.2 3.5 1.4 5.3-4.5-3-4.5 3 1.4-5.3-4.2-3.5 5.4-.3z" fill="currentColor"/><circle cx="12" cy="9.3" r="2.1" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.5"/><path d="M6.3 19.5L4 22M17.7 19.5L20 22" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>'
+  star: '<path d="M8.2 2.5h7.6c.5 0 .9.4.9 1v4.2c0 3.6-2.1 6.6-4.1 8.6-2-2-4.1-5-4.1-8.6V3.5c0-.6.4-1 .9-1z" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M9.5 6.2c1 1.4 2 1.4 2.4.6.4-.8 1.2-.9 2-.1" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.85"/><circle cx="9.3" cy="9.3" r="0.55" fill="currentColor" opacity="0.7"/><circle cx="14.4" cy="9" r="0.55" fill="currentColor" opacity="0.7"/><path d="M12 16.3v3M9.3 21.5h5.4l-.7-2.2h-4z" fill="currentColor"/><path d="M6.3 4.4C4 4.8 3.6 7.6 5.5 8.8c.7.5 1.6.6 2.4.3M17.7 4.4c2.3.4 2.7 3.2.8 4.4-.7.5-1.6.6-2.4.3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>'
 };
 function svgTrophyIcon(shape, color, size, label){
   return '<svg viewBox="0 0 24 24" width="'+size+'" height="'+size+'" style="color:'+color+'; flex-shrink:0;" aria-hidden="true"><title>'+label.replace(/</g,'')+'</title>'+TROPHY_SHAPES[shape]+'</svg>';
@@ -2860,21 +2860,31 @@ function renderNextOffers(){
     lastEntry.tag === 'Ascenso directo' || lastEntry.tag === 'Mitad de tabla'
   );
 
+  function pickUnique(pool, existingOffers){
+    var usedTeams = existingOffers.map(function(o){ return o.team; });
+    var filtered = pool.filter(function(o){ return usedTeams.indexOf(o.team) === -1; });
+    var finalPool = filtered.length ? filtered : pool;
+    return finalPool.length ? shuffle(finalPool)[0] : null;
+  }
+
   var offers;
   if (wasFired){
     var firedPool = buildPool(lo, hi);
     while (firedPool.length < 3){ lo -= 5; firedPool = buildPool(lo, hi); }
-    offers = shuffle(firedPool).slice(0,3);
+    offers = [];
+    for (var fi=0; fi<3; fi++){ var picked = pickUnique(firedPool, offers); if (picked) offers.push(picked); }
   } else if (mr > 80){
     var openPool = buildPool(lo, hi);
     while (openPool.length < 3){ lo -= 5; hi += 5; openPool = buildPool(lo, hi); }
-    offers = shuffle(openPool).slice(0,3);
+    offers = [];
+    for (var oi=0; oi<3; oi++){ var pickedO = pickUnique(openPool, offers); if (pickedO) offers.push(pickedO); }
   } else {
     offers = [];
     // Oferta A: club de la misma liga (mismo país, misma categoría)
     var sameLeaguePool = buildPool(lo, hi, function(div){ return div.league===state.division && div.country===state.country; });
     if (!sameLeaguePool.length) sameLeaguePool = buildPool(lo-10, hi+10, function(div){ return div.league===state.division && div.country===state.country; });
-    if (sameLeaguePool.length) offers.push(shuffle(sameLeaguePool)[0]);
+    var pickA = pickUnique(sameLeaguePool, offers);
+    if (pickA) offers.push(pickA);
 
     // Oferta B: mismo país, categoría superior si vienes de buenos resultados, si no misma categoría
     var upDivSameCountry = lastDivisionObj ? nextDivisionUp(lastDivisionObj) : null;
@@ -2886,20 +2896,24 @@ function renderNextOffers(){
         div.teams.forEach(function(t){ if (!(t.n===state.team && div.league===state.division)) poolB.push({team:t.n, bonus:t.b, division:div, rating:baselineClubRating(t.b, isTop, div.base)}); });
       });
     }
-    if (poolB.length) offers.push(shuffle(poolB)[0]);
+    var pickB = pickUnique(poolB, offers);
+    if (pickB) offers.push(pickB);
 
     // Oferta C: club del extranjero — categoría superior si vienes bien, si no misma o inferior
     var foreignPoolHigh = buildPool(lo, hi, function(div){ return div.country!==state.country && div.base > state.divisionBase; });
     var foreignPoolSame = buildPool(lo, hi, function(div){ return div.country!==state.country && div.base <= state.divisionBase; });
     var foreignPool = goodResults ? (foreignPoolHigh.length ? foreignPoolHigh : foreignPoolSame) : (foreignPoolSame.length ? foreignPoolSame : foreignPoolHigh);
     if (!foreignPool.length) foreignPool = buildPool(lo-10, hi+10, function(div){ return div.country!==state.country; });
-    if (foreignPool.length) offers.push(shuffle(foreignPool)[0]);
+    var pickC = pickUnique(foreignPool, offers);
+    if (pickC) offers.push(pickC);
 
     // Respaldo si alguna categoría no pudo completarse
     while (offers.length < 3){
       var fallbackPool = buildPool(lo, hi);
       if (!fallbackPool.length) break;
-      offers.push(shuffle(fallbackPool)[0]);
+      var pickFallback = pickUnique(fallbackPool, offers);
+      if (!pickFallback) break;
+      offers.push(pickFallback);
     }
   }
 
@@ -3367,8 +3381,9 @@ function renderCareerSummary(){
       (function(){
         var groups = {};
         state.individualAwards.forEach(function(a){
-          if (!groups[a.team]) groups[a.team] = [];
-          groups[a.team].push(a);
+          var teamKey = a.team || (a.division ? (a.division+' ('+(a.country||'')+')') : 'Club');
+          if (!groups[teamKey]) groups[teamKey] = [];
+          groups[teamKey].push(a);
         });
         var cards = Object.keys(groups).map(function(team){
           var awards = groups[team];
