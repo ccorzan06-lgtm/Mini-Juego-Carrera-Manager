@@ -1347,15 +1347,7 @@ function tintFromImage(elm, imgUrl){
   img.onload = function(){
     getDominantColor(img).then(function(color){
       if (!color) return;
-      var m = color.match(/rgb\((\d+),(\d+),(\d+)\)/);
-      if (!m) return;
-      var r=parseInt(m[1],10), g=parseInt(m[2],10), b=parseInt(m[3],10);
-      var baseR=18, baseG=52, baseB=35;
-      var mix = 0.35;
-      var br = Math.round(r*mix + baseR*(1-mix));
-      var bg2 = Math.round(g*mix + baseG*(1-mix));
-      var bb = Math.round(b*mix + baseB*(1-mix));
-      elm.style.background = 'rgb('+br+','+bg2+','+bb+')';
+      elm.style.background = blendWithSurface(color, 0.45);
     });
   };
   img.src = imgUrl;
@@ -1382,7 +1374,7 @@ function processBadges(){
     if (!img || elm.getAttribute('data-colored')) return;
     elm.setAttribute('data-colored','1');
     function applyColor(){
-      getDominantColor(img).then(function(color){ if (color) elm.style.background = color; });
+      getDominantColor(img).then(function(color){ if (color) elm.style.background = blendWithSurface(color, 0.5); });
     }
     if (img.complete && img.naturalWidth > 0) applyColor(); else img.addEventListener('load', applyColor);
   });
@@ -1415,12 +1407,28 @@ function applyBadgeImage(elm, url){
   img.style.cssText = 'width:100%; height:100%; object-fit:contain; position:relative; z-index:1;';
   img.onload = function(){
     getDominantColor(img).then(function(color){
-      if (color) elm.style.background = color;
+      if (color) elm.style.background = blendWithSurface(color, 0.5);
     });
   };
   img.src = url;
   elm.innerHTML = '';
   elm.appendChild(img);
+}
+function blendWithSurface(color, mix){
+  var m = color.match(/rgb\((\d+),(\d+),(\d+)\)/);
+  if (!m) return color;
+  var r=parseInt(m[1],10), g=parseInt(m[2],10), b=parseInt(m[3],10);
+  var baseR=18, baseG=52, baseB=35;
+  var br = Math.round(r*mix + baseR*(1-mix));
+  var bg = Math.round(g*mix + baseG*(1-mix));
+  var bb = Math.round(b*mix + baseB*(1-mix));
+  var luminance = 0.299*br + 0.587*bg + 0.114*bb;
+  var maxLuminance = 145;
+  if (luminance > maxLuminance){
+    var scale = maxLuminance / luminance;
+    br = Math.round(br*scale); bg = Math.round(bg*scale); bb = Math.round(bb*scale);
+  }
+  return 'rgb('+br+','+bg+','+bb+')';
 }
 var dominantColorCache = {};
 function getDominantColor(img){
@@ -1534,7 +1542,7 @@ function continueAfterTournament(){
 }
 
 function el(id){ return document.getElementById(id); }
-function render(html){ el('app').innerHTML = html; processBadges(); renderTimeline(); renderNationalTimeline(); }
+function render(html){ el('app').innerHTML = html; renderTimeline(); renderNationalTimeline(); processBadges(); }
 function renderNationalTimeline(){
   var el3 = document.getElementById('nationalSidebar');
   if (!el3) return;
