@@ -69,16 +69,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   #timelineSidebar, #nationalSidebar { flex: 0 0 380px; max-width: 380px; position: sticky; top: 24px; max-height: calc(100vh - 48px); overflow-y: auto; }
   @media (max-width: 1180px) {
     #layout { flex-direction: column; }
-    #app { max-width: 640px; width: 100%; }
-    #timelineSidebar, #nationalSidebar { position: static; max-width: 640px; width: 100%; max-height: none; order: 2; }
+    #app { max-width: 640px; width: 100%; order: 0; flex: none; }
+    #timelineSidebar { position: static; max-width: 640px; width: 100%; max-height: none; order: 1; }
+    #nationalSidebar { position: static; max-width: 640px; width: 100%; max-height: none; order: 2; }
   }
   @media (max-width: 600px) {
-    body { padding: 72px 12px 48px; }
+    body { padding: 60px 12px 48px; }
     button { min-height: 46px; font-size: 15px; padding: 12px 14px; }
     h2 { font-size: 1.5em; }
     h3 { font-size: 1.05em; }
     p { font-size: 15px; }
-    #homeLogoBtn { top: 12px; left: 12px; width: 46px; height: 46px; }
+    #homeLogoBtn { top: 10px !important; left: 10px !important; width: 32px !important; height: 32px !important; opacity: 0.55; }
+    #timelineSidebar { max-height: 260px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius); padding: 4px 8px; }
+    #timelineSidebar:empty { display: none; border: none; padding: 0; max-height: 0; }
   }
   #confettiLayer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; }
   .confettiPiece { position: absolute; top: -20px; opacity: 0.95; animation-name: confettiFall; animation-timing-function: cubic-bezier(0.4,0.1,0.6,0.9); animation-fill-mode: forwards; }
@@ -86,6 +89,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     0% { transform: translateY(0) rotate(0deg); opacity: 1; }
     100% { transform: translateY(110vh) rotate(600deg); opacity: 0.3; }
   }
+  @keyframes simBounce {
+    0% { transform: translateY(0) scale(1,1); }
+    100% { transform: translateY(-40px) scale(0.95,1.05); }
+  }
+  @keyframes softGlow {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+  .landingGlow { animation: softGlow 3s ease-in-out infinite; }
   h2, h3 {
     font-family: var(--display);
     font-weight: 600;
@@ -118,10 +130,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     font-family: var(--body);
     font-weight: 500;
     cursor: pointer;
-    transition: background 0.15s ease, border-color 0.15s ease;
+    transition: background 0.18s ease, border-color 0.18s ease, transform 0.15s ease, box-shadow 0.18s ease;
   }
-  button:hover { background: var(--surface-2); border-color: var(--text-accent); }
-  button:active { transform: translateY(1px); }
+  button:hover { background: var(--surface-2); border-color: var(--text-accent); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.35); }
+  button:active { transform: translateY(1px); box-shadow: none; }
+  .primaryBtn:hover { box-shadow: 0 6px 20px rgba(232,163,61,0.35); }
+  #app { animation: appFadeIn 0.28s ease; }
+  @keyframes appFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
   .primaryBtn {
     background: var(--text-accent);
     color: #241705;
@@ -142,6 +160,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   table { border-collapse: collapse; width: 100%; }
   a { color: var(--text-accent); }
   ::placeholder { color: var(--text-secondary); }
+  #homeLogoBtn { display: none !important; }
 </style>
 </head>
 <body>
@@ -351,10 +370,10 @@ function computeSeasonAward(p, divisionObj){
     rivalClubs = rivalPool[0].teams.filter(function(t){ return t.n !== state.team; }).map(function(t){ return t.n; });
   }
   var winChance;
-  if (p.rank <= 1) winChance = 0.55;
-  else if (p.rank <= 3) winChance = 0.32;
-  else if (p.rank <= 6) winChance = 0.14;
-  else winChance = 0.03;
+  if (p.rank <= 1) winChance = 0.25;
+  else if (p.rank <= 3) winChance = 0.1;
+  else if (p.rank <= 6) winChance = 0.03;
+  else winChance = 0.005;
   var playerWon = Math.random() < winChance;
   if (playerWon || !rivalClubs.length){
     return {playerWon:true, winnerName: state.name, winnerClub: state.team};
@@ -1513,7 +1532,9 @@ function resetState(){
 }
 resetState();
 
+var currentScreenId = 'landing';
 function renderScreen(id){
+  currentScreenId = id;
   if (id==='landing') renderLanding();
   else if (id==='inicio') renderSetup();
   else if (id==='ofertas-inicio') renderOffers();
@@ -1561,6 +1582,37 @@ function continueAfterTournament(){
 
 function el(id){ return document.getElementById(id); }
 function render(html){ el('app').innerHTML = html; renderTimeline(); renderNationalTimeline(); processBadges(); }
+var audioCtx = null;
+function getAudioCtx(){
+  if (!audioCtx){ try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){ return null; } }
+  return audioCtx;
+}
+function playTone(freq, start, dur, type, vol){
+  var ctx = getAudioCtx();
+  if (!ctx) return;
+  var osc = ctx.createOscillator();
+  var gain = ctx.createGain();
+  osc.type = type || 'sine';
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0, ctx.currentTime + start);
+  gain.gain.linearRampToValueAtTime(vol||0.15, ctx.currentTime + start + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + dur);
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.start(ctx.currentTime + start);
+  osc.stop(ctx.currentTime + start + dur + 0.05);
+}
+function playWhistle(){
+  playTone(2200, 0, 0.18, 'square', 0.08);
+  playTone(2200, 0.22, 0.1, 'square', 0.08);
+}
+function playTrophyFanfare(){
+  var notes = [523.25, 659.25, 783.99, 1046.5];
+  notes.forEach(function(f, i){ playTone(f, i*0.12, 0.5, 'triangle', 0.12); });
+}
+function playFiredSound(){
+  playTone(220, 0, 0.4, 'sawtooth', 0.08);
+  playTone(160, 0.2, 0.5, 'sawtooth', 0.08);
+}
 function launchConfetti(){
   var layer = document.getElementById('confettiLayer');
   if (!layer) return;
@@ -1587,7 +1639,7 @@ function launchConfetti(){
 function renderNationalTimeline(){
   var el3 = document.getElementById('nationalSidebar');
   if (!el3) return;
-  if (!state.nationalHistory || !state.nationalHistory.length){
+  if (!state.nationalHistory || !state.nationalHistory.length || TIMELINE_VISIBLE_SCREENS.indexOf(currentScreenId) === -1){
     el3.innerHTML = '';
     return;
   }
@@ -1685,10 +1737,11 @@ function buildHistoryRow(h, idx){
     ratingChip(mr)+
   '</div>';
 }
+var TIMELINE_VISIBLE_SCREENS = ['ofertas-siguiente', 'ofertas-inicio', 'palmares'];
 function renderTimeline(){
   var el2 = document.getElementById('timelineSidebar');
   if (!el2) return;
-  if (!state.history || !state.history.length){
+  if (!state.history || !state.history.length || TIMELINE_VISIBLE_SCREENS.indexOf(currentScreenId) === -1){
     el2.innerHTML = '';
     return;
   }
@@ -1742,7 +1795,10 @@ function renderLanding(){
       '<p style="color:var(--text-secondary); font-size:14px; margin:0 0 1.5rem;">Simuladores de gestión deportiva para perderte un buen rato.</p>'+
       '<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;">'+
         '<button id="landingStart" style="text-align:left; padding:0; overflow:hidden; border-radius:14px; background:var(--surface-1); border:1px solid var(--border); display:flex; flex-direction:column;">'+
-          '<div style="height:150px; position:relative;">'+coachSvg+'</div>'+
+          '<div style="height:150px; position:relative;">'+
+            '<div class="landingGlow" style="position:absolute; top:50%; left:50%; width:220px; height:220px; transform:translate(-50%,-50%); background:radial-gradient(circle, rgba(232,163,61,0.25), transparent 70%); pointer-events:none;"></div>'+
+            coachSvg+
+          '</div>'+
           '<div style="padding:0.9rem 1rem;">'+
             '<p style="margin:0 0 3px; font-family:var(--display); text-transform:uppercase; letter-spacing:0.01em; font-size:1.05em;">Crea tu Manager y haz Historia</p>'+
             '<p style="margin:0; font-size:12.5px; color:var(--text-secondary); line-height:1.4;">16 categorías, 493 clubes reales y 20 temporadas. Empieza desde abajo y escribe tu propia leyenda del banquillo.</p>'+
@@ -1814,14 +1870,18 @@ function renderOffers(){
   var offers = shuffle(division.teams).slice(0,3);
   render(
     '<h2 style="margin:0 0 6px;">'+flagEmoji(division.country)+' Ofertas en '+division.league+' ('+division.country+')</h2>'+
-    '<p style="color:var(--text-secondary); font-size:14px; margin:0 0 1.25rem;">'+division.matchdays+' jornadas. Estos clubes te ofrecen el banco. Los escudos son insignias genéricas, no los reales.</p>'+
-    '<div style="display:grid; gap:8px;">'+
+    '<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px;">'+
       offers.map(function(t){
         var h = historyFor(t.n, t.b);
         var rating = baselineClubRating(t.b, isTopFlight(division), division.base);
-        return '<button class="offerBtn clubTintCard" data-tint-club="'+t.n+'" data-team="'+t.n+'" data-b="'+t.b+'" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px; justify-content:space-between;">'+
-          '<span style="display:flex; align-items:center; gap:10px;">'+teamBadge(t.n)+'<span><span style="display:flex; align-items:center; gap:6px;">'+flagEmoji(division.country,18)+' '+t.n+'</span><span style="display:block; font-size:12px; color:var(--text-secondary); font-weight:400;">'+h.label+'</span></span></span>'+
-        '</button>';
+        return '<div class="clubTintCard" data-tint-club="'+t.n+'" style="padding:8px 6px; border-radius:var(--radius); text-align:center;">'+
+          '<div style="display:flex; justify-content:center; margin-bottom:4px;">'+teamBadge(t.n, 34)+'</div>'+
+          '<p style="margin:0 0 6px; font-size:11.5px; font-weight:600; line-height:1.2;">'+t.n+'</p>'+
+          '<details style="margin-bottom:6px; text-align:left;"><summary style="cursor:pointer; font-size:9.5px; color:var(--text-accent); list-style:none; text-align:center;">Ver detalles</summary>'+
+            clubStatBars(t.n, t.b, division, h.mod)+
+          '</details>'+
+          '<button class="offerBtn" data-team="'+t.n+'" data-b="'+t.b+'" style="width:100%; background:var(--surface-2); border-color:var(--border); font-size:11px; padding:8px 4px;">Fichar</button>'+
+        '</div>';
       }).join('')+
     '</div>'
   );
@@ -1845,8 +1905,7 @@ function renderOffers(){
 
 function headerBanner(){
   return '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:1.25rem; display:flex; gap:10px; align-items:center;">'+
-    teamBadge(state.team, 36)+
-    '<p style="font-size:14px; margin:0; color:var(--text-secondary); display:flex; align-items:center; gap:6px; flex-wrap:wrap;">'+flagEmoji(state.nat)+' DT '+state.name+' · Temporada '+state.season+'/'+TOTAL_SEASONS+' · '+flagEmoji(state.country)+' '+state.team+' ('+state.division+', '+state.totalGames+' jornadas)</p>'+
+    '<p style="font-size:14px; margin:0; color:var(--text-secondary); display:flex; align-items:center; gap:6px; flex-wrap:wrap;">'+flagEmoji(state.nat)+' DT '+state.name+' · Temporada '+state.season+'/'+TOTAL_SEASONS+' · '+flagEmoji(state.country)+' '+state.team+' ('+state.division+')</p>'+
   '</div>';
 }
 
@@ -1881,6 +1940,45 @@ function directivaMessage(){
 function statBar(label, value, color){
   return '<div style="margin-bottom:6px;"><div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary); margin-bottom:2px;"><span>'+label+'</span><span>'+Math.round(value)+'</span></div><div style="background:var(--surface-2); border-radius:6px; height:6px; overflow:hidden;"><div style="width:'+Math.max(2,Math.min(100,value))+'%; height:100%; background:'+color+';"></div></div></div>';
 }
+function clubQualityBar(label, value10){
+  var v = Math.max(0, Math.min(10, value10));
+  var color = v >= 7 ? '#4dd68a' : (v >= 4 ? '#E8A33D' : '#e2574c');
+  return '<div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">'+
+    '<span style="font-size:11px; color:var(--text-secondary); width:64px; flex-shrink:0;">'+label+'</span>'+
+    '<div style="flex:1; background:var(--surface-2); border-radius:5px; height:5px; overflow:hidden;"><div style="width:'+(v*10)+'%; height:100%; background:'+color+';"></div></div>'+
+    '<span style="font-size:11px; font-weight:600; color:'+color+'; width:24px; text-align:right; flex-shrink:0;">'+v.toFixed(1)+'</span>'+
+  '</div>';
+}
+var HISTORIC_PRESTIGE_OVERRIDE = {
+  'Deportivo de La Coruña': 8, 'Racing de Santander': 7, 'Sporting de Gijón': 7, 'Málaga CF': 7,
+  'Real Zaragoza': 7, 'Real Oviedo': 6.5, 'Real Valladolid': 6.5, 'CD Tenerife': 6,
+  'Leeds United': 8, 'Nottingham Forest': 8, 'Sheffield Wednesday': 7, 'Sunderland': 7.5,
+  'Hamburger SV': 8, '1. FC Kaiserslautern': 7.5, 'Fortuna Düsseldorf': 6.5,
+  'UC Sampdoria': 7.5, 'Parma Calcio 1913': 7
+};
+function clubStatBars(teamName, bonus, divisionObj, historyMod){
+  var prestigeSeed = (hashStr(teamName+'|historia') % 100) / 100;
+  var topFlightWeight = isTopFlight(divisionObj) ? 1.3 : 0.7;
+  var historia = Math.max(0, Math.min(10, (bonus*1.3 + prestigeSeed*3) * topFlightWeight * 0.75));
+  if (HISTORIC_PRESTIGE_OVERRIDE[teamName] != null){
+    historia = Math.max(historia, HISTORIC_PRESTIGE_OVERRIDE[teamName]);
+  }
+  var expectedBase = 2 + bonus*3.4;
+  var baseDiff = divisionObj.base - expectedBase;
+  var actualidad;
+  if (isTopFlight(divisionObj)) actualidad = Math.max(7, Math.min(10, 7 + baseDiff*0.15));
+  else if (baseDiff > 3) actualidad = Math.min(10, 7 + (baseDiff-3)*0.3);
+  else if (baseDiff >= -3) actualidad = 5 + (baseDiff/3);
+  else actualidad = Math.max(1, 4 + (baseDiff+3)*0.3);
+  var afición = Math.max(5, Math.min(10, divisionObj.base/2));
+  var directiva = Math.min(10, baselineClubRating(bonus, isTopFlight(divisionObj), divisionObj.base)/10);
+  return '<div style="border-top:1px solid var(--border); padding-top:8px; margin-top:2px;">'+
+    clubQualityBar('Historia', historia)+
+    clubQualityBar('Actualidad', actualidad)+
+    clubQualityBar('Afición', afición)+
+    clubQualityBar('Directiva', directiva)+
+  '</div>';
+}
 function renderConfig(){
   render(
     headerBanner()+
@@ -1898,10 +1996,14 @@ function renderConfig(){
       fieldRow('Estilo de juego', '<select id="dtStyle" style="width:100%;">'+selectOptions(['Posesión','Contraataque','Presión alta','Juego directo'], state.style)+'</select>')+
       fieldRow('Tipo de presión', '<select id="dtPress" style="width:100%;">'+selectOptions(['Baja','Media','Alta','Asfixiante'], state.press)+'</select>')+
       fieldRow('Capitán', '<select id="dtCaptain" style="width:100%;">'+selectOptions(['Veterano con galones','Joven promesa'], state.captainChoice||'Veterano con galones')+'</select>')+
-      fieldRow('Tu personalidad como DT', '<select id="dtPersonality" style="width:100%;">'+selectOptions(['Ambicioso','Tranquilo','Disciplinado','Cercano'], state.coachPersonality||'Tranquilo')+'</select>')+
-      fieldRow('Foco de pretemporada', '<select id="dtFocus" style="width:100%;">'+selectOptions(['Físico','Táctico','Mental'], state.preseasonFocus||'Táctico')+'</select>')+
-      fieldRow('Segundo entrenador', '<select id="dtAssistant" style="width:100%;">'+selectOptions(['Motivador','Disciplinario','Especialista en jóvenes'], state.assistantChoice||'Motivador')+'</select>')+
     '</div>'+
+    '<details style="margin-bottom:12px;"><summary style="cursor:pointer; font-size:13px; color:var(--text-accent); margin-bottom:10px;">Más opciones (personalidad, pretemporada, cuerpo técnico)</summary>'+
+      '<div style="display:grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap:12px; margin-top:10px;">'+
+        fieldRow('Tu personalidad como DT', '<select id="dtPersonality" style="width:100%;">'+selectOptions(['Ambicioso','Tranquilo','Disciplinado','Cercano'], state.coachPersonality||'Tranquilo')+'</select>')+
+        fieldRow('Foco de pretemporada', '<select id="dtFocus" style="width:100%;">'+selectOptions(['Físico','Táctico','Mental'], state.preseasonFocus||'Táctico')+'</select>')+
+        fieldRow('Segundo entrenador', '<select id="dtAssistant" style="width:100%;">'+selectOptions(['Motivador','Disciplinario','Especialista en jóvenes'], state.assistantChoice||'Motivador')+'</select>')+
+      '</div>'+
+    '</details>'+
     '<div style="margin-bottom:0.5rem;">'+
       '<div style="display:flex; align-items:center; gap:12px;">'+
         '<label style="font-size:13px; color:var(--text-secondary); white-space:nowrap;">Días de entreno/semana</label>'+
@@ -1941,6 +2043,14 @@ function renderConfig(){
     else if (state.assistantChoice === 'Disciplinario'){ state.directiva = Math.min(100,(state.directiva||50)+3); }
     else { state.clubRating = Math.max(1,Math.min(99,state.clubRating+1)); }
 
+    playWhistle();
+    render(
+      '<div style="text-align:center; padding:60px 20px;">'+
+        '<div class="simBall" style="width:52px; height:52px; margin:0 auto 24px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #fff, #ccc 60%, #999); animation: simBounce 0.6s ease-in-out infinite alternate;"></div>'+
+        '<p style="font-size:15px; color:var(--text-secondary); margin:0;">Simulando temporada...</p>'+
+      '</div>'
+    );
+    setTimeout(function(){
     state.pts=0; state.w=0; state.d=0; state.l=0; state.played=0;
     playMatches(state.totalGames);
     var p = positionInfo();
@@ -1955,6 +2065,7 @@ function renderConfig(){
       finalizeSeason(p);
     } else if (p.tag === 'Zona de playoff'){ state.lastP = p; navigate('playoff'); }
     else { finalizeSeason(p); }
+    }, 900);
   });
 }
 var SEEDED_BRACKET_LEAGUES = {'Liga Profesional|Argentina':true, 'Liga MX|México':true, 'MLS|Estados Unidos':true};
@@ -2155,7 +2266,7 @@ function finalizeSeason(p, playoffLost){
 
   if (resolvedEuro && resolvedEuro.stage === 'Campeón'){
     var wonComp = resolvedEuro.comp.split(' (')[0];
-    var euroRank = {'Champions League':3, 'Europa League':3, 'Conference League':2, 'Copa Libertadores':2, 'Copa Sudamericana':1};
+    var euroRank = {'Champions League':4, 'Europa League':3, 'Conference League':2, 'Copa Libertadores':3, 'Copa Sudamericana':2};
     var wonToNext = {'Champions League':'Champions League', 'Europa League':'Champions League', 'Conference League':'Europa League', 'Copa Libertadores':'Copa Libertadores', 'Copa Sudamericana':'Copa Libertadores'};
     if (wonToNext[wonComp]){
       var candidate = wonToNext[wonComp];
@@ -2271,7 +2382,8 @@ function renderSeasonEnd(){
     '</div>'
   );
   var wonBigTitle = r.title === '¡Campeones!' || (r.resolvedEuro && r.resolvedEuro.stage==='Campeón') || (r.cup && r.cup.stage==='Campeón') || (r.resolvedCWC && r.resolvedCWC.stage==='Campeón');
-  if (wonBigTitle) launchConfetti();
+  if (wonBigTitle){ launchConfetti(); playTrophyFanfare(); }
+  if (r.fired) playFiredSound();
   el('nextBtn').addEventListener('click', function(){
     var finishedSeason = state.season;
     state.pendingIsLast = state.pendingIsLast || (finishedSeason >= TOTAL_SEASONS);
@@ -2760,7 +2872,7 @@ function renderNationalOffers(){
       '<p style="font-size:14px; margin:0; color:var(--text-secondary);">'+tournamentYearLabel(state.season)+' — llega '+kindLabel+'. Elegí a qué selección dirigir según tu reputación actual.</p>'+
     '</div>'+
     '<h3 style="margin:0 0 8px;">Selecciones disponibles</h3>'+
-    '<div style="display:grid; gap:8px;">'+
+    '<div style="display:grid; gap:8px; margin-bottom:16px;">'+
       options.map(function(o){
         var f = nationalForm(o.team.n, o.team.b);
         var compName = tournamentDisplayName(kind, o.team.cont);
@@ -2768,8 +2880,13 @@ function renderNationalOffers(){
           nationalTeamCrest(o.team.n, 36)+'<span><span style="display:block;">'+o.label+'</span><span style="display:block; font-size:12px; color:var(--text-secondary); font-weight:400;">'+o.team.cont+' · '+compName+' · '+f.label+'</span></span>'+
         '</button>';
       }).join('')+
-    '</div>'
+    '</div>'+
+    '<h3 style="margin:0 0 8px;">Otra opción</h3>'+
+    '<button id="declineNatBtn" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px; color:var(--text-secondary);">'+
+      '<i class="ti ti-x" style="font-size:20px;" aria-hidden="true"></i><span>Rechazar el cargo, seguir solo con el club</span>'+
+    '</button>'
   );
+  el('declineNatBtn').addEventListener('click', function(){ continueAfterTournament(); });
   document.querySelectorAll('.natBtn').forEach(function(btn){
     btn.addEventListener('click', function(){
       var team = {n:btn.getAttribute('data-team'), cont:btn.getAttribute('data-cont'), b:parseInt(btn.getAttribute('data-b'),10)};
@@ -2823,7 +2940,7 @@ function renderNationalResult(){
       '<button id="natContBtn" class="primaryBtn" style="width:100%;">Continuar <i class="ti ti-arrow-right" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'+
     '</div>'
   );
-  if (won) launchConfetti();
+  if (won){ launchConfetti(); playTrophyFanfare(); }
   el('natContBtn').addEventListener('click', function(){ continueAfterTournament(); });
 }
 
@@ -2992,12 +3109,18 @@ function renderNextOffers(){
       '</div>'
     )+
     '<h3 style="margin:0 0 6px;">Ofertas nuevas</h3>'+
-    '<div style="display:grid; gap:8px; margin-bottom:'+(state.season>=RETIRE_FROM_SEASON ? '16px' : '0')+';">'+
+    '<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:'+(state.season>=RETIRE_FROM_SEASON ? '16px' : '0')+';">'+
       offers.map(function(o){
         var h = historyFor(o.team, o.bonus);
-        return '<button class="offerBtn2 clubTintCard" data-tint-club="'+o.team+'" data-team="'+o.team+'" data-b="'+o.bonus+'" data-lg="'+o.division.league+'" data-c="'+o.division.country+'" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px;">'+
-          teamBadge(o.team)+'<span style="flex:1;"><span style="display:block;">'+flagEmoji(o.division.country)+' '+o.team+'</span><span style="display:block; font-size:12px; color:var(--text-secondary); font-weight:400;">'+o.division.league+' ('+o.division.country+') · '+h.label+'</span></span>'+
-        '</button>';
+        return '<div class="clubTintCard" data-tint-club="'+o.team+'" style="padding:8px 6px; border-radius:var(--radius); text-align:center;">'+
+          '<div style="display:flex; justify-content:center; margin-bottom:4px;">'+teamBadge(o.team, 34)+'</div>'+
+          '<p style="margin:0 0 2px; font-size:11.5px; font-weight:600; line-height:1.2;">'+o.team+'</p>'+
+          '<p style="margin:0 0 6px; font-size:9.5px; color:var(--text-secondary);">'+flagEmoji(o.division.country,12)+' '+o.division.league+'</p>'+
+          '<details style="margin-bottom:6px; text-align:left;"><summary style="cursor:pointer; font-size:9.5px; color:var(--text-accent); list-style:none; text-align:center;">Ver detalles</summary>'+
+            clubStatBars(o.team, o.bonus, o.division, h.mod)+
+          '</details>'+
+          '<button class="offerBtn2" data-team="'+o.team+'" data-b="'+o.bonus+'" data-lg="'+o.division.league+'" data-c="'+o.division.country+'" style="width:100%; background:var(--surface-2); border-color:var(--border); font-size:11px; padding:8px 4px;">Fichar</button>'+
+        '</div>';
       }).join('')+
     '</div>'+
     (state.season>=RETIRE_FROM_SEASON ?
@@ -3063,6 +3186,13 @@ function buildClubGroups(){
     if (h.cwc && h.cwc.stage==='Campeón') add(h.team, 'Mundial de Clubes (Campeón)', h.season);
   });
   return groups;
+}
+var HALL_OF_FAME_KEY = 'dtHallOfFame';
+function getHallOfFame(){
+  try { return JSON.parse(localStorage.getItem(HALL_OF_FAME_KEY) || 'null'); } catch(e){ return null; }
+}
+function saveHallOfFame(record){
+  try { localStorage.setItem(HALL_OF_FAME_KEY, JSON.stringify(record)); } catch(e){}
 }
 function computeTotalPoints(){
   var pts = 0;
@@ -3296,6 +3426,27 @@ function buildShareText(){
   return 'Mi carrera como DT: '+state.name+' — '+titulos+' liga(s), '+natTitulos+' título(s) con selecciones'+(tier?', '+tier.label:'')+'. #ManagerCareer';
 }
 
+function managerRatingChartSVG(){
+  var vals = state.history.map(function(h){ return h.mrSnapshot != null ? h.mrSnapshot : 50; });
+  if (vals.length < 2) return '';
+  var W = 600, H = 160, pad = 20;
+  var maxV = Math.max(100, Math.max.apply(null, vals));
+  var minV = Math.min(0, Math.min.apply(null, vals));
+  var stepX = (W - pad*2) / (vals.length - 1);
+  var points = vals.map(function(v, i){
+    var x = pad + i*stepX;
+    var y = H - pad - ((v - minV) / (maxV - minV || 1)) * (H - pad*2);
+    return x.toFixed(1)+','+y.toFixed(1);
+  }).join(' ');
+  var areaPoints = points + ' ' + (pad + (vals.length-1)*stepX).toFixed(1) + ',' + (H-pad) + ' ' + pad + ',' + (H-pad);
+  return '<div style="background:var(--surface-1); border-radius:var(--radius); padding:1rem; margin-bottom:1.5rem;">'+
+    '<p style="margin:0 0 8px; font-size:12px; color:var(--text-accent); text-transform:uppercase; letter-spacing:0.03em; font-family:var(--display);">Evolución de tu media</p>'+
+    '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%; height:auto; display:block;">'+
+      '<polygon points="'+areaPoints+'" fill="rgba(232,163,61,0.12)"/>'+
+      '<polyline points="'+points+'" fill="none" stroke="#E8A33D" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>'+
+    '</svg>'+
+  '</div>';
+}
 function renderCareerSummary(){
   var titulos = state.history.filter(function(h){ return h.achievement==='Título de Liga'; });
   var ascensos = state.history.filter(function(h){ return h.achievement==='Ascenso'; });
@@ -3306,6 +3457,24 @@ function renderCareerSummary(){
 
   var totalPoints = computeTotalPoints();
   var moyTier = managerOfYearTier(totalPoints);
+
+  var hallOfFame = getHallOfFame();
+  var isNewRecord = !hallOfFame || totalPoints > hallOfFame.points;
+  var hofBanner;
+  if (isNewRecord){
+    hofBanner = '<div style="background:rgba(232,163,61,0.12); border:1px solid var(--text-accent); border-radius:var(--radius); padding:0.9rem 1rem; margin-bottom:1.25rem; display:flex; gap:10px; align-items:center;">'+
+      '<i class="ti ti-trophy" style="font-size:24px; color:var(--text-accent);" aria-hidden="true"></i>'+
+      '<div><p style="margin:0; font-size:14px; font-weight:600; color:var(--text-accent);">¡Nuevo récord personal!</p>'+
+      '<p style="margin:0; font-size:12px; color:var(--text-secondary);">'+totalPoints+' puntos de carrera'+(hallOfFame ? ' (anterior: '+hallOfFame.points+' con '+hallOfFame.name+')' : '')+'</p></div>'+
+    '</div>';
+    saveHallOfFame({points: totalPoints, name: state.name, team: state.team, season: state.season, titles: titulos.length});
+  } else {
+    hofBanner = '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.9rem 1rem; margin-bottom:1.25rem; display:flex; gap:10px; align-items:center;">'+
+      '<i class="ti ti-history" style="font-size:24px; color:var(--text-secondary);" aria-hidden="true"></i>'+
+      '<div><p style="margin:0; font-size:14px; font-weight:600;">Salón de la fama</p>'+
+      '<p style="margin:0; font-size:12px; color:var(--text-secondary);">Tu mejor carrera sigue siendo '+hallOfFame.name+' con '+hallOfFame.points+' puntos (esta: '+totalPoints+')</p></div>'+
+    '</div>';
+  }
 
   var clubGroups = buildClubGroups();
   var clubNames = Object.keys(clubGroups);
@@ -3361,6 +3530,8 @@ function renderCareerSummary(){
       '<p style="font-size:14px; color:var(--text-secondary); margin:0 0 6px;">'+titulos.length+' liga · '+ascensos.length+' ascenso(s) · '+euroTitles.length+' Europa/Sudamérica · '+cwcTitles.length+' Mundial de Clubes · '+cupTitles.length+' copa(s) doméstica(s) · '+natTitles.length+' con selecciones. Último club: '+state.team+' ('+state.country+').</p>'+
       (moyTier ? '<div style="display:flex; align-items:center; gap:8px; margin-top:8px;"><i class="ti '+moyTier.icon+'" style="font-size:22px; color:var(--text-accent);" aria-hidden="true"></i><p style="margin:0; font-size:15px; font-weight:600;">'+moyTier.label+' ('+totalPoints+' pts)</p></div>' : '<p style="margin:8px 0 0; font-size:13px; color:var(--text-secondary);">'+totalPoints+' puntos de carrera.</p>')+
     '</div>'+
+    hofBanner+
+    managerRatingChartSVG()+
     '<div style="display:flex; gap:8px; margin-bottom:1.5rem;">'+
       '<button id="shareBtn" style="flex:1;">Compartir <i class="ti ti-share" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'+
       '<button id="retryBtn" style="flex:1;">Empezar otra carrera <i class="ti ti-refresh" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'+
@@ -3385,23 +3556,21 @@ function renderCareerSummary(){
           if (!groups[teamKey]) groups[teamKey] = [];
           groups[teamKey].push(a);
         });
-        var cards = Object.keys(groups).map(function(team){
+        var rows = Object.keys(groups).map(function(team){
           var awards = groups[team];
           var count = awards.length;
           var seasons = awards.map(function(a){ return a.season; });
-          return '<div class="clubTintCard" data-tint-club="'+team.replace(/"/g,'&quot;')+'" style="background:var(--surface-1); border-radius:var(--radius); padding:0.9rem; margin-bottom:8px; text-align:center;">'+
-            '<div style="display:flex; justify-content:center; margin-bottom:6px;">'+teamBadge(team, 46)+'</div>'+
-            '<p style="margin:0 0 8px; font-size:14px; font-weight:500;">'+team+'</p>'+
-            '<div style="display:flex; justify-content:center;">'+
-              '<span style="position:relative; display:inline-flex;" title="Mejor Entrenador de la Liga — '+seasons.map(seasonYearLabel).join(', ')+'">'+
-                svgTrophyIcon('star', '#E8A33D', 34, 'Mejor Entrenador de la Liga')+
-                (count>1 ? '<span style="position:absolute; bottom:-4px; right:-6px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:0 4px; font-size:10px; font-weight:700; color:var(--text-accent);">x'+count+'</span>' : '')+
-              '</span>'+
-            '</div>'+
+          return '<div style="display:flex; align-items:center; gap:10px; padding:8px 4px; border-bottom:1px solid var(--border);">'+
+            teamBadge(team, 36)+
+            '<span style="flex:1; font-size:14px; font-weight:500;">'+team+'</span>'+
+            '<span style="position:relative; display:inline-flex;" title="Mejor Entrenador de la Liga — '+seasons.map(seasonYearLabel).join(', ')+'">'+
+              svgTrophyIcon('star', '#E8A33D', 28, 'Mejor Entrenador de la Liga')+
+              (count>1 ? '<span style="position:absolute; bottom:-4px; right:-6px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:0 4px; font-size:10px; font-weight:700; color:var(--text-accent);">x'+count+'</span>' : '')+
+            '</span>'+
           '</div>';
         }).join('');
         return '<h3 style="margin:0 0 8px;">Premios individuales</h3>'+
-          '<div style="margin-bottom:1.5rem;">'+cards+'</div>';
+          '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.4rem 0.9rem; margin-bottom:1.5rem;">'+rows+'</div>';
       })() : '')+
     '<h3 style="margin:0 0 8px;">Palmarés por club</h3>'+
     '<div style="margin-bottom:1.5rem;">'+palmaresByClub+'</div>'+
