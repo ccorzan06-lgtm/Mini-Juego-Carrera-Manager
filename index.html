@@ -109,7 +109,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     #nationalSidebar { position: static; max-width: 640px; width: 100%; max-height: none; order: 2; }
   }
   @media (max-width: 600px) {
-    body { padding: 60px 12px 48px; }
+    body { padding: 20px 12px 48px; }
     button { min-height: 46px; font-size: 15px; padding: 12px 14px; }
     h2 { font-size: 1.5em; }
     h3 { font-size: 1.05em; }
@@ -272,141 +272,606 @@ var COUNTRIES = ['Afganistán','Albania','Alemania','Andorra','Angola','Arabia S
 
 var CLUBDB = [
   {league:'Premier League', country:'Reino Unido', base:20, matchdays:38, teams:[
-    {n:'Manchester City',b:4},{n:'Liverpool',b:5},{n:'Manchester United',b:5},{n:'Arsenal',b:3},{n:'Chelsea',b:3},
-    {n:'Tottenham Hotspur',b:1},{n:'Newcastle United',b:1},{n:'Everton',b:1},{n:'Aston Villa',b:1},{n:'Crystal Palace',b:0},
-    {n:'Bournemouth',b:0},{n:'Brentford',b:0},{n:'Brighton & Hove Albion',b:1},{n:'Coventry City',b:0},{n:'Fulham',b:0},
-    {n:'Hull City',b:0},{n:'Ipswich Town',b:0},{n:'Leeds United',b:2},{n:'Nottingham Forest',b:2},{n:'Sunderland',b:1}]},
+    {n:'Manchester City',b:4,c:'Mánchester',s:'Etihad Stadium'},{n:'Liverpool',b:5,c:'Liverpool',s:'Anfield'},{n:'Manchester United',b:5,c:'Mánchester',s:'Old Trafford'},{n:'Arsenal',b:3,c:'Londres',s:'Emirates Stadium'},{n:'Chelsea',b:3,c:'Londres',s:'Stamford Bridge'},
+    {n:'Tottenham Hotspur',b:1,c:'Londres',s:'Tottenham Hotspur Stadium'},{n:'Newcastle United',b:1,c:'Newcastle upon Tyne',s:'St James\' Park'},{n:'Everton',b:1,c:'Liverpool',s:'Hill Dickinson Stadium'},{n:'Aston Villa',b:1,c:'Birmingham',s:'Villa Park'},{n:'Crystal Palace',b:0,c:'Londres',s:'Selhurst Park'},
+    {n:'Bournemouth',b:0,c:'Bournemouth',s:'Vitality Stadium'},{n:'Brentford',b:0,c:'Londres',s:'Gtech Community Stadium'},{n:'Brighton & Hove Albion',b:1,c:'Brighton',s:'Falmer Stadium (Amex Stadium)'},{n:'Coventry City',b:0,c:'Coventry',s:'Coventry Building Society Arena'},{n:'Fulham',b:0,c:'Londres',s:'Craven Cottage'},
+    {n:'Hull City',b:0,c:'Hull',s:'MKM Stadium'},{n:'Ipswich Town',b:0,c:'Ipswich',s:'Portman Road'},{n:'Leeds United',b:2,c:'Leeds',s:'Elland Road'},{n:'Nottingham Forest',b:2,c:'Nottingham',s:'City Ground'},{n:'Sunderland',b:1,c:'Sunderland',s:'Stadium of Light'}]},
   {league:'Championship', country:'Reino Unido', base:10, matchdays:46, teams:[
-    {n:'Birmingham City',b:1},{n:'Blackburn Rovers',b:1},{n:'Bolton Wanderers',b:0},{n:'Bristol City',b:0},{n:'Burnley',b:1},
-    {n:'Cardiff City',b:0},{n:'Charlton Athletic',b:0},{n:'Derby County',b:1},{n:'Lincoln City',b:0},{n:'Middlesbrough',b:0},
-    {n:'Millwall',b:0},{n:'Norwich City',b:0},{n:'Portsmouth',b:0},{n:'Preston North End',b:0},{n:'Queens Park Rangers',b:0},
-    {n:'Sheffield United',b:0},{n:'Southampton',b:1},{n:'Stoke City',b:0},{n:'Swansea City',b:0},{n:'Watford',b:0},
-    {n:'West Bromwich Albion',b:0},{n:'West Ham United',b:2},{n:'Wolverhampton Wanderers',b:1},{n:'Wrexham',b:1}]},
+    {n:'Birmingham City',b:1,c:'Birmingham',s:'St Andrew\'s'},{n:'Blackburn Rovers',b:1,c:'Blackburn',s:'Ewood Park'},{n:'Bolton Wanderers',b:0,c:'Bolton',s:'Toughsheet Community Stadium'},{n:'Bristol City',b:0,c:'Bristol',s:'Ashton Gate'},{n:'Burnley',b:1,c:'Burnley',s:'Turf Moor'},
+    {n:'Cardiff City',b:0,c:'Cardiff',s:'Cardiff City Stadium'},{n:'Charlton Athletic',b:0,c:'Londres',s:'The Valley'},{n:'Derby County',b:1,c:'Derby',s:'Pride Park Stadium'},{n:'Lincoln City',b:0,c:'Lincoln',s:'LNER Stadium'},{n:'Middlesbrough',b:0,c:'Middlesbrough',s:'Riverside Stadium'},
+    {n:'Millwall',b:0,c:'Londres',s:'The Den'},{n:'Norwich City',b:0,c:'Norwich',s:'Carrow Road'},{n:'Portsmouth',b:0,c:'Portsmouth',s:'Fratton Park'},{n:'Preston North End',b:0,c:'Preston',s:'Deepdale'},{n:'Queens Park Rangers',b:0,c:'Londres',s:'Loftus Road'},
+    {n:'Sheffield United',b:0,c:'Sheffield',s:'Bramall Lane'},{n:'Southampton',b:1,c:'Southampton',s:'St Mary\'s Stadium'},{n:'Stoke City',b:0,c:'Stoke-on-Trent',s:'bet365 Stadium'},{n:'Swansea City',b:0,c:'Swansea',s:'Swansea.com Stadium'},{n:'Watford',b:0,c:'Watford',s:'Vicarage Road'},
+    {n:'West Bromwich Albion',b:0,c:'West Bromwich',s:'The Hawthorns'},{n:'West Ham United',b:2,c:'Londres',s:'London Stadium'},{n:'Wolverhampton Wanderers',b:1,c:'Wolverhampton',s:'Molineux Stadium'},{n:'Wrexham',b:1,c:'Wrexham',s:'The Racecourse Ground'}]},
   {league:'League One', country:'Reino Unido', base:6, matchdays:46, teams:[
-    {n:'AFC Wimbledon',b:0},{n:'Barnsley',b:0},{n:'Blackpool',b:0},{n:'Bradford City',b:0},{n:'Bromley',b:0},
-    {n:'Burton Albion',b:0},{n:'Cambridge United',b:0},{n:'Doncaster Rovers',b:0},{n:'Huddersfield Town',b:1},{n:'Leicester City',b:2},
-    {n:'Leyton Orient',b:0},{n:'Luton Town',b:0},{n:'Mansfield Town',b:0},{n:'Milton Keynes Dons',b:0},{n:'Notts County',b:1},
-    {n:'Oxford United',b:0},{n:'Peterborough United',b:0},{n:'Plymouth Argyle',b:0},{n:'Reading',b:0},{n:'Sheffield Wednesday',b:1},
-    {n:'Stevenage',b:0},{n:'Stockport County',b:0},{n:'Wigan Athletic',b:1},{n:'Wycombe Wanderers',b:0}]},
+    {n:'AFC Wimbledon',b:0,c:'Londres',s:'Plough Lane'},{n:'Barnsley',b:0,c:'Barnsley',s:'Oakwell'},{n:'Blackpool',b:0,c:'Blackpool',s:'Bloomfield Road'},{n:'Bradford City',b:0,c:'Bradford',s:'Valley Parade'},{n:'Bromley',b:0,c:'Bromley',s:'Hayes Lane'},
+    {n:'Burton Albion',b:0,c:'Burton upon Trent',s:'Pirelli Stadium'},{n:'Cambridge United',b:0,c:'Cambridge',s:'Cledara Abbey Stadium'},{n:'Doncaster Rovers',b:0,c:'Doncaster',s:'Eco-Power Stadium'},{n:'Huddersfield Town',b:1,c:'Huddersfield',s:'Kirklees Stadium'},{n:'Leicester City',b:2,c:'Leicester',s:'King Power Stadium'},
+    {n:'Leyton Orient',b:0,c:'Londres',s:'Gaughan Group Stadium'},{n:'Luton Town',b:0,c:'Luton',s:'Kenilworth Road'},{n:'Mansfield Town',b:0,c:'Mansfield',s:'One Call Stadium'},{n:'Milton Keynes Dons',b:0,c:'Milton Keynes',s:'Stadium MK'},{n:'Notts County',b:1,c:'Nottingham',s:'Meadow Lane'},
+    {n:'Oxford United',b:0,c:'Oxford',s:'Kassam Stadium'},{n:'Peterborough United',b:0,c:'Peterborough',s:'Weston Homes Stadium'},{n:'Plymouth Argyle',b:0,c:'Plymouth',s:'Home Park'},{n:'Reading',b:0,c:'Reading',s:'Select Car Leasing Stadium'},{n:'Sheffield Wednesday',b:1,c:'Sheffield',s:'Hillsborough'},
+    {n:'Stevenage',b:0,c:'Stevenage',s:'The Lamex Stadium'},{n:'Stockport County',b:0,c:'Stockport',s:'Edgeley Park'},{n:'Wigan Athletic',b:1,c:'Wigan',s:'The Brick Community Stadium'},{n:'Wycombe Wanderers',b:0,c:'High Wycombe',s:'Adams Park'}]},
   {league:'League Two', country:'Reino Unido', base:3, matchdays:46, teams:[
-    {n:'Accrington Stanley',b:0},{n:'Barnet',b:0},{n:'Bristol Rovers',b:0},{n:'Cheltenham Town',b:0},{n:'Chesterfield',b:0},
-    {n:'Colchester United',b:0},{n:'Crawley Town',b:0},{n:'Crewe Alexandra',b:0},{n:'Exeter City',b:0},{n:'Fleetwood Town',b:0},
-    {n:'Gillingham',b:0},{n:'Grimsby Town',b:0},{n:'Newport County',b:0},{n:'Northampton Town',b:0},{n:'Oldham Athletic',b:0},
-    {n:'Port Vale',b:0},{n:'Rochdale',b:0},{n:'Rotherham United',b:0},{n:'Salford City',b:0},{n:'Shrewsbury Town',b:0},
-    {n:'Swindon Town',b:0},{n:'Tranmere Rovers',b:0},{n:'Walsall',b:0},{n:'York City',b:0}]},
+    {n:'Accrington Stanley',b:0,c:'Accrington',s:'Wham Stadium'},{n:'Barnet',b:0,c:'Londres',s:'The Hive Stadium'},{n:'Bristol Rovers',b:0,c:'Bristol',s:'Memorial Stadium'},{n:'Cheltenham Town',b:0,c:'Cheltenham',s:'Completely-Suzuki Stadium'},{n:'Chesterfield',b:0,c:'Chesterfield',s:'SMH Group Stadium'},
+    {n:'Colchester United',b:0,c:'Colchester',s:'Weston Homes Community Stadium'},{n:'Crawley Town',b:0,c:'Crawley',s:'Broadfield Stadium'},{n:'Crewe Alexandra',b:0,c:'Crewe',s:'Mornflake Stadium'},{n:'Exeter City',b:0,c:'Exeter',s:'St James Park'},{n:'Fleetwood Town',b:0,c:'Fleetwood',s:'Highbury Stadium'},
+    {n:'Gillingham',b:0,c:'Gillingham',s:'Priestfield Stadium'},{n:'Grimsby Town',b:0,c:'Grimsby',s:'Blundell Park'},{n:'Newport County',b:0,c:'Newport',s:'Rodney Parade'},{n:'Northampton Town',b:0,c:'Northampton',s:'Sixfields Stadium'},{n:'Oldham Athletic',b:0,c:'Oldham',s:'Boundary Park'},
+    {n:'Port Vale',b:0,c:'Stoke-on-Trent',s:'Vale Park'},{n:'Rochdale',b:0,c:'Rochdale',s:'Crown Oil Arena'},{n:'Rotherham United',b:0,c:'Rotherham',s:'New York Stadium'},{n:'Salford City',b:0,c:'Salford',s:'Peninsula Stadium'},{n:'Shrewsbury Town',b:0,c:'Shrewsbury',s:'Croud Meadow'},
+    {n:'Swindon Town',b:0,c:'Swindon',s:'County Ground'},{n:'Tranmere Rovers',b:0,c:'Birkenhead',s:'Prenton Park'},{n:'Walsall',b:0,c:'Walsall',s:'Bescot Stadium'},{n:'York City',b:0,c:'York',s:'LNER Community Stadium'}]},
 
   {league:'LaLiga', country:'España', base:19, matchdays:38, teams:[
-    {n:'Deportivo Alavés',b:0},{n:'Athletic Club',b:2},{n:'Atlético de Madrid',b:3},{n:'FC Barcelona',b:5},{n:'Celta de Vigo',b:0},
-    {n:'Deportivo de La Coruña',b:0},{n:'Elche CF',b:0},{n:'RCD Espanyol',b:0},{n:'Getafe CF',b:0},{n:'Levante UD',b:0},
-    {n:'Málaga CF',b:1},{n:'CA Osasuna',b:0},{n:'Racing de Santander',b:0},{n:'Rayo Vallecano',b:0},{n:'Real Betis',b:1},
-    {n:'Real Madrid',b:5},{n:'Real Sociedad',b:1},{n:'Sevilla FC',b:2},{n:'Valencia CF',b:2},{n:'Villarreal CF',b:1}]},
+    {n:'Deportivo Alavés',b:0,c:'Vitoria-Gasteiz',s:'Mendizorrotza'},{n:'Athletic Club',b:2,c:'Bilbao',s:'San Mamés'},{n:'Atlético de Madrid',b:3,c:'Madrid',s:'Cívitas Metropolitano'},{n:'FC Barcelona',b:5,c:'Barcelona',s:'Spotify Camp Nou'},{n:'Celta de Vigo',b:0,c:'Vigo',s:'Balaídos'},
+    {n:'Deportivo de La Coruña',b:0,c:'La Coruña',s:'Riazor'},{n:'Elche CF',b:0,c:'Elche',s:'Estadio Manuel Martínez Valero'},{n:'RCD Espanyol',b:0,c:'Barcelona',s:'RCDE Stadium'},{n:'Getafe CF',b:0,c:'Getafe',s:'Coliseum'},{n:'Levante UD',b:0,c:'Valencia',s:'Ciutat de València'},
+    {n:'Málaga CF',b:1,c:'Málaga',s:'La Rosaleda'},{n:'CA Osasuna',b:0,c:'Pamplona',s:'El Sadar'},{n:'Racing de Santander',b:0,c:'Santander',s:'El Sardinero'},{n:'Rayo Vallecano',b:0,c:'Madrid',s:'Vallecas'},{n:'Real Betis',b:1,c:'Sevilla',s:'Benito Villamarín'},
+    {n:'Real Madrid',b:5,c:'Madrid',s:'Santiago Bernabéu'},{n:'Real Sociedad',b:1,c:'San Sebastián',s:'Reale Arena'},{n:'Sevilla FC',b:2,c:'Sevilla',s:'Ramón Sánchez-Pizjuán'},{n:'Valencia CF',b:2,c:'Valencia',s:'Mestalla'},{n:'Villarreal CF',b:1,c:'Villarreal',s:'Estadio de la Cerámica'}]},
   {league:'LaLiga 2', country:'España', base:9, matchdays:42, teams:[
-    {n:'Real Oviedo',b:0},{n:'RCD Mallorca',b:0},{n:'Girona FC',b:1},{n:'UD Almería',b:0},{n:'UD Las Palmas',b:0},
-    {n:'CD Castellón',b:0},{n:'Burgos CF',b:0},{n:'SD Eibar',b:0},{n:'Córdoba CF',b:0},{n:'Real Sporting de Gijón',b:1},
-    {n:'AD Ceuta',b:0},{n:'Albacete Balompié',b:0},{n:'FC Andorra',b:0},{n:'Granada CF',b:0},{n:'Real Sociedad B',b:0},
-    {n:'CD Leganés',b:0},{n:'Real Valladolid',b:0},{n:'Cádiz CF',b:0},{n:'CD Tenerife',b:0},{n:'CD Eldense',b:0},
-    {n:'Celta Fortuna',b:0},{n:'CE Sabadell',b:0}]},
+    {n:'Real Oviedo',b:0,c:'Oviedo',s:'Carlos Tartiere'},{n:'RCD Mallorca',b:0,c:'Palma',s:'Son Moix'},{n:'Girona FC',b:1,c:'Girona',s:'Montilivi'},{n:'UD Almería',b:0,c:'Almería',s:'Power Horse Stadium'},{n:'UD Las Palmas',b:0,c:'Las Palmas de Gran Canaria',s:'Gran Canaria'},
+    {n:'CD Castellón',b:0,c:'Castellón de la Plana',s:'Castalia'},{n:'Burgos CF',b:0,c:'Burgos',s:'El Plantío'},{n:'SD Eibar',b:0,c:'Eibar',s:'Ipurua'},{n:'Córdoba CF',b:0,c:'Córdoba',s:'Nuevo Arcángel'},{n:'Real Sporting de Gijón',b:1,c:'Gijón',s:'El Molinón'},
+    {n:'AD Ceuta',b:0,c:'Ceuta',s:'Alfonso Murube'},{n:'Albacete Balompié',b:0,c:'Albacete',s:'Carlos Belmonte'},{n:'FC Andorra',b:0,c:'Andorra la Vella',s:'Estadi Nacional'},{n:'Granada CF',b:0,c:'Granada',s:'Nuevo Los Cármenes'},{n:'Real Sociedad B',b:0,c:'San Sebastián',s:'Zubieta'},
+    {n:'CD Leganés',b:0,c:'Leganés',s:'Butarque'},{n:'Real Valladolid',b:0,c:'Valladolid',s:'José Zorrilla'},{n:'Cádiz CF',b:0,c:'Cádiz',s:'Nuevo Mirandilla'},{n:'CD Tenerife',b:0,c:'Santa Cruz de Tenerife',s:'Heliodoro Rodríguez López'},{n:'CD Eldense',b:0,c:'Elda',s:'Nuevo Pepico Amat'},
+    {n:'Celta Fortuna',b:0,c:'Vigo',s:'A Madroa'},{n:'CE Sabadell',b:0,c:'Sabadell',s:'Nova Creu Alta'}]},
   {league:'Primera Federación', country:'España', base:3, matchdays:38, teams:[
-    {n:'AD Mérida',b:0},{n:'Arenas Club de Getxo',b:0},{n:'Athletic Club B',b:0},{n:'Barakaldo CF',b:0},{n:'CD Coria',b:0},
-    {n:'CD Extremadura',b:0},{n:'CD Lugo',b:0},{n:'CD Mirandés',b:0},{n:'CP Cacereño',b:0},{n:'Cultural Leonesa',b:0},
-    {n:'Pontevedra CF',b:0},{n:'Racing Club Ferrol',b:0},{n:'Deportivo Fabril',b:0},{n:'Real Avilés Industrial',b:0},{n:'Real Unión',b:0},
-    {n:'SD Ponferradina',b:0},{n:'UD Logroñés',b:0},{n:'UD Ourense',b:0},{n:'Unionistas de Salamanca',b:0},{n:'Zamora CF',b:0},
-    {n:'AD Alcorcón',b:0},{n:'Águilas FC',b:0},{n:'Algeciras CF',b:0},{n:'Antequera CF',b:0},{n:'Atlético Madrileño',b:0},
-    {n:'CD Teruel',b:0},{n:'CE Europa',b:0},{n:'CF Rayo Majadahonda',b:0},{n:'FC Cartagena',b:0},{n:'Gimnàstic de Tarragona',b:0},
-    {n:'Hércules CF',b:0},{n:'Juventud de Torremolinos',b:0},{n:'Real Jaén',b:0},{n:'Real Madrid Castilla',b:0},{n:'Real Murcia',b:0},
-    {n:'Real Zaragoza',b:1},{n:'SD Huesca',b:1},{n:'UD Ibiza',b:0},{n:'UE Sant Andreu',b:0},{n:'Villarreal CF B',b:0}]},
+    {n:'AD Mérida',b:0,c:'Mérida',s:'Romano'},{n:'Arenas Club de Getxo',b:0,c:'Getxo',s:'Gobela'},{n:'Athletic Club B',b:0,c:'Basauri',s:'Lezama'},{n:'Barakaldo CF',b:0,c:'Barakaldo',s:'Lasesarre'},{n:'CD Coria',b:0,c:'Coria',s:'La Isla'},
+    {n:'CD Extremadura',b:0,c:'Almendralejo',s:'Francisco de la Hera'},{n:'CD Lugo',b:0,c:'Lugo',s:'Anxo Carro'},{n:'CD Mirandés',b:0,c:'Miranda de Ebro',s:'Anduva'},{n:'CP Cacereño',b:0,c:'Cáceres',s:'Príncipe Felipe'},{n:'Cultural Leonesa',b:0,c:'León',s:'Reino de León'},
+    {n:'Pontevedra CF',b:0,c:'Pontevedra',s:'Pasarón'},{n:'Racing Club Ferrol',b:0,c:'Ferrol',s:'A Malata'},{n:'Deportivo Fabril',b:0,c:'Abegondo',s:'Abegondo'},{n:'Real Avilés Industrial',b:0,c:'Avilés',s:'Román Suárez Puerta'},{n:'Real Unión',b:0,c:'Irún',s:'Stadium Gal'},
+    {n:'SD Ponferradina',b:0,c:'Ponferrada',s:'El Toralín'},{n:'UD Logroñés',b:0,c:'Logroño',s:'Las Gaunas'},{n:'UD Ourense',b:0,c:'Ourense',s:'O Couto'},{n:'Unionistas de Salamanca',b:0,c:'Salamanca',s:'Reina Sofía'},{n:'Zamora CF',b:0,c:'Zamora',s:'Ruta de la Plata'},
+    {n:'AD Alcorcón',b:0,c:'Alcorcón',s:'Santo Domingo'},{n:'Águilas FC',b:0,c:'Águilas',s:'El Rubial'},{n:'Algeciras CF',b:0,c:'Algeciras',s:'Nuevo Mirador'},{n:'Antequera CF',b:0,c:'Antequera',s:'El Maulí'},{n:'Atlético Madrileño',b:0,c:'Madrid',s:'Cerro del Espino'},
+    {n:'CD Teruel',b:0,c:'Teruel',s:'Pinilla'},{n:'CE Europa',b:0,c:'Barcelona',s:'Nou Sardenya'},{n:'CF Rayo Majadahonda',b:0,c:'Majadahonda',s:'Cerro del Espino'},{n:'FC Cartagena',b:0,c:'Cartagena',s:'Cartagonova'},{n:'Gimnàstic de Tarragona',b:0,c:'Tarragona',s:'Nou Estadi'},
+    {n:'Hércules CF',b:0,c:'Alicante',s:'José Rico Pérez'},{n:'Juventud de Torremolinos',b:0,c:'Torremolinos',s:'El Pozuelo'},{n:'Real Jaén',b:0,c:'Jaén',s:'La Victoria'},{n:'Real Madrid Castilla',b:0,c:'Madrid',s:'Alfredo Di Stéfano'},{n:'Real Murcia',b:0,c:'Murcia',s:'Nueva Condomina'},
+    {n:'Real Zaragoza',b:1,c:'Zaragoza',s:'La Romareda'},{n:'SD Huesca',b:1,c:'Huesca',s:'El Alcoraz'},{n:'UD Ibiza',b:0,c:'Ibiza',s:'Municipal de Can Misses'},{n:'UE Sant Andreu',b:0,c:'Barcelona',s:'Narcís Sala'},{n:'Villarreal CF B',b:0,c:'Villarreal',s:'Ciudad Deportiva Villarreal'}]},
+
+  {league:'Segunda Federación - Grupo 1', country:'España', base:2, matchdays:34, teams:[
+    {n:'Arosa SC',b:0,c:'Vilagarcía de Arousa',s:'A Lomba'},{n:'Bergantiños FC',b:0,c:'Carballo',s:'As Eiroas'},{n:'CD Arenteiro',b:0,c:'O Carballiño',s:'O Espiñedo'},
+    {n:'Coruxo FC',b:0,c:'Vigo',s:'O Vao'},{n:'Ourense CF',b:0,c:'Ourense',s:'O Couto'},{n:'SD Compostela',b:0,c:'Santiago de Compostela',s:'Vero Boquete'},
+    {n:'Rayo Cantabria',b:0,c:'Santander',s:'La Albericia'},{n:'Gimnástica de Torrelavega',b:0,c:'Torrelavega',s:'El Malecón'},{n:'Real Oviedo Vetusta',b:0,c:'Oviedo',s:'El Requexón'},
+    {n:'Marino de Luanco',b:0,c:'Luanco',s:'Miramar'},{n:'UD Llanera',b:0,c:'Llanera',s:'Pepe Quimarán'},{n:'CD Basconia',b:0,c:'Basauri',s:'Basozelai'},
+    {n:'Club Portugalete',b:0,c:'Portugalete',s:'La Florida'},{n:'SD Eibar B',b:0,c:'Eibar',s:'Ipurua (anexo)'},{n:'Gernika Club',b:0,c:'Gernika-Lumo',s:'Urbieta'},
+    {n:'Sestao River Club',b:0,c:'Sestao',s:'Las Llanas'},{n:'Deportivo Alavés B',b:0,c:'Vitoria-Gasteiz',s:'Ibaia'},{n:'SD Amorebieta',b:0,c:'Amorebieta-Etxano',s:'Urritxe'}]},
+
+  {league:'Segunda Federación - Grupo 2', country:'España', base:2, matchdays:34, teams:[
+    {n:'CA Osasuna B',b:0,c:'Pamplona',s:'Tajonar'},{n:'CD Tudelano',b:0,c:'Tudela',s:'Ciudad de Tudela'},{n:'Peña Sport FC',b:0,c:'Tafalla',s:'San Francisco'},
+    {n:'RCD Espanyol B',b:1,c:'Sant Adrià de Besòs',s:'Nou Sardenya'},{n:'Reus FC Reddis',b:0,c:'Reus',s:'Municipal de Reus'},{n:'CE Manresa',b:0,c:'Manresa',s:'Nou Congost'},
+    {n:'Terrassa FC',b:0,c:'Terrassa',s:'Olímpic de Terrassa'},{n:'FC Barcelona Atlètic',b:1,c:'Sant Joan Despí',s:'Johan Cruyff'},{n:'Girona FC B',b:0,c:'Girona',s:'Municipal de Vila-roja'},
+    {n:'UE Olot',b:0,c:'Olot',s:'Municipal d\'Olot'},{n:'CD Arnedo',b:0,c:'Arnedo',s:'La Molineta'},{n:'UD Logroñés B',b:0,c:'Logroño',s:'Ciudad Deportiva UD Logroñés'},
+    {n:'SD Logroñés',b:1,c:'Logroño',s:'Las Gaunas'},{n:'Náxara CD',b:0,c:'Nájera',s:'La Salera'},{n:'CD Ebro',b:0,c:'Zaragoza',s:'La Almozara'},
+    {n:'CD Tarazona',b:0,c:'Tarazona',s:'Municipal de Tarazona'},{n:'UD Barbastro',b:0,c:'Barbastro',s:'Municipal de Barbastro'},{n:'Utebo FC',b:0,c:'Utebo',s:'El Ferial'}]},
+
+  {league:'Segunda Federación - Grupo 3', country:'España', base:2, matchdays:34, teams:[
+    {n:'CD Alcoyano',b:0,c:'Alcoy',s:'El Collao'},{n:'UD Castellonense',b:0,c:'Castellón de la Plana',s:'Ciudad Deportiva Castellón'},{n:'Orihuela CF',b:0,c:'Orihuela',s:'Los Arcos'},
+    {n:'CF Intercity',b:0,c:'Alicante',s:'Antonio Solana'},{n:'CF La Nucía',b:0,c:'La Nucía',s:'Camilo Cano'},{n:'Elche CF Ilicitano',b:0,c:'Elche',s:'Martínez Valero (anexo)'},
+    {n:'Valencia CF Mestalla',b:0,c:'Paterna',s:'Antonio Puchades'},{n:'CF Lorca Deportiva',b:0,c:'Lorca',s:'Francisco Artés Carrasco'},{n:'CD Minera',b:0,c:'Llano del Beal',s:'Ángel Cedrán'},
+    {n:'Yeclano Deportivo',b:0,c:'Yecla',s:'La Constitución'},{n:'UCAM Murcia CF',b:1,c:'Murcia',s:'Estadio de la UCAM'},{n:'Real Murcia Imperial',b:0,c:'Murcia',s:'La Condomina'},
+    {n:'FC La Unión Atlético',b:0,c:'La Unión',s:'Municipal de La Unión'},{n:'CD Cieza',b:0,c:'Cieza',s:'La Arboleja'},{n:'CD Atlético Baleares',b:0,c:'Palma',s:'Estadi Balear'},
+    {n:'RCD Mallorca B',b:0,c:'Palma',s:'Son Bibiloni'},{n:'UD Poblense',b:0,c:'Sa Pobla',s:'Municipal de Sa Pobla'},{n:'SCR Peña Deportiva',b:0,c:'Santa Eulària des Riu',s:'Can Escandell'}]},
+
+  {league:'Segunda Federación - Grupo 4', country:'España', base:2, matchdays:34, teams:[
+    {n:'CD Atlético Sanluqueño',b:0,c:'Sanlúcar de Barrameda',s:'El Palmar'},{n:'CA Central',b:0,c:'Sevilla',s:'Ciudad Deportiva Cisneros Palacios'},{n:'Betis Deportivo Balompié',b:1,c:'Sevilla',s:'Luis del Sol'},
+    {n:'CP Mijas Las Lagunas',b:0,c:'Mijas',s:'Juan Gambero Culebra'},{n:'CA Antoniano',b:0,c:'Lebrija',s:'La Juventud'},{n:'Linares Deportivo',b:0,c:'Linares',s:'Linarejos'},
+    {n:'CD Marbella',b:0,c:'Marbella',s:'Municipal de Marbella'},{n:'Recreativo de Huelva',b:1,c:'Huelva',s:'Nuevo Colombino'},{n:'CD Ciudad de Lucena',b:0,c:'Lucena',s:'Ciudad de Lucena'},
+    {n:'Sevilla Atlético',b:1,c:'Sevilla',s:'Ciudad Deportiva Jesús Navas'},{n:'CD Estepona',b:0,c:'Estepona',s:'El Ejido'},{n:'Xerez CD',b:1,c:'Jerez de la Frontera',s:'Municipal de Chapín'},
+    {n:'CD Atlético Paso',b:0,c:'El Paso',s:'Silvestre Carrillo'},{n:'UD Las Palmas Atlético',b:0,c:'Las Palmas de Gran Canaria',s:'Anexo Gran Canaria'},{n:'CD Tenerife B',b:0,c:'San Cristóbal de La Laguna',s:'Anexo Heliodoro Rodríguez López'},
+    {n:'UD Tamaraceite',b:0,c:'Las Palmas de Gran Canaria',s:'Antonio Domínguez'},{n:'CD Badajoz',b:0,c:'Badajoz',s:'Nuevo Vivero'},{n:'CD Don Benito',b:0,c:'Don Benito',s:'Vicente Sabido'}]},
+
+  {league:'Segunda Federación - Grupo 5', country:'España', base:2, matchdays:34, teams:[
+    {n:'Atlético Albacete',b:0,c:'Albacete',s:'Ciudad Deportiva Universidad de Albacete'},{n:'CF Talavera de la Reina',b:0,c:'Talavera de la Reina',s:'El Prado'},{n:'Calvo Sotelo Puertollano CF',b:0,c:'Puertollano',s:'Calvo Sotelo'},
+    {n:'CF Guadalajara',b:0,c:'Guadalajara',s:'Pedro Escartín'},{n:'UB Conquense',b:0,c:'Cuenca',s:'La Fuensanta'},{n:'Atlético Astorga FC',b:0,c:'Astorga',s:'La Eragudina'},
+    {n:'Gimnástica Segoviana CF',b:0,c:'Segovia',s:'La Albuera'},{n:'Atlético Tordesillas',b:0,c:'Tordesillas',s:'Municipal de Tordesillas'},{n:'Real Ávila CF',b:0,c:'Ávila',s:'Adolfo Suárez'},
+    {n:'Real Valladolid Promesas',b:0,c:'Valladolid',s:'Ciudad Deportiva Real Valladolid'},{n:'Salamanca CF UDS',b:0,c:'Salamanca',s:'Helmántico'},{n:'CD Numancia',b:1,c:'Soria',s:'Los Pajaritos'},
+    {n:'Getafe CF B',b:0,c:'Getafe',s:'Ciudad Deportiva de Getafe'},{n:'Atlético de Madrid C',b:0,c:'Majadahonda',s:'Cerro del Espino'},{n:'UD San Sebastián de los Reyes',b:0,c:'San Sebastián de los Reyes',s:'Matapiñonera'},
+    {n:'RSD Alcalá',b:0,c:'Alcalá de Henares',s:'El Val'},{n:'CDA Navalcarnero',b:0,c:'Navalcarnero',s:'Mariano González'},{n:'CF Calamocha',b:0,c:'Calamocha',s:'Municipal de Calamocha'}]},
 
   {league:'Bundesliga', country:'Alemania', base:17, matchdays:34, teams:[
-    {n:'Bayern München',b:5},{n:'Borussia Dortmund',b:4},{n:'RB Leipzig',b:2},{n:'VfB Stuttgart',b:1},{n:'TSG 1899 Hoffenheim',b:0},
-    {n:'Bayer Leverkusen',b:2},{n:'SC Freiburg',b:0},{n:'Eintracht Frankfurt',b:1},{n:'FC Augsburg',b:0},{n:'1. FSV Mainz 05',b:0},
-    {n:'1. FC Union Berlin',b:0},{n:'Borussia Mönchengladbach',b:1},{n:'Hamburger SV',b:1},{n:'1. FC Köln',b:1},{n:'SV Werder Bremen',b:0},
-    {n:'FC Schalke 04',b:2},{n:'SV Elversberg',b:0},{n:'SC Paderborn 07',b:0}]},
+    {n:'Bayern München',b:5,c:'Múnich',s:'Allianz Arena'},{n:'Borussia Dortmund',b:4,c:'Dortmund',s:'Signal Iduna Park'},{n:'RB Leipzig',b:2,c:'Leipzig',s:'Red Bull Arena'},{n:'VfB Stuttgart',b:1,c:'Stuttgart',s:'MHPArena'},{n:'TSG 1899 Hoffenheim',b:0,c:'Sinsheim',s:'PreZero Arena'},
+    {n:'Bayer Leverkusen',b:2,c:'Leverkusen',s:'BayArena'},{n:'SC Freiburg',b:0,c:'Friburgo',s:'Europa-Park Stadion'},{n:'Eintracht Frankfurt',b:1,c:'Fráncfort',s:'Deutsche Bank Park'},{n:'FC Augsburg',b:0,c:'Augsburgo',s:'WWK Arena'},{n:'1. FSV Mainz 05',b:0,c:'Maguncia',s:'Mewa Arena'},
+    {n:'1. FC Union Berlin',b:0,c:'Berlín',s:'Stadion An der Alten Försterei'},{n:'Borussia Mönchengladbach',b:1,c:'Mönchengladbach',s:'Borussia-Park'},{n:'Hamburger SV',b:1,c:'Hamburgo',s:'Volksparkstadion'},{n:'1. FC Köln',b:1,c:'Colonia',s:'RheinEnergieSTADION'},{n:'SV Werder Bremen',b:0,c:'Bremen',s:'Weserstadion'},
+    {n:'FC Schalke 04',b:2,c:'Gelsenkirchen',s:'Veltins-Arena'},{n:'SV Elversberg',b:0,c:'Spiesen-Elversberg',s:'URSAPHARM-Arena'},{n:'SC Paderborn 07',b:0,c:'Paderborn',s:'Home Deluxe Arena'}]},
   {league:'2. Bundesliga', country:'Alemania', base:8, matchdays:34, teams:[
-    {n:'Hertha BSC',b:2},{n:'Hannover 96',b:1},{n:'SV Darmstadt 98',b:0},{n:'1. FC Kaiserslautern',b:1},{n:'1. FC Nürnberg',b:1},
-    {n:'VfL Bochum',b:0},{n:'Karlsruher SC',b:0},{n:'Dynamo Dresden',b:0},{n:'Holstein Kiel',b:0},{n:'Arminia Bielefeld',b:0},
-    {n:'1. FC Magdeburg',b:0},{n:'Eintracht Braunschweig',b:0},{n:'SpVgg Greuther Fürth',b:0},{n:'VfL Wolfsburg',b:2},{n:'1. FC Heidenheim',b:0},
-    {n:'FC St. Pauli',b:1},{n:'VfL Osnabrück',b:0},{n:'FC Energie Cottbus',b:0}]},
+    {n:'Hertha BSC',b:2,c:'Berlín',s:'Olympiastadion'},{n:'Hannover 96',b:1,c:'Hannover',s:'Heinz von Heiden Arena'},{n:'SV Darmstadt 98',b:0,c:'Darmstadt',s:'Merck-Stadion am Böllenfalltor'},{n:'1. FC Kaiserslautern',b:1,c:'Kaiserslautern',s:'Fritz-Walter-Stadion'},{n:'1. FC Nürnberg',b:1,c:'Núremberg',s:'Max-Morlock-Stadion'},
+    {n:'VfL Bochum',b:0,c:'Bochum',s:'Vonovia Ruhrstadion'},{n:'Karlsruher SC',b:0,c:'Karlsruhe',s:'BBBank Wildpark'},{n:'Dynamo Dresden',b:0,c:'Dresde',s:'Rudolf-Harbig-Stadion'},{n:'Holstein Kiel',b:0,c:'Kiel',s:'Holstein-Stadion'},{n:'Arminia Bielefeld',b:0,c:'Bielefeld',s:'SchücoArena'},
+    {n:'1. FC Magdeburg',b:0,c:'Magdeburgo',s:'MDCC-Arena'},{n:'Eintracht Braunschweig',b:0,c:'Braunschweig',s:'Eintracht-Stadion'},{n:'SpVgg Greuther Fürth',b:0,c:'Fürth',s:'Sportpark Ronhof'},{n:'VfL Wolfsburg',b:2,c:'Wolfsburgo',s:'Volkswagen Arena'},{n:'1. FC Heidenheim',b:0,c:'Heidenheim an der Brenz',s:'Voith-Arena'},
+    {n:'FC St. Pauli',b:1,c:'Hamburgo',s:'Millerntor-Stadion'},{n:'VfL Osnabrück',b:0,c:'Osnabrück',s:'Stadion an der Bremer Brücke'},{n:'FC Energie Cottbus',b:0,c:'Cottbus',s:'Stadion der Freundschaft'}]},
+  {league:'3. Liga', country:'Alemania', base:4, matchdays:38, teams:[
+    {n:'SC Verl',b:0,c:'Verl',s:'Sportclub Arena'},{n:'SV Waldhof Mannheim',b:0,c:'Mannheim',s:'Carl-Benz-Stadion'},
+    {n:'Fortuna Düsseldorf',b:1,c:'Düsseldorf',s:'Merkur Spiel-Arena'},{n:'FC Ingolstadt 04',b:0,c:'Ingolstadt',s:'Audi Sportpark'},
+    {n:'Würzburger Kickers',b:0,c:'Würzburg',s:'AKON Arena'},{n:'MSV Duisburg',b:1,c:'Duisburg',s:'Schauinsland-Reisen-Arena'},
+    {n:'SV Meppen',b:0,c:'Meppen',s:'Hänsch-Arena'},{n:'SV Wehen Wiesbaden',b:0,c:'Wiesbaden',s:'BRITA-Arena'},
+    {n:'SC Preußen Münster',b:1,c:'Münster',s:'LVM-Preußenstadion'},{n:'FC Viktoria Köln',b:0,c:'Colonia',s:'Sportpark Höhenberg'},
+    {n:'SSV Jahn Regensburg',b:0,c:'Ratisbona',s:'Jahnstadion Regensburg'},{n:'TSV Havelse',b:0,c:'Garbsen',s:'Eilenriedestadion'},
+    {n:'VfB Stuttgart II',b:0,c:'Stuttgart',s:'WIRmachenDRUCK Arena'},{n:'SG Sonnenhof Großaspach',b:0,c:'Oppenweiler',s:'Wüstenrot Arena'},
+    {n:'SC Fortuna Köln',b:0,c:'Colonia',s:'Südstadion'},{n:'TSG Hoffenheim II',b:0,c:'Sinsheim',s:'Dietmar-Hopp-Stadion'},
+    {n:'Hansa Rostock',b:1,c:'Rostock',s:'Ostseestadion'},{n:'1. FC Saarbrücken',b:1,c:'Saarbrücken',s:'Ludwigsparkstadion'},
+    {n:'Rot-Weiss Essen',b:1,c:'Essen',s:'Stadion an der Hafenstraße'},{n:'Alemannia Aachen',b:1,c:'Aquisgrán',s:'Tivoli'}]},
 
   {league:'Serie A', country:'Italia', base:17, matchdays:38, teams:[
-    {n:'Atalanta',b:1},{n:'Bologna',b:1},{n:'Cagliari',b:0},{n:'Como',b:0},{n:'Fiorentina',b:1},
-    {n:'Frosinone',b:0},{n:'Genoa',b:1},{n:'Inter',b:4},{n:'Juventus',b:5},{n:'Lazio',b:2},
-    {n:'Lecce',b:0},{n:'Milan',b:4},{n:'Monza',b:0},{n:'Napoli',b:3},{n:'Parma',b:1},
-    {n:'Roma',b:2},{n:'Sassuolo',b:0},{n:'Torino',b:1},{n:'Udinese',b:0},{n:'Venezia',b:0}]},
+    {n:'Atalanta',b:1,c:'Bérgamo',s:'Gewiss Stadium'},{n:'Bologna',b:1,c:'Bolonia',s:'Renato Dall\'Ara'},{n:'Cagliari',b:0,c:'Cagliari',s:'Unipol Domus'},{n:'Como',b:0,c:'Como',s:'Giuseppe Sinigaglia'},{n:'Fiorentina',b:1,c:'Florencia',s:'Artemio Franchi'},
+    {n:'Frosinone',b:0,c:'Frosinone',s:'Benito Stirpe'},{n:'Genoa',b:1,c:'Génova',s:'Luigi Ferraris'},{n:'Inter',b:4,c:'Milán',s:'San Siro'},{n:'Juventus',b:5,c:'Turín',s:'Allianz Stadium'},{n:'Lazio',b:2,c:'Roma',s:'Stadio Olimpico'},
+    {n:'Lecce',b:0,c:'Lecce',s:'Via del Mare'},{n:'Milan',b:4,c:'Milán',s:'San Siro'},{n:'Monza',b:0,c:'Monza',s:'U-Power Stadium'},{n:'Napoli',b:3,c:'Nápoles',s:'Diego Armando Maradona'},{n:'Parma',b:1,c:'Parma',s:'Ennio Tardini'},
+    {n:'Roma',b:2,c:'Roma',s:'Stadio Olimpico'},{n:'Sassuolo',b:0,c:'Sassuolo',s:'Mapei Stadium'},{n:'Torino',b:1,c:'Turín',s:'Stadio Olimpico Grande Torino'},{n:'Udinese',b:0,c:'Udine',s:'Bluenergy Stadium'},{n:'Venezia',b:0,c:'Venecia',s:'Pier Luigi Penzo'}]},
   {league:'Serie B', country:'Italia', base:8, matchdays:38, teams:[
-    {n:'Arezzo',b:0},{n:'Ascoli',b:0},{n:'Avellino',b:0},{n:'Benevento',b:0},{n:'Carrarese',b:0},
-    {n:'Catanzaro',b:0},{n:'Cesena',b:0},{n:'Cremonese',b:1},{n:'Empoli',b:1},{n:'Hellas Verona',b:1},
-    {n:'Juve Stabia',b:0},{n:'Mantova',b:0},{n:'Modena',b:0},{n:'Padova',b:0},{n:'Palermo',b:1},
-    {n:'Pisa',b:0},{n:'Sampdoria',b:2},{n:'Südtirol',b:0},{n:'Virtus Entella',b:0},{n:'Vicenza',b:0}]},
+    {n:'Arezzo',b:0,c:'Arezzo',s:'Città di Arezzo'},{n:'Ascoli',b:0,c:'Ascoli Piceno',s:'Del Duca'},{n:'Avellino',b:0,c:'Avellino',s:'Partenio-Lombardi'},{n:'Benevento',b:0,c:'Benevento',s:'Ciro Vigorito'},{n:'Carrarese',b:0,c:'Carrara',s:'Dei Marmi'},
+    {n:'Catanzaro',b:0,c:'Catanzaro',s:'Nicola Ceravolo'},{n:'Cesena',b:0,c:'Cesena',s:'Orogel Stadium Dino Manuzzi'},{n:'Cremonese',b:1,c:'Cremona',s:'Giovanni Zini'},{n:'Empoli',b:1,c:'Empoli',s:'Carlo Castellani'},{n:'Hellas Verona',b:1,c:'Verona',s:'Marcantonio Bentegodi'},
+    {n:'Juve Stabia',b:0,c:'Castellammare di Stabia',s:'Romeo Menti'},{n:'Mantova',b:0,c:'Mantua',s:'Danilo Martelli'},{n:'Modena',b:0,c:'Módena',s:'Alberto Braglia'},{n:'Padova',b:0,c:'Padua',s:'Euganeo'},{n:'Palermo',b:1,c:'Palermo',s:'Renzo Barbera'},
+    {n:'Pisa',b:0,c:'Pisa',s:'Arena Garibaldi'},{n:'Sampdoria',b:2,c:'Génova',s:'Luigi Ferraris'},{n:'Südtirol',b:0,c:'Bolzano',s:'Druso'},{n:'Virtus Entella',b:0,c:'Chiavari',s:'Comunale'},{n:'Vicenza',b:0,c:'Vicenza',s:'Romeo Menti'}]},
+
+  {league:'Serie C - Girone A', country:'Italia', base:5, matchdays:38, teams:[
+    {n:'AlbinoLeffe',b:0,c:'Zingonia',s:'Atleti Azzurri d\'Italia'},{n:'Alcione Milano',b:0,c:'Milán',s:'Ernesto Breda'},{n:'Arzignano Valchiampo',b:0,c:'Arzignano',s:'Dei Tigli'},
+    {n:'Carpi',b:0,c:'Carpi',s:'Sandro Cabassi'},{n:'Cittadella',b:1,c:'Cittadella',s:'Pier Cesare Tombolato'},{n:'Desenzano',b:0,c:'Desenzano del Garda',s:'Tre Stelle'},
+    {n:'Dolomiti Bellunesi',b:0,c:'Belluno',s:'Rasi'},{n:'Folgore Caratese',b:0,c:'Carate Brianza',s:'Città di Carate Brianza'},{n:'Giana Erminio',b:0,c:'Gorgonzola',s:'Città di Gorgonzola'},
+    {n:'Juventus Next Gen',b:0,c:'Alessandria',s:'Giuseppe Moccagatta'},{n:'Lecco',b:1,c:'Lecco',s:'Rigamonti-Ceppi'},{n:'Lumezzane',b:0,c:'Lumezzane',s:'Aldo Gnecchi'},
+    {n:'Novara',b:1,c:'Novara',s:'Silvio Piola'},{n:'Ospitaletto Franciacorta',b:0,c:'Ospitaletto',s:'Ferruccio Ferrari'},{n:'Pergolettese',b:0,c:'Crema',s:'Giuseppe Voltini'},
+    {n:'Pro Vercelli',b:1,c:'Vercelli',s:'Silvio Piola'},{n:'Renate',b:0,c:'Renate',s:'Città di Meda'},{n:'Trento',b:0,c:'Trento',s:'Briamasco'},
+    {n:'Treviso',b:0,c:'Treviso',s:'Omobono Tenni'},{n:'Union Brescia',b:0,c:'Brescia',s:'Mario Rigamonti'}]},
+
+  {league:'Serie C - Girone B', country:'Italia', base:5, matchdays:38, teams:[
+    {n:'Atalanta U23',b:0,c:'Caravaggio',s:'Comunale di Caravaggio'},{n:'Campobasso',b:0,c:'Campobasso',s:'Nuovo Romagnoli'},{n:'Forlì',b:0,c:'Forlì',s:'Tullo Morgagni'},
+    {n:'Grosseto',b:0,c:'Grosseto',s:'Carlo Zecchini'},{n:'Gubbio',b:0,c:'Gubbio',s:'Pietro Barbetti'},{n:'Guidonia Montecelio',b:0,c:'Guidonia',s:'Quinto Ricci'},
+    {n:'Latina',b:0,c:'Latina',s:'Domenico Francioni'},{n:'Livorno',b:1,c:'Livorno',s:'Armando Picchi'},{n:'Ostiamare',b:0,c:'Ostia',s:'Anco Marzio'},
+    {n:'Perugia',b:1,c:'Perugia',s:'Renato Curi'},{n:'Pescara',b:1,c:'Pescara',s:'Adriatico'},{n:'Pianese',b:0,c:'Piancastagnaio',s:'Comunale'},
+    {n:'Pineto',b:0,c:'Pineto',s:'Mancini'},{n:'Ravenna',b:0,c:'Ravenna',s:'Benelli'},{n:'Reggiana',b:1,c:'Reggio Emilia',s:'Città del Tricolore'},
+    {n:'Sambenedettese',b:0,c:'San Benedetto del Tronto',s:'Riviera delle Palme'},{n:'Spezia',b:1,c:'La Spezia',s:'Alberto Picco'},{n:'Torres',b:0,c:'Sassari',s:'Vanni Sanna'},
+    {n:'Vado',b:0,c:'Vado Ligure',s:'Chittolina'},{n:'Vis Pesaro',b:0,c:'Pesaro',s:'Benelli'}]},
+
+  {league:'Serie C - Girone C', country:'Italia', base:5, matchdays:38, teams:[
+    {n:'Altamura',b:0,c:'Altamura',s:'D\'Angelo'},{n:'Audace Cerignola',b:0,c:'Cerignola',s:'Domenico Monterisi'},{n:'Bari',b:2,c:'Bari',s:'San Nicola'},
+    {n:'Barletta',b:0,c:'Barletta',s:'Cosimo Puttilli'},{n:'Casarano',b:0,c:'Casarano',s:'Antonio Capozza'},{n:'Casertana',b:0,c:'Caserta',s:'Alberto Pinto'},
+    {n:'Catania',b:2,c:'Catania',s:'Angelo Massimino'},{n:'Cavese',b:0,c:'Cava de\' Tirreni',s:'Simonetta Lamberti'},{n:'Cosenza',b:1,c:'Cosenza',s:'San Vito-Marulla'},
+    {n:'Crotone',b:1,c:'Crotone',s:'Ezio Scida'},{n:'Foggia',b:1,c:'Foggia',s:'Pino Zaccheria'},{n:'Giugliano',b:0,c:'Giugliano in Campania',s:'Aldo Cevoli'},
+    {n:'Inter U23',b:0,c:'Milán',s:'Centro Sportivo Suning (Konami YDC)'},{n:'Monopoli',b:0,c:'Monopoli',s:'Vito Simone Veneziani'},{n:'Picerno',b:0,c:'Picerno',s:'Donato Curcio'},
+    {n:'Potenza',b:0,c:'Potenza',s:'Alfredo Viviani'},{n:'Salernitana',b:2,c:'Salerno',s:'Arechi'},{n:'Savoia',b:0,c:'Torre Annunziata',s:'Giraud'},
+    {n:'Scafatese',b:0,c:'Scafati',s:'Giovanni XXIII'},{n:'Sorrento',b:0,c:'Sorrento',s:'Italia'}]},
 
   {league:'Ligue 1', country:'Francia', base:15, matchdays:34, teams:[
-    {n:'Angers SCO',b:0},{n:'AJ Auxerre',b:0},{n:'Stade Brestois 29',b:0},{n:'Le Havre AC',b:1},{n:'Le Mans FC',b:0},
-    {n:'RC Lens',b:0},{n:'LOSC Lille',b:1},{n:'FC Lorient',b:0},{n:'Olympique Lyonnais',b:2},{n:'Olympique de Marseille',b:3},
-    {n:'AS Monaco',b:1},{n:'OGC Nice',b:0},{n:'Paris FC',b:0},{n:'Paris Saint-Germain',b:5},{n:'Stade Rennais FC',b:1},
-    {n:'RC Strasbourg',b:0},{n:'Toulouse FC',b:0},{n:'ESTAC Troyes',b:0}]},
+    {n:'Angers SCO',b:0,c:'Angers',s:'Stade Raymond Kopa'},{n:'AJ Auxerre',b:0,c:'Auxerre',s:'Stade de l\'Abbé-Deschamps'},{n:'Stade Brestois 29',b:0,c:'Brest',s:'Stade Francis-Le Blé'},{n:'Le Havre AC',b:1,c:'Le Havre',s:'Stade Océane'},{n:'Le Mans FC',b:0,c:'Le Mans',s:'MMArena'},
+    {n:'RC Lens',b:0,c:'Lens',s:'Stade Bollaert-Delelis'},{n:'LOSC Lille',b:1,c:'Lille',s:'Stade Pierre-Mauroy'},{n:'FC Lorient',b:0,c:'Lorient',s:'Stade du Moustoir'},{n:'Olympique Lyonnais',b:2,c:'Lyon',s:'Groupama Stadium'},{n:'Olympique de Marseille',b:3,c:'Marsella',s:'Stade Vélodrome'},
+    {n:'AS Monaco',b:1,c:'Mónaco',s:'Stade Louis II'},{n:'OGC Nice',b:0,c:'Niza',s:'Allianz Riviera'},{n:'Paris FC',b:0,c:'París',s:'Stade Jean-Bouin'},{n:'Paris Saint-Germain',b:5,c:'París',s:'Parc des Princes'},{n:'Stade Rennais FC',b:1,c:'Rennes',s:'Roazhon Park'},
+    {n:'RC Strasbourg',b:0,c:'Estrasburgo',s:'Stade de la Meinau'},{n:'Toulouse FC',b:0,c:'Toulouse',s:'Stadium de Toulouse'},{n:'ESTAC Troyes',b:0,c:'Troyes',s:'Stade de l\'Aube'}]},
   {league:'Ligue 2', country:'Francia', base:7, matchdays:34, teams:[
-    {n:'FC Annecy',b:0},{n:'US Boulogne',b:0},{n:'Clermont Foot',b:0},{n:'Dijon FCO',b:0},{n:'USL Dunkerque',b:0},
-    {n:'Grenoble Foot 38',b:0},{n:'EA Guingamp',b:1},{n:'Stade Lavallois',b:0},{n:'FC Metz',b:1},{n:'Montpellier HSC',b:2},
-    {n:'AS Nancy-Lorraine',b:1},{n:'FC Nantes',b:2},{n:'Pau FC',b:0},{n:'Red Star FC',b:0},{n:'Stade de Reims',b:1},
-    {n:'Rodez AF',b:0},{n:'AS Saint-Étienne',b:2},{n:'FC Sochaux-Montbéliard',b:1}]},
+    {n:'FC Annecy',b:0,c:'Annecy',s:'Parc des Sports'},{n:'US Boulogne',b:0,c:'Boulogne-sur-Mer',s:'Stade de la Libération'},{n:'Clermont Foot',b:0,c:'Clermont-Ferrand',s:'Stade Gabriel Montpied'},{n:'Dijon FCO',b:0,c:'Dijon',s:'Stade Gaston-Gérard'},{n:'USL Dunkerque',b:0,c:'Dunkerque',s:'Stade Marcel-Tribut'},
+    {n:'Grenoble Foot 38',b:0,c:'Grenoble',s:'Stade des Alpes'},{n:'EA Guingamp',b:1,c:'Guingamp',s:'Stade de Roudourou'},{n:'Stade Lavallois',b:0,c:'Laval',s:'Stade Francis-Le Basser'},{n:'FC Metz',b:1,c:'Metz',s:'Stade Saint-Symphorien'},{n:'Montpellier HSC',b:2,c:'Montpellier',s:'Stade de la Mosson'},
+    {n:'AS Nancy-Lorraine',b:1,c:'Nancy',s:'Stade Marcel-Picot'},{n:'FC Nantes',b:2,c:'Nantes',s:'Stade de la Beaujoire'},{n:'Pau FC',b:0,c:'Pau',s:'Nouste Camp'},{n:'Red Star FC',b:0,c:'Saint-Ouen',s:'Stade Bauer'},{n:'Stade de Reims',b:1,c:'Reims',s:'Stade Auguste-Delaune'},
+    {n:'Rodez AF',b:0,c:'Rodez',s:'Stade Paul-Lignon'},{n:'AS Saint-Étienne',b:2,c:'Saint-Étienne',s:'Stade Geoffroy-Guichard'},{n:'FC Sochaux-Montbéliard',b:1,c:'Sochaux',s:'Stade Auguste-Bonal'}]},
+  {league:'Ligue 3', country:'Francia', base:3, matchdays:34, teams:[
+    {n:'SC Aubagne Air Bel',b:0,c:'Aubagne',s:'Stade de Lattre de Tassigny'},{n:'Amiens SC',b:1,c:'Amiens',s:'Stade de la Licorne'},
+    {n:'Le Puy-en-Velay FC',b:0,c:'Le Puy-en-Velay',s:'Stade Massot'},{n:'SC Bastia',b:1,c:'Bastia',s:'Stade Armand-Cesari'},
+    {n:'Bourg-en-Bresse Péronnas',b:0,c:'Bourg-en-Bresse',s:'Stade Marcel-Verchère'},{n:'Stade Malherbe Caen',b:1,c:'Caen',s:'Stade Michel-d\'Ornano'},
+    {n:'AS Cannes',b:0,c:'Cannes',s:'Stade Pierre-de-Coubertin'},{n:'US Concarneau',b:0,c:'Concarneau',s:'Stade Guy-Piriou'},
+    {n:'FC Fleury 91',b:0,c:'Bondoufle',s:'Essonne Stadium'},{n:'La Roche-sur-Yon VF',b:0,c:'La Roche-sur-Yon',s:'Stade Henri-Desgrange'},
+    {n:'US Orléans',b:0,c:'Orléans',s:'Stade de la Source'},{n:'Paris 13 Atletico',b:0,c:'París',s:'Stade Charléty'},
+    {n:'US Quevilly-Rouen Métropole',b:0,c:'Le Petit-Quevilly',s:'Stade Robert-Diochon'},{n:'FC Rouen 1899',b:0,c:'Rouen',s:'Stade Robert-Diochon'},
+    {n:'US Thionville Lusitanos',b:0,c:'Thionville',s:'Stade de Guentrange'},{n:'Valenciennes FC',b:1,c:'Valenciennes',s:'Stade Nungesser'},
+    {n:'FC Versailles 78',b:0,c:'Versalles',s:'Stade Montbauron'},{n:'FC Villefranche Beaujolais',b:0,c:'Villefranche-sur-Saône',s:'Stade Armand-Chouffet'}]},
 
   {league:'Liga Profesional', country:'Argentina', base:9, matchdays:26, teams:[
-    {n:'River Plate',b:5},{n:'Boca Juniors',b:5},{n:'Racing Club',b:2},{n:'Independiente',b:2},{n:'San Lorenzo',b:1},
-    {n:'Vélez Sarsfield',b:1},{n:'Estudiantes (LP)',b:1},{n:'Talleres',b:1},{n:'Platense',b:0},{n:'Barracas Central',b:0},
-    {n:'Central Córdoba (SdE)',b:0},{n:'Defensa y Justicia',b:0},{n:'Deportivo Riestra',b:0},{n:'Gimnasia y Esgrima (Mza)',b:0},
-    {n:'Instituto',b:0},{n:'Lanús',b:0},{n:'Newell\'s Old Boys',b:1},{n:'Unión',b:0},
-    {n:'Aldosivi',b:0},{n:'Argentinos Juniors',b:1},{n:'Atlético Tucumán',b:0},{n:'Banfield',b:0},
-    {n:'Belgrano',b:0},{n:'Estudiantes (Río Cuarto)',b:0},{n:'Gimnasia y Esgrima (LP)',b:1},{n:'Huracán',b:1},
-    {n:'Independiente Rivadavia',b:0},{n:'Rosario Central',b:1},{n:'Sarmiento (Junín)',b:0},{n:'Tigre',b:0}]},
+    {n:'River Plate',b:5,c:'Buenos Aires',s:'Estadio Monumental'},{n:'Boca Juniors',b:5,c:'Buenos Aires',s:'La Bombonera'},{n:'Racing Club',b:2,c:'Avellaneda',s:'El Cilindro'},{n:'Independiente',b:2,c:'Avellaneda',s:'Libertadores de América'},{n:'San Lorenzo',b:1,c:'Buenos Aires',s:'Pedro Bidegain'},
+    {n:'Vélez Sarsfield',b:1,c:'Buenos Aires',s:'José Amalfitani'},{n:'Estudiantes (LP)',b:1,c:'La Plata',s:'Jorge Luis Hirschi'},{n:'Talleres',b:1,c:'Córdoba',s:'Mario Alberto Kempes'},{n:'Platense',b:0,c:'Vicente López',s:'Ciudad de Vicente López'},{n:'Barracas Central',b:0,c:'Buenos Aires',s:'Claudio Chiqui Tapia'},
+    {n:'Central Córdoba (SdE)',b:0,c:'Santiago del Estero',s:'Alfredo Terrera'},{n:'Defensa y Justicia',b:0,c:'Florencio Varela',s:'Norberto Tomaghello'},{n:'Deportivo Riestra',b:0,c:'Buenos Aires',s:'Guillermo Laza'},{n:'Gimnasia y Esgrima (Mza)',b:0,c:'Mendoza',s:'Víctor Antonio Legrotaglie'},
+    {n:'Instituto',b:0,c:'Córdoba',s:'Presidente Perón'},{n:'Lanús',b:0,c:'Lanús',s:'Ciudad de Lanús'},{n:'Newell\'s Old Boys',b:1,c:'Rosario',s:'Marcelo Bielsa'},{n:'Unión',b:0,c:'Santa Fe',s:'15 de Abril'},
+    {n:'Aldosivi',b:0,c:'Mar del Plata',s:'José María Minella'},{n:'Argentinos Juniors',b:1,c:'Buenos Aires',s:'Diego Armando Maradona'},{n:'Atlético Tucumán',b:0,c:'San Miguel de Tucumán',s:'Monumental José Fierro'},{n:'Banfield',b:0,c:'Banfield',s:'Florencio Sola'},
+    {n:'Belgrano',b:0,c:'Córdoba',s:'Julio César Villagra'},{n:'Estudiantes (Río Cuarto)',b:0,c:'Río Cuarto',s:'Antonio Candini'},{n:'Gimnasia y Esgrima (LP)',b:1,c:'La Plata',s:'Juan Carmelo Zerillo'},{n:'Huracán',b:1,c:'Buenos Aires',s:'Tomás Adolfo Ducó'},
+    {n:'Independiente Rivadavia',b:0,c:'Mendoza',s:'Bautista Gargantini'},{n:'Rosario Central',b:1,c:'Rosario',s:'Gigante de Arroyito'},{n:'Sarmiento (Junín)',b:0,c:'Junín',s:'Eva Perón'},{n:'Tigre',b:0,c:'Victoria',s:'José Dellagiovanna'}]},
+  {league:'Primera Nacional - Zona A', country:'Argentina', base:4, matchdays:34, teams:[
+    {n:'All Boys',b:0,c:'Buenos Aires',s:'Islas Malvinas'},{n:'Ferro Carril Oeste',b:0,c:'Buenos Aires',s:'Arquitecto Ricardo Etcheverri'},{n:'Deportivo Madryn',b:0,c:'Puerto Madryn',s:'Fortín Anexo'},
+    {n:'Chaco For Ever',b:0,c:'Resistencia',s:'Alfredo Terrera'},{n:'Deportivo Morón',b:0,c:'Morón',s:'Nuevo Francisco Urbano'},{n:'Estudiantes (BA)',b:0,c:'Buenos Aires',s:'Ricardo Etcheverri'},
+    {n:'Racing de Córdoba',b:0,c:'Córdoba',s:'Presidente Perón'},{n:'Los Andes',b:0,c:'Lomas de Zamora',s:'Eduardo Cardillo'},{n:'Mitre (SdE)',b:0,c:'Santiago del Estero',s:'Ramón Bustamante'},
+    {n:'Almirante Brown',b:0,c:'Isidro Casanova',s:'Fragata Sarmiento'},{n:'Ciudad de Bolívar',b:0,c:'Bolívar',s:'Ciudad de Bolívar'},{n:'Colón',b:1,c:'Santa Fe',s:'Brigadier General Estanislao López'},
+    {n:'Central Norte',b:0,c:'Salta',s:'Padre Ernesto Martearena'},{n:'Godoy Cruz',b:1,c:'Mendoza',s:'Malvinas Argentinas'},{n:'San Telmo',b:0,c:'Buenos Aires',s:'Islas Malvinas'},
+    {n:'San Miguel',b:0,c:'San Miguel',s:'Ingeniero Adolfo Cipolletti'},{n:'Defensores de Belgrano',b:0,c:'Buenos Aires',s:'Juan Pasquale'},{n:'Acassuso',b:0,c:'Acassuso',s:'Nicolás Massuh'}]},
+  {league:'Primera Nacional - Zona B', country:'Argentina', base:4, matchdays:34, teams:[
+    {n:'Nueva Chicago',b:0,c:'Buenos Aires',s:'Nueva Chicago'},{n:'Atlanta',b:0,c:'Buenos Aires',s:'Don León Kolbowski'},{n:'San Martín de Tucumán',b:0,c:'San Miguel de Tucumán',s:'La Ciudadela'},
+    {n:'Gimnasia de Jujuy',b:0,c:'San Salvador de Jujuy',s:'24 de Septiembre'},{n:'Almagro',b:0,c:'Buenos Aires',s:'Adolfo Cipolletti'},{n:'Chacarita Juniors',b:1,c:'Buenos Aires',s:'Islas Malvinas'},
+    {n:'San Martín de San Juan',b:1,c:'San Juan',s:'Ingeniero Hilario Sánchez'},{n:'Temperley',b:0,c:'Temperley',s:'Alfredo Beranger'},{n:'Güemes (SdE)',b:0,c:'Santiago del Estero',s:'Madre de Ciudades'},
+    {n:'Tristán Suárez',b:0,c:'Ezeiza',s:'Miguel Sansinena'},{n:'Agropecuario',b:0,c:'Carlos Casares',s:'Ismael Rodríguez'},{n:'Patronato',b:0,c:'Paraná',s:'Presbítero Bartolomé Grella'},
+    {n:'Gimnasia y Tiro',b:0,c:'Salta',s:'Gigante del Norte'},{n:'Deportivo Maipú',b:0,c:'Mendoza',s:'Víctor A. Legrotaglie'},{n:'Quilmes',b:1,c:'Quilmes',s:'Centenario'},
+    {n:'Colegiales',b:0,c:'Buenos Aires',s:'Alfredo Ramos'},{n:'Atlético de Rafaela',b:0,c:'Rafaela',s:'Monumental de Barrio Alberdi'},{n:'Ferrocarril Midland',b:0,c:'Villa Adelina',s:'Ferrocarril Midland'}]},
   {league:'Brasileirão Série A', country:'Brasil', base:10, matchdays:38, teams:[
-    {n:'Atlético Mineiro',b:2},{n:'Bahia',b:0},{n:'Botafogo',b:1},{n:'Red Bull Bragantino',b:0},{n:'Chapecoense',b:0},
-    {n:'Corinthians',b:3},{n:'Coritiba',b:0},{n:'Athletico Paranaense',b:1},{n:'Cruzeiro',b:2},{n:'Flamengo',b:5},
-    {n:'Fluminense',b:1},{n:'Grêmio',b:2},{n:'Internacional',b:2},{n:'Mirassol',b:0},{n:'Palmeiras',b:4},
-    {n:'Remo',b:0},{n:'Santos',b:2},{n:'São Paulo',b:3},{n:'Vasco da Gama',b:1},{n:'Vitória',b:0}]},
+    {n:'Atlético Mineiro',b:2,c:'Belo Horizonte',s:'Arena MRV'},{n:'Bahia',b:0,c:'Salvador',s:'Arena Fonte Nova'},{n:'Botafogo',b:1,c:'Río de Janeiro',s:'Estádio Nilton Santos'},{n:'Red Bull Bragantino',b:0,c:'Bragança Paulista',s:'Nabi Abi Chedid'},{n:'Chapecoense',b:0,c:'Chapecó',s:'Arena Condá'},
+    {n:'Corinthians',b:3,c:'São Paulo',s:'Neo Química Arena'},{n:'Coritiba',b:0,c:'Curitiba',s:'Couto Pereira'},{n:'Athletico Paranaense',b:1,c:'Curitiba',s:'Arena da Baixada'},{n:'Cruzeiro',b:2,c:'Belo Horizonte',s:'Mineirão'},{n:'Flamengo',b:5,c:'Río de Janeiro',s:'Maracaná'},
+    {n:'Fluminense',b:1,c:'Río de Janeiro',s:'Maracaná'},{n:'Grêmio',b:2,c:'Porto Alegre',s:'Arena do Grêmio'},{n:'Internacional',b:2,c:'Porto Alegre',s:'Beira-Rio'},{n:'Mirassol',b:0,c:'Mirassol',s:'Campos Maia'},{n:'Palmeiras',b:4,c:'São Paulo',s:'Allianz Parque'},
+    {n:'Remo',b:0,c:'Belém',s:'Baenão'},{n:'Santos',b:2,c:'Santos',s:'Vila Belmiro'},{n:'São Paulo',b:3,c:'São Paulo',s:'Morumbis'},{n:'Vasco da Gama',b:1,c:'Río de Janeiro',s:'São Januário'},{n:'Vitória',b:0,c:'Salvador',s:'Barradão'}]},
+  {league:'Brasileirão Série B', country:'Brasil', base:5, matchdays:38, teams:[
+    {n:'América Mineiro',b:0,c:'Belo Horizonte',s:'Arena Independência'},{n:'Athletic',b:0,c:'São João del-Rei',s:'Arena Sicredi'},{n:'Atlético Goianiense',b:0,c:'Goiânia',s:'Antônio Accioly'},
+    {n:'Avaí',b:0,c:'Florianópolis',s:'Ressacada'},{n:'Botafogo-SP',b:0,c:'Ribeirão Preto',s:'Santa Cruz'},{n:'CRB',b:0,c:'Maceió',s:'Rei Pelé'},
+    {n:'Criciúma',b:0,c:'Criciúma',s:'Heriberto Hülse'},{n:'Cuiabá',b:1,c:'Cuiabá',s:'Arena Pantanal'},{n:'Goiás',b:0,c:'Goiânia',s:'Hailé Pinheiro'},
+    {n:'Novorizontino',b:0,c:'Novo Horizonte',s:'Jorjão'},{n:'Operário Ferroviário',b:0,c:'Ponta Grossa',s:'Germano Krüger'},{n:'Vila Nova',b:0,c:'Goiânia',s:'Estádio Onésio Brasil Silveira'},
+    {n:'Ponte Preta',b:0,c:'Campinas',s:'Moisés Lucarelli'},{n:'Londrina',b:0,c:'Londrina',s:'Estádio do Café'},{n:'Náutico',b:0,c:'Recife',s:'Aflitos'},
+    {n:'São Bernardo',b:0,c:'São Bernardo do Campo',s:'1º de Maio'},{n:'Ceará',b:1,c:'Fortaleza',s:'Presidente Vargas'},{n:'Fortaleza',b:1,c:'Fortaleza',s:'Arena Castelão'},
+    {n:'Juventude',b:1,c:'Caxias do Sul',s:'Alfredo Jaconi'},{n:'Sport',b:1,c:'Recife',s:'Ilha do Retiro'}]},
   {league:'MLS', country:'Estados Unidos', base:7, matchdays:34, teams:[
-    {n:'Atlanta United',b:1},{n:'Charlotte FC',b:0},{n:'Chicago Fire',b:1},{n:'FC Cincinnati',b:0},{n:'Columbus Crew',b:1},
-    {n:'D.C. United',b:1},{n:'Inter Miami CF',b:2},{n:'CF Montréal',b:0},{n:'Nashville SC',b:0},{n:'New England Revolution',b:0},
-    {n:'New York City FC',b:1},{n:'New York Red Bulls',b:1},{n:'Orlando City SC',b:0},{n:'Philadelphia Union',b:1},{n:'Toronto FC',b:1},
-    {n:'Austin FC',b:0},{n:'Colorado Rapids',b:0},{n:'FC Dallas',b:0},{n:'Houston Dynamo',b:0},{n:'LA Galaxy',b:2},
-    {n:'Los Angeles FC',b:1},{n:'Minnesota United',b:0},{n:'Portland Timbers',b:1},{n:'Real Salt Lake',b:0},{n:'San Diego FC',b:0},
-    {n:'San Jose Earthquakes',b:0},{n:'Seattle Sounders',b:1},{n:'Sporting Kansas City',b:0},{n:'St. Louis City SC',b:0},{n:'Vancouver Whitecaps',b:0}]},
+    {n:'Atlanta United',b:1,c:'Atlanta',s:'Mercedes-Benz Stadium'},{n:'Charlotte FC',b:0,c:'Charlotte',s:'Bank of America Stadium'},{n:'Chicago Fire',b:1,c:'Chicago',s:'Soldier Field'},{n:'FC Cincinnati',b:0,c:'Cincinnati',s:'TQL Stadium'},{n:'Columbus Crew',b:1,c:'Columbus',s:'Lower.com Field'},
+    {n:'D.C. United',b:1,c:'Washington D. C.',s:'Audi Field'},{n:'Inter Miami CF',b:2,c:'Fort Lauderdale',s:'Chase Stadium'},{n:'CF Montréal',b:0,c:'Montreal',s:'Stade Saputo'},{n:'Nashville SC',b:0,c:'Nashville',s:'Geodis Park'},{n:'New England Revolution',b:0,c:'Foxborough',s:'Gillette Stadium'},
+    {n:'New York City FC',b:1,c:'Nueva York',s:'Etihad Park'},{n:'New York Red Bulls',b:1,c:'Harrison',s:'Red Bull Arena'},{n:'Orlando City SC',b:0,c:'Orlando',s:'Inter&Co Stadium'},{n:'Philadelphia Union',b:1,c:'Chester',s:'Subaru Park'},{n:'Toronto FC',b:1,c:'Toronto',s:'BMO Field'},
+    {n:'Austin FC',b:0,c:'Austin',s:'Q2 Stadium'},{n:'Colorado Rapids',b:0,c:'Commerce City',s:'Dick\'s Sporting Goods Park'},{n:'FC Dallas',b:0,c:'Frisco',s:'Toyota Stadium'},{n:'Houston Dynamo',b:0,c:'Houston',s:'Shell Energy Stadium'},{n:'LA Galaxy',b:2,c:'Carson',s:'Dignity Health Sports Park'},
+    {n:'Los Angeles FC',b:1,c:'Los Ángeles',s:'BMO Stadium'},{n:'Minnesota United',b:0,c:'Saint Paul',s:'Allianz Field'},{n:'Portland Timbers',b:1,c:'Portland',s:'Providence Park'},{n:'Real Salt Lake',b:0,c:'Sandy',s:'America First Field'},{n:'San Diego FC',b:0,c:'San Diego',s:'Snapdragon Stadium'},
+    {n:'San Jose Earthquakes',b:0,c:'San José',s:'PayPal Park'},{n:'Seattle Sounders',b:1,c:'Seattle',s:'Lumen Field'},{n:'Sporting Kansas City',b:0,c:'Kansas City',s:'Children\'s Mercy Park'},{n:'St. Louis City SC',b:0,c:'San Luis',s:'CityPark'},{n:'Vancouver Whitecaps',b:0,c:'Vancouver',s:'BC Place'}]},
+  {league:'USL Championship', country:'Estados Unidos', base:3, matchdays:34, teams:[
+    {n:'Colorado Springs Switchbacks FC',b:0,c:'Colorado Springs',s:'Weidner Field'},{n:'El Paso Locomotive FC',b:0,c:'El Paso',s:'Southwest University Park'},{n:'Las Vegas Lights FC',b:0,c:'Las Vegas',s:'Cashman Field'},
+    {n:'Lexington SC',b:0,c:'Lexington',s:'Lexington SC Stadium'},{n:'Monterey Bay FC',b:0,c:'Seaside',s:'Cardinale Stadium'},{n:'New Mexico United',b:0,c:'Albuquerque',s:'Rio Grande Credit Union Field'},
+    {n:'Oakland Roots SC',b:0,c:'Oakland',s:'Oakland Coliseum'},{n:'Orange County SC',b:0,c:'Irvine',s:'Championship Soccer Stadium'},{n:'Phoenix Rising FC',b:1,c:'Phoenix',s:'Phoenix Rising Soccer Complex'},
+    {n:'Sacramento Republic FC',b:1,c:'Sacramento',s:'Heart Health Park'},{n:'San Antonio FC',b:0,c:'San Antonio',s:'Toyota Field'},{n:'FC Tulsa',b:0,c:'Tulsa',s:'ONEOK Field'},
+    {n:'Birmingham Legion FC',b:0,c:'Birmingham',s:'Protective Stadium'},{n:'Brooklyn FC',b:0,c:'Brooklyn',s:'Maimonides Park'},{n:'Charleston Battery',b:0,c:'Charleston',s:'Patriots Point'},
+    {n:'Detroit City FC',b:1,c:'Detroit',s:'Keyworth Stadium'},{n:'Hartford Athletic',b:0,c:'Hartford',s:'Trinity Health Stadium'},{n:'Indy Eleven',b:0,c:'Indianápolis',s:'Michael A. Carroll Stadium'},
+    {n:'Loudoun United FC',b:0,c:'Leesburg',s:'Segra Field'},{n:'Louisville City FC',b:1,c:'Louisville',s:'Lynn Family Stadium'},{n:'Miami FC',b:0,c:'Fort Lauderdale',s:'Pitbull Stadium'},
+    {n:'Pittsburgh Riverhounds SC',b:0,c:'Pittsburgh',s:'Highmark Stadium'},{n:'Rhode Island FC',b:1,c:'Pawtucket',s:'Centreville Bank Stadium'},{n:'Sporting Club Jacksonville',b:0,c:'Jacksonville',s:'Hodges Stadium'},
+    {n:'Tampa Bay Rowdies',b:0,c:'St. Petersburg',s:'Al Lang Stadium'}]},
   {league:'Primeira Liga', country:'Portugal', base:9, matchdays:34, teams:[
-    {n:'FC Porto',b:4},{n:'Sporting CP',b:3},{n:'Benfica',b:4},{n:'SC Braga',b:1},{n:'Famalicão',b:0},
-    {n:'Gil Vicente',b:0},{n:'Moreirense',b:0},{n:'Arouca',b:0},{n:'Vitória Guimarães',b:0},{n:'Estoril',b:0},
-    {n:'Alverca',b:0},{n:'Rio Ave',b:0},{n:'Santa Clara',b:0},{n:'Nacional',b:0},{n:'Estrela Amadora',b:0},
-    {n:'Casa Pia',b:0},{n:'Marítimo',b:0},{n:'Académico de Viseu',b:0}]},
+    {n:'FC Porto',b:4,c:'Oporto',s:'Estádio do Dragão'},{n:'Sporting CP',b:3,c:'Lisboa',s:'José Alvalade'},{n:'Benfica',b:4,c:'Lisboa',s:'Estádio da Luz'},{n:'SC Braga',b:1,c:'Braga',s:'Municipal de Braga'},{n:'Famalicão',b:0,c:'Vila Nova de Famalicão',s:'Municipal de Famalicão'},
+    {n:'Gil Vicente',b:0,c:'Barcelos',s:'Cidade de Barcelos'},{n:'Moreirense',b:0,c:'Moreira de Cónegos',s:'Comendador Joaquim de Almeida Freitas'},{n:'Arouca',b:0,c:'Arouca',s:'Municipal de Arouca'},{n:'Vitória Guimarães',b:0,c:'Guimarães',s:'Dom Afonso Henriques'},{n:'Estoril',b:0,c:'Estoril',s:'António Coimbra da Mota'},
+    {n:'Alverca',b:0,c:'Alverca do Ribatejo',s:'Municipal de Alverca'},{n:'Rio Ave',b:0,c:'Vila do Conde',s:'Rio Ave'},{n:'Santa Clara',b:0,c:'Ponta Delgada',s:'São Miguel'},{n:'Nacional',b:0,c:'Funchal',s:'Da Madeira'},{n:'Estrela Amadora',b:0,c:'Amadora',s:'José Gomes'},
+    {n:'Casa Pia',b:0,c:'Lisboa',s:'Pina Manique'},{n:'Marítimo',b:0,c:'Funchal',s:'Dos Barreiros'},{n:'Académico de Viseu',b:0,c:'Viseu',s:'Do Fontelo'}]},
+  {league:'Liga Portugal 2', country:'Portugal', base:4, matchdays:34, teams:[
+    {n:'Académica de Coimbra',b:0,c:'Coimbra',s:'Estádio Cidade de Coimbra'},{n:'Amarante',b:0,c:'Amarante',s:'Estádio Prof. Vieira de Carvalho'},{n:'AVS Futebol SAD',b:0,c:'Vila das Aves',s:'Estádio do AVS'},
+    {n:'Feirense',b:0,c:'Santa Maria da Feira',s:'Estádio Marcolino Castro'},{n:'Tondela',b:1,c:'Tondela',s:'Estádio João Cardoso'},{n:'Felgueiras',b:0,c:'Felgueiras',s:'Estádio Dr. Machado de Matos'},
+    {n:'Penafiel',b:0,c:'Penafiel',s:'Estádio Municipal 25 de Abril'},{n:'FC Porto B',b:0,c:'Vila Nova de Gaia',s:'Estádio Municipal de Rio Tinto'},{n:'Vizela',b:1,c:'Vizela',s:'Estádio do FC Vizela'},
+    {n:'GD Chaves',b:1,c:'Chaves',s:'Estádio Municipal Eng. Manuel Branco Teixeira'},{n:'Leixões',b:0,c:'Matosinhos',s:'Estádio do Mar'},{n:'Lusitânia de Lourosa',b:0,c:'Lourosa',s:'Estádio do Lusitânia de Lourosa'},
+    {n:'Portimonense',b:1,c:'Portimão',s:'Estádio Municipal de Portimão'},{n:'Farense',b:0,c:'Faro',s:'Estádio de São Luís'},{n:'Torreense',b:0,c:'Torres Vedras',s:'Estádio Manuel Marques'},
+    {n:'Benfica B',b:0,c:'Seixal',s:'Benfica Campus'},{n:'Sporting CP B',b:0,c:'Alcochete',s:'Academia Sporting'},{n:'União de Leiria',b:0,c:'Leiria',s:'Estádio Dr. Magalhães Pessoa'}]},
   {league:'Eredivisie', country:'Países Bajos', base:9, matchdays:34, teams:[
-    {n:'PSV Eindhoven',b:3},{n:'Feyenoord',b:3},{n:'NEC Nijmegen',b:0},{n:'Twente',b:1},{n:'Ajax',b:4},
-    {n:'AZ Alkmaar',b:1},{n:'Heerenveen',b:0},{n:'Groningen',b:0},{n:'Sparta Rotterdam',b:0},{n:'Fortuna Sittard',b:0},
-    {n:'Go Ahead Eagles',b:0},{n:'Excelsior',b:0},{n:'Telstar',b:0},{n:'PEC Zwolle',b:0},{n:'Utrecht',b:0},
-    {n:'ADO Den Haag',b:0},{n:'Cambuur',b:0},{n:'Willem II',b:0}]},
+    {n:'PSV Eindhoven',b:3,c:'Eindhoven',s:'Philips Stadion'},{n:'Feyenoord',b:3,c:'Rotterdam',s:'De Kuip'},{n:'NEC Nijmegen',b:0,c:'Nimega',s:'Goffertstadion'},{n:'Twente',b:1,c:'Enschede',s:'De Grolsch Veste'},{n:'Ajax',b:4,c:'Ámsterdam',s:'Johan Cruijff ArenA'},
+    {n:'AZ Alkmaar',b:1,c:'Alkmaar',s:'AFAS Stadion'},{n:'Heerenveen',b:0,c:'Heerenveen',s:'Abe Lenstra Stadion'},{n:'Groningen',b:0,c:'Groninga',s:'Euroborg'},{n:'Sparta Rotterdam',b:0,c:'Rotterdam',s:'Het Kasteel'},{n:'Fortuna Sittard',b:0,c:'Sittard',s:'Fortuna Sittard Stadion'},
+    {n:'Go Ahead Eagles',b:0,c:'Deventer',s:'De Adelaarshorst'},{n:'Excelsior',b:0,c:'Rotterdam',s:'Van Donge & De Roo Stadion'},{n:'Telstar',b:0,c:'Velsen-Zuid',s:'Corendon Stadion'},{n:'PEC Zwolle',b:0,c:'Zwolle',s:'MAC³PARK Stadion'},{n:'Utrecht',b:0,c:'Utrecht',s:'Stadion Galgenwaard'},
+    {n:'ADO Den Haag',b:0,c:'La Haya',s:'Bingoal Stadion'},{n:'Cambuur',b:0,c:'Leeuwarden',s:'Cambuur Stadion'},{n:'Willem II',b:0,c:'Tilburg',s:'Koning Willem II Stadion'}]},
+  {league:'Eerste Divisie', country:'Países Bajos', base:5, matchdays:38, teams:[
+    {n:'Jong Ajax',b:0,c:'Ámsterdam',s:'De Toekomst'},{n:'Almere City FC',b:0,c:'Almere',s:'Yellow&Blue Stadion'},{n:'Jong AZ',b:0,c:'Alkmaar',s:'AFAS-trainingscomplex'},
+    {n:'FC Den Bosch',b:0,c:'\'s-Hertogenbosch',s:'Stadion De Vliert'},{n:'FC Dordrecht',b:0,c:'Dordrecht',s:'Krommedijk'},{n:'FC Eindhoven',b:0,c:'Eindhoven',s:'Jan Louwers Stadion'},
+    {n:'FC Emmen',b:0,c:'Emmen',s:'De Oude Meerdijk'},{n:'De Graafschap',b:0,c:'Doetinchem',s:'De Vijverberg'},{n:'Helmond Sport',b:0,c:'Helmond',s:'De Braak'},
+    {n:'MVV Maastricht',b:0,c:'Maastricht',s:'De Geusselt'},{n:'Jong PSV',b:0,c:'Eindhoven',s:'De Herdgang'},{n:'RKC Waalwijk',b:0,c:'Waalwijk',s:'Mandemakers Stadion'},
+    {n:'Roda JC Kerkrade',b:1,c:'Kerkrade',s:'Parkstad Limburg Stadion'},{n:'TOP Oss',b:0,c:'Oss',s:'Frans Heesen Stadion'},{n:'Jong FC Utrecht',b:0,c:'Utrecht',s:'Zoudenbalch'},
+    {n:'Vitesse',b:1,c:'Arnhem',s:'GelreDome'},{n:'VVV-Venlo',b:0,c:'Venlo',s:'De Koel'},{n:'NAC Breda',b:1,c:'Breda',s:'Rat Verlegh Stadion'},
+    {n:'Heracles Almelo',b:1,c:'Almelo',s:'Erve Asito'},{n:'FC Volendam',b:1,c:'Volendam',s:'Kras Stadion'}]},
   {league:'Liga MX', country:'México', base:7, matchdays:17, teams:[
-    {n:'Club América',b:3},{n:'Atlas',b:0},{n:'Atlético San Luis',b:0},{n:'Cruz Azul',b:2},{n:'Chivas Guadalajara',b:2},
-    {n:'FC Juárez',b:0},{n:'León',b:1},{n:'Monterrey',b:2},{n:'Necaxa',b:0},{n:'Pachuca',b:1},
-    {n:'Puebla',b:0},{n:'Pumas UNAM',b:1},{n:'Querétaro',b:0},{n:'Santos Laguna',b:0},{n:'Tigres UANL',b:2},
-    {n:'Tijuana',b:0},{n:'Toluca',b:1},{n:'Atlante',b:0}]},
+    {n:'Club América',b:3,c:'Ciudad de México',s:'Estadio Azteca'},{n:'Atlas',b:0,c:'Guadalajara',s:'Estadio Jalisco'},{n:'Atlético San Luis',b:0,c:'San Luis Potosí',s:'Alfonso Lastras'},{n:'Cruz Azul',b:2,c:'Ciudad de México',s:'Estadio Azteca'},{n:'Chivas Guadalajara',b:2,c:'Guadalajara',s:'Estadio Akron'},
+    {n:'FC Juárez',b:0,c:'Ciudad Juárez',s:'Estadio Olímpico Benito Juárez'},{n:'León',b:1,c:'León',s:'Estadio León'},{n:'Monterrey',b:2,c:'Monterrey',s:'Estadio BBVA'},{n:'Necaxa',b:0,c:'Aguascalientes',s:'Estadio Victoria'},{n:'Pachuca',b:1,c:'Pachuca',s:'Estadio Hidalgo'},
+    {n:'Puebla',b:0,c:'Puebla',s:'Estadio Cuauhtémoc'},{n:'Pumas UNAM',b:1,c:'Ciudad de México',s:'Estadio Olímpico Universitario'},{n:'Querétaro',b:0,c:'Querétaro',s:'Estadio Corregidora'},{n:'Santos Laguna',b:0,c:'Torreón',s:'Estadio Corona'},{n:'Tigres UANL',b:2,c:'San Nicolás de los Garza',s:'Estadio Universitario'},
+    {n:'Tijuana',b:0,c:'Tijuana',s:'Estadio Caliente'},{n:'Toluca',b:1,c:'Toluca',s:'Estadio Nemesio Díez'},{n:'Atlante',b:0,c:'Cancún',s:'Estadio Andrés Quintana Roo'}]},
+  {league:'Liga de Expansión MX', country:'México', base:3, matchdays:15, teams:[
+    {n:'Alebrijes de Oaxaca',b:0,c:'Oaxaca',s:'Estadio Tecnológico'},{n:'Cancún FC',b:0,c:'Cancún',s:'Estadio Andrés Quintana Roo'},{n:'Atlético La Paz',b:0,c:'La Paz',s:'Estadio Guaycura'},
+    {n:'Atlético Morelia',b:1,c:'Morelia',s:'Estadio Morelos'},{n:'Correcaminos',b:0,c:'Ciudad Victoria',s:'Estadio Marte R. Gómez'},{n:'Cruz Azul Hidalgo',b:0,c:'Ciudad Cooperativa',s:'Estadio Cruz Azul'},
+    {n:'Dorados de Sinaloa',b:0,c:'Culiacán',s:'Estadio Banorte'},{n:'Alacranes de Durango',b:0,c:'Durango',s:'Estadio Francisco Zarco'},{n:'Jaiba Brava',b:1,c:'Tampico',s:'Estadio Tamaulipas'},
+    {n:'Mineros de Zacatecas',b:0,c:'Zacatecas',s:'Estadio Carlos Vega Villalba'},{n:'Piratas FC',b:0,c:'Veracruz',s:'Estadio Luis Pirata Fuente'},{n:'Tapatío',b:0,c:'Zapopan',s:'Estadio 3 de Marzo'},
+    {n:'Tepatitlán FC',b:1,c:'Tepatitlán de Morelos',s:'Estadio Gregorio Tepa Gómez'},{n:'Coyotes de Tlaxcala',b:0,c:'Tlaxcala',s:'Estadio Tlahuicole'},{n:'Leones Negros UDG',b:1,c:'Guadalajara',s:'Estadio 3 de Marzo'},
+    {n:'Venados de Yucatán',b:0,c:'Mérida',s:'Estadio Carlos Iturralde Rivero'}]},
   {league:'Pro League', country:'Bélgica', base:8, matchdays:34, teams:[
-    {n:'Club Brugge',b:3},{n:'Union SG',b:1},{n:'Anderlecht',b:3},{n:'Genk',b:1},{n:'Gent',b:1},
-    {n:'Antwerp',b:1},{n:'Standard Liège',b:1},{n:'Cercle Brugge',b:0},{n:'Sint-Truiden',b:0},{n:'Westerlo',b:0},
-    {n:'OH Leuven',b:0},{n:'Charleroi',b:0},{n:'KV Mechelen',b:0},{n:'Zulte Waregem',b:0},{n:'La Louvière',b:0},
-    {n:'Beveren',b:0},{n:'KV Kortrijk',b:0},{n:'Lommel',b:0}]},
+    {n:'Club Brugge',b:3,c:'Brujas',s:'Jan Breydelstadion'},{n:'Union SG',b:1,c:'Bruselas',s:'Stade Joseph Marien'},{n:'Anderlecht',b:3,c:'Bruselas',s:'Lotto Park'},{n:'Genk',b:1,c:'Genk',s:'Cegeka Arena'},{n:'Gent',b:1,c:'Gante',s:'Ghelamco Arena'},
+    {n:'Antwerp',b:1,c:'Amberes',s:'Bosuilstadion'},{n:'Standard Liège',b:1,c:'Lieja',s:'Sclessin'},{n:'Cercle Brugge',b:0,c:'Brujas',s:'Jan Breydelstadion'},{n:'Sint-Truiden',b:0,c:'Sint-Truiden',s:'Stayen'},{n:'Westerlo',b:0,c:'Westerlo',s:'Het Kuipje'},
+    {n:'OH Leuven',b:0,c:'Lovaina',s:'Den Dreef'},{n:'Charleroi',b:0,c:'Charleroi',s:'Stade du Pays de Charleroi'},{n:'KV Mechelen',b:0,c:'Mechelen',s:'AFAS Stadion Achter de Kazerne'},{n:'Zulte Waregem',b:0,c:'Waregem',s:'Regenboogstadion'},{n:'La Louvière',b:0,c:'La Louvière',s:'Stade du Tivoli'},
+    {n:'Beveren',b:0,c:'Beveren',s:'Freethiel Stadion'},{n:'KV Kortrijk',b:0,c:'Kortrijk',s:'Guldensporen Stadion'},{n:'Lommel',b:0,c:'Lommel',s:'Soevereinstadion'}]},
+  {league:'Challenger Pro League', country:'Bélgica', base:4, matchdays:28, teams:[
+    {n:'RSCA Futures',b:0,c:'Bruselas',s:'Neerpede'},{n:'K. Beerschot VA',b:1,c:'Amberes',s:'Olympisch Stadion'},{n:'Club NXT',b:0,c:'Brujas',s:'Klokkeputstraat'},
+    {n:'FCV Dender EH',b:1,c:'Denderleeuw',s:'Florent Beeckmanstadion'},{n:'KAS Eupen',b:1,c:'Eupen',s:'Kehrwegstadion'},{n:'R. Excelsior Virton',b:0,c:'Virton',s:'Stade Yvan Georges'},
+    {n:'R. Francs Borains',b:0,c:'Boussu',s:'Stade Robert Urbain'},{n:'Jong Genk',b:0,c:'Genk',s:'Cegeka Arena'},{n:'Jong KAA Gent',b:0,c:'Gante',s:'Planet Group Arena'},
+    {n:'RFC Liège',b:0,c:'Lieja',s:'Stade de Rocourt'},{n:'K. Lierse SK',b:1,c:'Lier',s:'Herman Vanderpoortenstadion'},{n:'KSC Lokeren-Temse',b:0,c:'Lokeren',s:'Daknamstadion'},
+    {n:'K. Patro Eisden Maasmechelen',b:0,c:'Maasmechelen',s:'Bosstadion'},{n:'RFC Seraing',b:0,c:'Seraing',s:'Stade du Pairay'},{n:'K. Sporting Hasselt',b:0,c:'Hasselt',s:'Sportpark Kiewit'}]},
   {league:'Süper Lig', country:'Turquía', base:8, matchdays:34, teams:[
-    {n:'Galatasaray',b:4},{n:'Fenerbahçe',b:4},{n:'Beşiktaş',b:3},{n:'Trabzonspor',b:1},{n:'Alanyaspor',b:0},
-    {n:'Amedspor',b:0},{n:'Çorum FK',b:0},{n:'Erzurumspor',b:0},{n:'Eyüpspor',b:0},{n:'Gaziantep FK',b:0},
-    {n:'Gençlerbirliği',b:0},{n:'Göztepe',b:0},{n:'İstanbul Başakşehir',b:0},{n:'Kasımpaşa',b:0},{n:'Kocaelispor',b:0},
-    {n:'Konyaspor',b:0},{n:'Rizespor',b:0},{n:'Samsunspor',b:0}]},
+    {n:'Galatasaray',b:4,c:'Estambul',s:'RAMS Park'},{n:'Fenerbahçe',b:4,c:'Estambul',s:'Şükrü Saracoğlu'},{n:'Beşiktaş',b:3,c:'Estambul',s:'Tüpraş Stadyumu'},{n:'Trabzonspor',b:1,c:'Trebisonda',s:'Şenol Güneş Sport Complex'},{n:'Alanyaspor',b:0,c:'Alanya',s:'Bahçeşehir Okulları Stadyumu'},
+    {n:'Amedspor',b:0,c:'Diyarbakır',s:'Diyarbakır Stadyumu'},{n:'Çorum FK',b:0,c:'Çorum',s:'Çorum Stadyumu'},{n:'Erzurumspor',b:0,c:'Erzurum',s:'Kazım Karabekir Stadyumu'},{n:'Eyüpspor',b:0,c:'Estambul',s:'Eyüp Stadyumu'},{n:'Gaziantep FK',b:0,c:'Gaziantep',s:'Gaziantep Stadyumu'},
+    {n:'Gençlerbirliği',b:0,c:'Ankara',s:'Eryaman Stadyumu'},{n:'Göztepe',b:0,c:'Esmirna',s:'Gürsel Aksel Stadyumu'},{n:'İstanbul Başakşehir',b:0,c:'Estambul',s:'Başakşehir Fatih Terim Stadyumu'},{n:'Kasımpaşa',b:0,c:'Estambul',s:'Recep Tayyip Erdoğan Stadyumu'},{n:'Kocaelispor',b:0,c:'Izmit',s:'Kocaeli Stadyumu'},
+    {n:'Konyaspor',b:0,c:'Konya',s:'Konya Büyükşehir Stadyumu'},{n:'Rizespor',b:0,c:'Rize',s:'Çaykur Didi Stadyumu'},{n:'Samsunspor',b:0,c:'Samsun',s:'Samsun 19 Mayıs Stadyumu'}]},
+  {league:'TFF 1. Lig', country:'Turquía', base:4, matchdays:38, teams:[
+    {n:'Bandırmaspor',b:0,c:'Bandırma',s:'17 Eylül Stadyumu'},{n:'Bodrum FK',b:0,c:'Bodrum',s:'Bodrum Belediye Stadyumu'},{n:'Boluspor',b:0,c:'Bolu',s:'Bolu Atatürk Stadyumu'},
+    {n:'Esenler Erokspor',b:0,c:'Estambul',s:'Necmi Kadıoğlu Stadyumu'},{n:'İstanbulspor',b:0,c:'Estambul',s:'Bahçelievler Şehir Stadyumu'},{n:'Iğdır FK',b:0,c:'Iğdır',s:'Iğdır Şehir Stadyumu'},
+    {n:'Keçiörengücü',b:0,c:'Ankara',s:'19 Mayıs Stadyumu'},{n:'Manisa FK',b:0,c:'Manisa',s:'19 Mayıs Stadyumu'},{n:'Pendikspor',b:0,c:'Estambul',s:'Pendik Recep Tayyip Erdoğan Stadyumu'},
+    {n:'Sarıyer',b:0,c:'Estambul',s:'Rüya Tepe Stadyumu'},{n:'Sivasspor',b:1,c:'Sivas',s:'Yeni 4 Eylül Stadyumu'},{n:'Ümraniyespor',b:0,c:'Estambul',s:'Ümraniye Şehir Stadyumu'},
+    {n:'Vanspor',b:0,c:'Van',s:'Van 50. Yıl Stadyumu'},{n:'Antalyaspor',b:1,c:'Antalya',s:'Antalya Stadyumu'},{n:'Kayserispor',b:1,c:'Kayseri',s:'Kadir Has Stadyumu'},
+    {n:'Fatih Karagümrük',b:1,c:'Estambul',s:'Yusuf Ziya Öniş Stadyumu'},{n:'Bursaspor',b:1,c:'Bursa',s:'Bursa Timsah Arena'},{n:'Batman Petrolspor',b:0,c:'Batman',s:'Batman Şehir Stadyumu'},
+    {n:'Mardin 1969 Spor',b:0,c:'Mardin',s:'Mardin Şehir Stadyumu'},{n:'Muğlaspor',b:0,c:'Muğla',s:'Muğla Atatürk Stadyumu'}]},
   {league:'Saudi Pro League', country:'Arabia Saudita', base:8, matchdays:34, teams:[
-    {n:'Al Nassr',b:4},{n:'Al Hilal',b:4},{n:'Al Ittihad',b:3},{n:'Al Ahli',b:3},{n:'Al Qadsiah',b:0},
-    {n:'Al Taawoun',b:0},{n:'Al Ettifaq',b:0},{n:'Al Khaleej',b:0},{n:'Al Fateh',b:0},{n:'Al Fayha',b:0},
-    {n:'Al Shabab',b:0},{n:'Al Riyadh',b:0},{n:'Al Kholood',b:0},{n:'NEOM SC',b:0},{n:'Al Hazem',b:0},
-    {n:'Abha',b:0},{n:'Al Faisaly',b:0},{n:'Al Diriyah',b:0}]},
+    {n:'Al Nassr',b:4,c:'Riad',s:'Al-Awwal Park'},{n:'Al Hilal',b:4,c:'Riad',s:'Kingdom Arena'},{n:'Al Ittihad',b:3,c:'Jeddah',s:'King Abdullah Sports City'},{n:'Al Ahli',b:3,c:'Jeddah',s:'King Abdullah Sports City'},{n:'Al Qadsiah',b:0,c:'Al Khobar',s:'Prince Saud bin Jalawi'},
+    {n:'Al Taawoun',b:0,c:'Buraidah',s:'King Abdullah Sport City'},{n:'Al Ettifaq',b:0,c:'Dammam',s:'Prince Mohamed bin Fahd Stadium'},{n:'Al Khaleej',b:0,c:'Saihat',s:'Prince Saud bin Jalawi'},{n:'Al Fateh',b:0,c:'Al Hasa',s:'Prince Abdullah bin Jalawi'},{n:'Al Fayha',b:0,c:'Al Majma\'ah',s:'King Abdullah Sport City'},
+    {n:'Al Shabab',b:0,c:'Riad',s:'Prince Faisal bin Fahd Stadium'},{n:'Al Riyadh',b:0,c:'Riad',s:'Prince Faisal bin Fahd Stadium'},{n:'Al Kholood',b:0,c:'Sakaka',s:'Prince Abdulaziz bin Musaed Stadium'},{n:'NEOM SC',b:0,c:'Neom',s:'NEOM Stadium'},{n:'Al Hazem',b:0,c:'Ar Rass',s:'King Abdullah Sport City'},
+    {n:'Abha',b:0,c:'Abha',s:'Prince Sultan bin Abdulaziz Stadium'},{n:'Al Faisaly',b:0,c:'Harmah',s:'King Abdullah Sports City'},{n:'Al Diriyah',b:0,c:'Diriyah',s:'Diriyah Arena'}]},
+  {league:'First Division League', country:'Arabia Saudita', base:4, matchdays:34, teams:[
+    {n:'Al-Ula',b:0,c:'Al-Ula',s:'Estadio de Al-Ula'},{n:'Al-Anwar',b:0,c:'Buraidah',s:'Estadio del Príncipe Abdullah bin Jalawi'},{n:'Al-Jabalain',b:0,c:'Al Majma\'ah',s:'Estadio Municipal de Al Majma\'ah'},
+    {n:'Al-Jandal',b:0,c:'Dawmat al-Jandal',s:'Estadio Universidad de Al-Jouf'},{n:'Al-Orobah',b:0,c:'Sakaka',s:'Estadio del Príncipe Nayef bin Abdulaziz'},{n:'Al-Raed',b:1,c:'Buraidah',s:'Estadio del Príncipe Abdulaziz bin Musaed'},
+    {n:'Al-Zulfi',b:0,c:'Zulfi',s:'Estadio del Club Al-Zulfi'},{n:'Al-Wehda',b:1,c:'Meca',s:'Estadio Rey Abdulaziz'},{n:'Al-Adalah',b:0,c:'Al-Qatif',s:'Estadio del Club Al-Adalah'},
+    {n:'Jeddah Club',b:0,c:'Yeda',s:'Estadio del Club Jeddah'},{n:'Al-Bukiryah',b:0,c:'Al Bukayriyah',s:'Estadio del Club Al-Bukiryah'},{n:'Al-Taie',b:0,c:'Ha\'il',s:'Estadio del Príncipe Abdulaziz bin Musaed'},
+    {n:'Al-Najma',b:0,c:'Abu Arish',s:'Estadio del Club Al-Najma'},{n:'Al-Okhdood',b:1,c:'Najran',s:'Estadio del Príncipe Hathloul bin Abdulaziz'},{n:'Damac',b:1,c:'Khamis Mushait',s:'Estadio del Príncipe Sultan bin Abdulaziz'},
+    {n:'Al-Saqer',b:0,c:'Hafar Al-Batin',s:'Estadio del Club Al-Saqer'},{n:'Al-Jeel',b:0,c:'Yeda',s:'Estadio del Club Al-Jeel'},{n:'Hajer',b:0,c:'Al-Hofuf',s:'Estadio del Príncipe Abdullah bin Jalawi'}]},
   {league:'J1 League', country:'Japón', base:6, matchdays:38, teams:[
-    {n:'Kashima Antlers',b:2},{n:'Urawa Red Diamonds',b:2},{n:'Kashiwa Reysol',b:0},{n:'FC Tokyo',b:0},{n:'Tokyo Verdy',b:0},
-    {n:'Machida Zelvia',b:0},{n:'Kawasaki Frontale',b:2},{n:'Yokohama F. Marinos',b:2},{n:'Shimizu S-Pulse',b:0},{n:'Nagoya Grampus',b:0},
-    {n:'Kyoto Sanga',b:0},{n:'Gamba Osaka',b:1},{n:'Cerezo Osaka',b:1},{n:'Vissel Kobe',b:1},{n:'Fagiano Okayama',b:0},
-    {n:'Sanfrecce Hiroshima',b:1},{n:'Avispa Fukuoka',b:0},{n:'Mito HollyHock',b:0},{n:'V-Varen Nagasaki',b:0},{n:'JEF United Chiba',b:0}]}
+    {n:'Kashima Antlers',b:2,c:'Kashima',s:'Kashima Soccer Stadium'},{n:'Urawa Red Diamonds',b:2,c:'Saitama',s:'Saitama Stadium 2002'},{n:'Kashiwa Reysol',b:0,c:'Kashiwa',s:'Sankyo Frontier Kashiwa Stadium'},{n:'FC Tokyo',b:0,c:'Tokio',s:'Ajinomoto Stadium'},{n:'Tokyo Verdy',b:0,c:'Tokio',s:'Ajinomoto Stadium'},
+    {n:'Machida Zelvia',b:0,c:'Machida',s:'Machida GION Stadium'},{n:'Kawasaki Frontale',b:2,c:'Kawasaki',s:'Todoroki Stadium'},{n:'Yokohama F. Marinos',b:2,c:'Yokohama',s:'Nissan Stadium'},{n:'Shimizu S-Pulse',b:0,c:'Shizuoka',s:'IAI Stadium Nihondaira'},{n:'Nagoya Grampus',b:0,c:'Nagoya',s:'Toyota Stadium'},
+    {n:'Kyoto Sanga',b:0,c:'Kioto',s:'Sanga Stadium by Kyocera'},{n:'Gamba Osaka',b:1,c:'Suita',s:'Panasonic Stadium Suita'},{n:'Cerezo Osaka',b:1,c:'Osaka',s:'Yodoko Stadium'},{n:'Vissel Kobe',b:1,c:'Kobe',s:'Noevir Stadium Kobe'},{n:'Fagiano Okayama',b:0,c:'Okayama',s:'Cactus Field Momotaro Stadium'},
+    {n:'Sanfrecce Hiroshima',b:1,c:'Hiroshima',s:'Edion Peace Wing Hiroshima'},{n:'Avispa Fukuoka',b:0,c:'Fukuoka',s:'Best Denki Stadium'},{n:'Mito HollyHock',b:0,c:'Mito',s:'K\'s Denki Stadium'},{n:'V-Varen Nagasaki',b:0,c:'Nagasaki',s:'Transcosmos Stadium Nagasaki'},{n:'JEF United Chiba',b:0,c:'Chiba',s:'Fukuda Denshi Arena'}]},
+  {league:'J2 League', country:'Japón', base:3, matchdays:38, teams:[
+    {n:'Yokohama FC',b:1,c:'Yokohama',s:'Nippatsu Mitsuzawa Stadium'},{n:'Shonan Bellmare',b:1,c:'Hiratsuka',s:'Lemon Gas Stadium Hiratsuka'},{n:'Albirex Niigata',b:1,c:'Niigata',s:'Denka Big Swan Stadium'},
+    {n:'Tokushima Vortis',b:0,c:'Tokushima',s:'Pocarisweat Stadium'},{n:'Júbilo Iwata',b:1,c:'Iwata',s:'Yamaha Stadium'},{n:'RB Omiya Ardija',b:0,c:'Saitama',s:'NACK5 Stadium Omiya'},
+    {n:'Vegalta Sendai',b:1,c:'Sendai',s:'Yurtec Stadium Sendai'},{n:'Sagan Tosu',b:0,c:'Tosu',s:'Ekimae Real Estate Stadium'},{n:'Iwaki FC',b:0,c:'Iwaki',s:'Hawaiians Stadium Iwaki'},
+    {n:'Montedio Yamagata',b:0,c:'Tendo',s:'ND Soft Stadium Yamagata'},{n:'FC Imabari',b:0,c:'Imabari',s:'Sunrise Stadium Imabari'},{n:'Hokkaido Consadole Sapporo',b:0,c:'Sapporo',s:'Sapporo Dome'},
+    {n:'Ventforet Kofu',b:0,c:'Kofu',s:'JIT Recycle Ink Stadium'},{n:'Blaublitz Akita',b:0,c:'Akita',s:'Soyu Stadium'},{n:'Fujieda MYFC',b:0,c:'Fujieda',s:'Fujieda Stadium'},
+    {n:'Oita Trinita',b:1,c:'Oita',s:'Showa Denko Dome Oita'},{n:'Kataller Toyama',b:0,c:'Toyama',s:'Toyama Stadium'},{n:'Tochigi City',b:0,c:'Tochigi',s:'Tochigi City Green Stadium'},
+    {n:'Vanraure Hachinohe',b:0,c:'Hachinohe',s:'Prixpark Stadium Hachinohe'},{n:'Tegevajaro Miyazaki',b:0,c:'Miyazaki',s:'Miyazaki Stadium'}]},
+  {league:'Premiership', country:'Escocia', base:9, matchdays:38, teams:[
+    {n:'Aberdeen',b:1,c:'Aberdeen',s:'Pittodrie Stadium'},{n:'Celtic',b:4,c:'Glasgow',s:'Celtic Park'},{n:'Dundee',b:0,c:'Dundee',s:'Dens Park'},
+    {n:'Dundee United',b:0,c:'Dundee',s:'Tannadice Park'},{n:'Falkirk',b:0,c:'Falkirk',s:'Falkirk Stadium'},{n:'Heart of Midlothian',b:2,c:'Edimburgo',s:'Tynecastle Park'},
+    {n:'Hibernian',b:1,c:'Edimburgo',s:'Easter Road'},{n:'Kilmarnock',b:0,c:'Kilmarnock',s:'Rugby Park'},{n:'Motherwell',b:0,c:'Motherwell',s:'Fir Park'},
+    {n:'Rangers',b:4,c:'Glasgow',s:'Ibrox Stadium'},{n:'St Johnstone',b:0,c:'Perth',s:'McDiarmid Park'},{n:'St Mirren',b:0,c:'Paisley',s:'St Mirren Park'}]},
+  {league:'Championship', country:'Escocia', base:3, matchdays:36, teams:[
+    {n:'Arbroath',b:0,c:'Arbroath',s:'Gayfield Park'},{n:'Ayr United',b:0,c:'Ayr',s:'Somerset Park'},{n:'Dunfermline Athletic',b:0,c:'Dunfermline',s:'East End Park'},
+    {n:'Greenock Morton',b:0,c:'Greenock',s:'Cappielow Park'},{n:'Inverness Caledonian Thistle',b:0,c:'Inverness',s:'Caledonian Stadium'},{n:'Livingston',b:0,c:'Livingston',s:'Tony Macaroni Arena'},
+    {n:'Partick Thistle',b:0,c:'Glasgow',s:'Firhill Stadium'},{n:'Queen\'s Park',b:0,c:'Glasgow',s:'Lesser Hampden'},{n:'Raith Rovers',b:0,c:'Kirkcaldy',s:'Stark\'s Park'},
+    {n:'Stenhousemuir',b:0,c:'Stenhousemuir',s:'Ochilview Park'}]},
+  {league:'Bundesliga', country:'Austria', base:9, matchdays:22, teams:[
+    {n:'Red Bull Salzburg',b:3,c:'Salzburgo',s:'Red Bull Arena'},{n:'Sturm Graz',b:2,c:'Graz',s:'Merkur-Arena'},{n:'Grazer AK',b:0,c:'Graz',s:'Stadion Liebenau'},
+    {n:'TSV Hartberg',b:0,c:'Hartberg',s:'Profertil Arena'},{n:'Wolfsberger AC',b:0,c:'Wolfsberg',s:'Lavanttal Arena'},{n:'WSG Tirol',b:0,c:'Wattens',s:'Arena Tirol'},
+    {n:'LASK',b:1,c:'Linz',s:'Raiffeisen Arena'},{n:'SV Ried',b:0,c:'Ried im Innkreis',s:'Josko Arena'},{n:'Austria Lustenau',b:0,c:'Lustenau',s:'Reichshofstadion'},
+    {n:'SK Rheindorf Altach',b:0,c:'Altach',s:'Cashpoint Arena'},{n:'Rapid Wien',b:2,c:'Viena',s:'Allianz Stadion'},{n:'Austria Wien',b:1,c:'Viena',s:'Franz-Horr-Stadion'}]},
+  {league:'2. Liga', country:'Austria', base:4, matchdays:30, teams:[
+    {n:'FC Blau-Weiß Linz',b:0,c:'Linz',s:'Stadion Blau-Weiß-Linz'},{n:'FC Wacker Innsbruck',b:0,c:'Innsbruck',s:'Tivoli Stadion'},{n:'ASK Voitsberg',b:0,c:'Voitsberg',s:'Weststeiermark Arena'},
+    {n:'SKN St. Pölten',b:0,c:'St. Pölten',s:'NV Arena'},{n:'SKU Amstetten',b:0,c:'Amstetten',s:'Ertl Glas Arena'},{n:'Admira Wacker',b:0,c:'Maria Enzersdorf',s:'BSFZ Arena'},
+    {n:'FC Liefering',b:0,c:'Salzburgo',s:'Liefering Sportpark'},{n:'Young Violets',b:0,c:'Viena',s:'Franz-Horr-Stadion'},{n:'Rapid Wien II',b:0,c:'Viena',s:'Sportclub Platz'},
+    {n:'Sturm Graz II',b:0,c:'Graz',s:'Trainingszentrum Messendorf'},{n:'Floridsdorfer AC',b:0,c:'Viena',s:'FAC-Platz'},{n:'Austria Salzburg',b:0,c:'Salzburgo',s:'Sportanlage Nord'},
+    {n:'First Vienna FC',b:0,c:'Viena',s:'Hohe Warte'},{n:'Kapfenberger SV',b:0,c:'Kapfenberg',s:'Franz-Fekete-Stadion'},{n:'Schwarz-Weiß Bregenz',b:0,c:'Bregenz',s:'Rheinstadion Bregenz'},
+    {n:'Hertha Wels',b:0,c:'Wels',s:'Stadion Wels'}]},
+  {league:'Super League', country:'Suiza', base:9, matchdays:36, teams:[
+    {n:'FC Basel',b:2,c:'Basilea',s:'St. Jakob-Park'},{n:'Grasshopper Club Zürich',b:0,c:'Zúrich',s:'Letzigrund'},{n:'FC Zürich',b:0,c:'Zúrich',s:'Letzigrund'},
+    {n:'FC Lausanne-Sport',b:0,c:'Lausana',s:'Stade de la Tuilière'},{n:'FC Lugano',b:1,c:'Lugano',s:'Stadio Cornaredo'},{n:'FC Luzern',b:0,c:'Lucerna',s:'Swissporarena'},
+    {n:'Servette FC',b:1,c:'Ginebra',s:'Stade de Genève'},{n:'FC Sion',b:0,c:'Sion',s:'Stade de Tourbillon'},{n:'FC St. Gallen',b:1,c:'St. Gallen',s:'Kybunpark'},
+    {n:'FC Vaduz',b:0,c:'Vaduz',s:'Rheinpark Stadion'},{n:'Young Boys',b:3,c:'Berna',s:'Stadion Wankdorf'},{n:'FC Thun',b:0,c:'Thun',s:'Stockhorn Arena'}]},
+  {league:'Challenge League', country:'Suiza', base:3, matchdays:36, teams:[
+    {n:'Neuchâtel Xamax FCS',b:0,c:'Neuchâtel',s:'Stade de la Maladière'},{n:'SC Kriens',b:0,c:'Kriens',s:'Stadion Kleinfeld'},{n:'FC Rapperswil-Jona',b:0,c:'Rapperswil',s:'Grünfeld Stadion'},
+    {n:'FC Wil 1900',b:0,c:'Wil',s:'Bergholz Stadion'},{n:'FC Stade-Lausanne-Ouchy',b:0,c:'Lausana',s:'Stade Municipal de Vidy'},{n:'FC Stade Nyonnais',b:0,c:'Nyon',s:'Stade de Colovray'},
+    {n:'Étoile Carouge FC',b:0,c:'Carouge',s:'Stade de la Fontenette'},{n:'FC Aarau',b:0,c:'Aarau',s:'Brügglifeld'},{n:'FC Winterthur',b:1,c:'Winterthur',s:'Schützenwiese'},
+    {n:'Yverdon-Sport FC',b:0,c:'Yverdon-les-Bains',s:'Stade Municipal'}]},
+  {league:'Superliga', country:'Dinamarca', base:9, matchdays:32, teams:[
+    {n:'AGF',b:1,c:'Aarhus',s:'Aarhus Stadion'},{n:'Brøndby IF',b:1,c:'Brøndbyvester',s:'Brøndby Stadion'},{n:'FC København',b:2,c:'Copenhague',s:'Parken'},
+    {n:'FC Midtjylland',b:1,c:'Herning',s:'MCH Arena'},{n:'FC Nordsjælland',b:0,c:'Farum',s:'Right to Dream Park'},{n:'Lyngby Boldklub',b:0,c:'Lyngby',s:'Lyngby Stadion'},
+    {n:'OB',b:0,c:'Odense',s:'Nature Energy Park'},{n:'Randers FC',b:0,c:'Randers',s:'Cepheus Park Randers'},{n:'Silkeborg IF',b:0,c:'Silkeborg',s:'JYSK Park'},
+    {n:'Sønderjyske',b:0,c:'Haderslev',s:'Sydbank Park'},{n:'Viborg FF',b:0,c:'Viborg',s:'Energi Viborg Arena'},{n:'AC Horsens',b:0,c:'Horsens',s:'Casa Arena Horsens'}]},
+  {league:'1. Division', country:'Dinamarca', base:3, matchdays:32, teams:[
+    {n:'Kolding IF',b:0,c:'Kolding',s:'Kolding Stadion'},{n:'Hillerød Fodbold',b:0,c:'Hillerød',s:'Hillerød Stadion'},{n:'B93',b:0,c:'Copenhague',s:'Østerbro Stadion'},
+    {n:'Hvidovre IF',b:0,c:'Hvidovre',s:'Hvidovre Stadion'},{n:'Aarhus Fremad',b:0,c:'Aarhus',s:'Fremad Park'},{n:'Hobro IK',b:0,c:'Hobro',s:'DS Arena'},
+    {n:'HB Køge',b:0,c:'Køge',s:'Capelli Sport Stadion'},{n:'Middelfart Boldklub',b:0,c:'Middelfart',s:'Middelfart Stadion'},{n:'Vejle Boldklub',b:1,c:'Vejle',s:'Vejle Stadion'},
+    {n:'FC Fredericia',b:1,c:'Fredericia',s:'Monjasa Park'},{n:'AB Gladsaxe',b:0,c:'Gladsaxe',s:'AB Idrætspark'},{n:'Vendsyssel FF',b:0,c:'Hjørring',s:'Nord Energi Arena'}]},
+  {league:'Eliteserien', country:'Noruega', base:9, matchdays:30, teams:[
+    {n:'Viking FK',b:1,c:'Stavanger',s:'Lyse Arena'},{n:'Tromsø IL',b:0,c:'Tromsø',s:'Romssa Arena'},{n:'FK Bodø/Glimt',b:3,c:'Bodø',s:'Aspmyra Stadion'},
+    {n:'Lillestrøm SK',b:0,c:'Lillestrøm',s:'Åråsen Stadion'},{n:'Molde FK',b:2,c:'Molde',s:'Aker Stadion'},{n:'Hamarkameratene',b:0,c:'Hamar',s:'Briskeby Gressbane'},
+    {n:'Sarpsborg 08',b:0,c:'Sarpsborg',s:'Sarpsborg Stadion'},{n:'Sandefjord Fotball',b:0,c:'Sandefjord',s:'Jotun Arena'},{n:'Vålerenga',b:0,c:'Oslo',s:'Intility Arena'},
+    {n:'Fredrikstad FK',b:0,c:'Fredrikstad',s:'Fredrikstad Stadion'},{n:'SK Brann',b:1,c:'Bergen',s:'Brann Stadion'},{n:'KFUM Oslo',b:0,c:'Oslo',s:'KFUM-Arena'},
+    {n:'Aalesunds FK',b:0,c:'Ålesund',s:'Color Line Stadion'},{n:'Kristiansund BK',b:0,c:'Kristiansund',s:'Nordmøre Stadion'},{n:'Rosenborg BK',b:1,c:'Trondheim',s:'Lerkendal Stadion'},
+    {n:'IK Start',b:0,c:'Kristiansand',s:'Sparebanken Norge Arena'}]},
+  {league:'OBOS-ligaen', country:'Noruega', base:3, matchdays:30, teams:[
+    {n:'Odds BK',b:0,c:'Skien',s:'Skagerak Arena'},{n:'Kongsvinger IL',b:0,c:'Kongsvinger',s:'Gjemselund Stadion'},{n:'FK Haugesund',b:0,c:'Haugesund',s:'Haugesund Sparebank Arena'},
+    {n:'Moss FK',b:0,c:'Moss',s:'Melløs Stadion'},{n:'IL Hødd',b:0,c:'Ulsteinvik',s:'Høddvoll'},{n:'Strømsgodset IF',b:1,c:'Drammen',s:'Marienlyst Stadion'},
+    {n:'Egersunds IK',b:0,c:'Egersund',s:'Kannik Idrettspark'},{n:'Ranheim IL',b:0,c:'Trondheim',s:'Extra Arena'},{n:'Raufoss IL',b:0,c:'Raufoss',s:'Nammo Stadion'},
+    {n:'Strømmen IF',b:0,c:'Strømmen',s:'Strømmen Stadion'},{n:'Sandnes Ulf',b:0,c:'Sandnes',s:'Øster Hus Arena'},{n:'Stabæk Fotball',b:0,c:'Bekkestua',s:'Nadderud Stadion'},
+    {n:'Lyn Fotball',b:0,c:'Oslo',s:'Kringsjå Stadion'},{n:'Bryne FK',b:0,c:'Bryne',s:'Bryne Stadion'},{n:'Sogndal Fotball',b:0,c:'Sogndal',s:'Fosshaugane Campus'},
+    {n:'Åsane Fotball',b:0,c:'Bergen',s:'Åsane Arena'}]},
+  {league:'Allsvenskan', country:'Suecia', base:9, matchdays:30, teams:[
+    {n:'AIK',b:1,c:'Solna',s:'Strawberry Arena'},{n:'BK Häcken',b:1,c:'Gotemburgo',s:'Bravida Arena'},{n:'Degerfors IF',b:0,c:'Degerfors',s:'Stora Valla'},
+    {n:'Djurgårdens IF',b:1,c:'Estocolmo',s:'Tele2 Arena'},{n:'GAIS',b:0,c:'Gotemburgo',s:'Gamla Ullevi'},{n:'Halmstads BK',b:0,c:'Halmstad',s:'Örjans Vall'},
+    {n:'Hammarby IF',b:1,c:'Estocolmo',s:'Tele2 Arena'},{n:'IF Brommapojkarna',b:0,c:'Estocolmo',s:'Grimsta IP'},{n:'IF Elfsborg',b:0,c:'Borås',s:'Borås Arena'},
+    {n:'IFK Göteborg',b:1,c:'Gotemburgo',s:'Gamla Ullevi'},{n:'IK Sirius',b:0,c:'Uppsala',s:'Studenternas IP'},{n:'Kalmar FF',b:0,c:'Kalmar',s:'Guldfågeln Arena'},
+    {n:'Malmö FF',b:2,c:'Malmö',s:'Eleda Stadion'},{n:'Mjällby AIF',b:0,c:'Hällevik',s:'Strandvallen'},{n:'Västerås SK',b:0,c:'Västerås',s:'Hitachi Energy Arena'},
+    {n:'Örgryte IS',b:0,c:'Gotemburgo',s:'Valhalla IP'}]},
+  {league:'Superettan', country:'Suecia', base:3, matchdays:30, teams:[
+    {n:'Falkenbergs FF',b:0,c:'Falkenberg',s:'Falcon Alkoholfri Arena'},{n:'GIF Sundsvall',b:0,c:'Sundsvall',s:'NP3 Arena'},{n:'Helsingborgs IF',b:1,c:'Helsingborg',s:'Olympia'},
+    {n:'IFK Norrköping',b:0,c:'Norrköping',s:'PlatinumCars Arena'},{n:'IFK Värnamo',b:0,c:'Värnamo',s:'Finnvedsvallen'},{n:'IK Brage',b:0,c:'Borlänge',s:'Domnarvsvallen'},
+    {n:'IK Oddevold',b:0,c:'Uddevalla',s:'Rimnersvallen'},{n:'Landskrona BoIS',b:0,c:'Landskrona',s:'Landskrona IP'},{n:'Ljungskile SK',b:0,c:'Ljungskile',s:'Ljungvallen'},
+    {n:'Norrby IF',b:0,c:'Borås',s:'Ryavallen'},{n:'Sandvikens IF',b:0,c:'Sandviken',s:'Jernvallen'},{n:'Nordic United FC',b:0,c:'Katrineholm',s:'Sportcentrum'},
+    {n:'Varbergs BoIS FC',b:0,c:'Varberg',s:'Påskbergsvallen'},{n:'Örebro SK',b:0,c:'Örebro',s:'Behrn Arena'},{n:'Östers IF',b:0,c:'Växjö',s:'Myresjöhus Arena'},
+    {n:'Östersunds FK',b:1,c:'Östersund',s:'Jämtkraft Arena'}]},
+  {league:'Veikkausliiga', country:'Finlandia', base:9, matchdays:32, teams:[
+    {n:'HJK Helsinki',b:2,c:'Helsinki',s:'Bolt Arena'},{n:'KuPS',b:1,c:'Kuopio',s:'Savon Sanomat Areena'},{n:'TPS',b:0,c:'Turku',s:'Veritas Stadion'},
+    {n:'SJK',b:0,c:'Seinäjoki',s:'OmaSp Stadion'},{n:'IFK Mariehamn',b:0,c:'Mariehamn',s:'Wiklöf Holding Arena'},{n:'IF Gnistan',b:0,c:'Helsinki',s:'Kanniston kenttä'},
+    {n:'FF Jaro',b:0,c:'Pietarsaari',s:'Jakobstads Centralplan'},{n:'AC Oulu',b:0,c:'Oulu',s:'Raatti Stadion'},{n:'FC Lahti',b:0,c:'Lahti',s:'Lahden Stadion'},
+    {n:'Ilves',b:0,c:'Tampere',s:'Tammelan stadion'},{n:'Inter Turku',b:0,c:'Turku',s:'Veritas Stadion'},{n:'FC Honka',b:0,c:'Espoo',s:'Tapiolan Urheilupuisto'}]},
+  {league:'Ykkösliiga', country:'Finlandia', base:3, matchdays:27, teams:[
+    {n:'FC Haka',b:0,c:'Valkeakoski',s:'Tehtaan kenttä'},{n:'EIF',b:0,c:'Tammisaari',s:'Ekenäs Idrottspark'},{n:'Jippo',b:0,c:'Joensuu',s:'Keskuskenttä'},
+    {n:'JäPS',b:0,c:'Järvenpää',s:'Järvenpään Stadion'},{n:'HJK Klubi-04',b:0,c:'Helsinki',s:'Talin harjoitusalue'},{n:'KTP',b:0,c:'Kotka',s:'Arto Tolsa Areena'},
+    {n:'KäPa',b:0,c:'Helsinki',s:'Käpylän Urheilupuisto'},{n:'MP',b:0,c:'Mikkeli',s:'Urheilupuisto'},{n:'PK-35',b:0,c:'Vantaa',s:'Myyrmäen jalkapallostadion'},
+    {n:'SJK Akatemia',b:0,c:'Seinäjoki',s:'OmaSp Stadion'}]},
+  {league:'Premier Division', country:'Irlanda', base:9, matchdays:36, teams:[
+    {n:'Shamrock Rovers',b:2,c:'Dublín',s:'Tallaght Stadium'},{n:'St Patrick\'s Athletic',b:1,c:'Dublín',s:'Richmond Park'},{n:'Bohemians',b:1,c:'Dublín',s:'Dalymount Park'},
+    {n:'Derry City',b:1,c:'Derry',s:'Brandywell Stadium'},{n:'Shelbourne',b:0,c:'Dublín',s:'Tolka Park'},{n:'Drogheda United',b:0,c:'Drogheda',s:'Weavers Park'},
+    {n:'Sligo Rovers',b:0,c:'Sligo',s:'The Showgrounds'},{n:'Galway United',b:0,c:'Galway',s:'Eamonn Deacy Park'},{n:'Dundalk',b:0,c:'Dundalk',s:'Oriel Park'},
+    {n:'Waterford',b:0,c:'Waterford',s:'RSC'}]},
+  {league:'First Division', country:'Irlanda', base:3, matchdays:36, teams:[
+    {n:'Athlone Town',b:0,c:'Athlone',s:'Athlone Town Stadium'},{n:'Bray Wanderers',b:0,c:'Bray',s:'Carlisle Grounds'},{n:'Cobh Ramblers',b:0,c:'Cobh',s:'St. Colman\'s Park'},
+    {n:'Cork City',b:1,c:'Cork',s:'Turner\'s Cross'},{n:'Finn Harps',b:0,c:'Ballybofey',s:'Finn Park'},{n:'Kerry',b:0,c:'Tralee',s:'Mounthawk Park'},
+    {n:'Longford Town',b:0,c:'Longford',s:'Bishopsgate'},{n:'Treaty United',b:0,c:'Limerick',s:'Markets Field'},{n:'UCD',b:0,c:'Dublín',s:'UCD Bowl'},
+    {n:'Wexford',b:0,c:'Crossabeg',s:'Ferrycarrig Park'}]},
+  {league:'NIFL Premiership', country:'Irlanda del Norte', base:9, matchdays:38, teams:[
+    {n:'Larne',b:1,c:'Larne',s:'Inver Park'},{n:'Linfield',b:1,c:'Belfast',s:'Windsor Park'},{n:'Glentoran',b:1,c:'Belfast',s:'The Oval'},
+    {n:'Cliftonville',b:0,c:'Belfast',s:'Solitude'},{n:'Crusaders',b:0,c:'Belfast',s:'Seaview'},{n:'Coleraine',b:0,c:'Coleraine',s:'The Showgrounds'},
+    {n:'Ballymena United',b:0,c:'Ballymena',s:'Warden Street'},{n:'Portadown',b:0,c:'Portadown',s:'Shamrock Park'},{n:'Dungannon Swifts',b:0,c:'Dungannon',s:'Stangmore Park'},
+    {n:'Carrick Rangers',b:0,c:'Carrickfergus',s:'Taylor\'s Avenue'},{n:'Bangor',b:0,c:'Bangor',s:'Clandeboye Park'},{n:'Limavady United',b:0,c:'Limavady',s:'The Showgrounds'}]},
+  {league:'NIFL Championship', country:'Irlanda del Norte', base:3, matchdays:30, teams:[
+    {n:'Annagh United',b:0,c:'Portadown',s:'Tandragee Road'},{n:'Ards',b:0,c:'Bangor',s:'Clandeboye Park'},{n:'Ballinamallard United',b:0,c:'Ballinamallard',s:'Ferney Park'},
+    {n:'Institute',b:0,c:'Derry',s:'Brandywell Stadium'},{n:'Dundela',b:0,c:'Belfast',s:'Wilgar Park'},{n:'Harland & Wolff Welders',b:0,c:'Belfast',s:'Tillysburn Park'},
+    {n:'Queen\'s University',b:0,c:'Belfast',s:'Dub Lane'},{n:'Loughgall',b:0,c:'Loughgall',s:'Lakeview Park'},{n:'Warrenpoint Town',b:0,c:'Warrenpoint',s:'Milltown'},
+    {n:'Armagh City',b:0,c:'Armagh',s:'Holm Park'},{n:'Newington',b:0,c:'Belfast',s:'Distillery Stadium'},{n:'Glenavon',b:0,c:'Lurgan',s:'Mourneview Park'},
+    {n:'Dergview',b:0,c:'Castlederg',s:'Darragh Park'},{n:'Ballyclare Comrades',b:0,c:'Ballyclare',s:'Dixon Park'},{n:'Newry City',b:0,c:'Newry',s:'The Showgrounds'},
+    {n:'Knockbreda',b:0,c:'Belfast',s:'Breda Park'}]},
+  {league:'Ekstraklasa', country:'Polonia', base:9, matchdays:34, teams:[
+    {n:'Wisła Kraków',b:0,c:'Cracovia',s:'Stadion Wisły Kraków'},{n:'Śląsk Wrocław',b:0,c:'Breslavia',s:'Tarczyński Arena'},{n:'Wieczysta Kraków',b:0,c:'Cracovia',s:'Henryk Reyman Stadium'},
+    {n:'Górnik Zabrze',b:0,c:'Zabrze',s:'Arena Zabrze'},{n:'Jagiellonia Białystok',b:1,c:'Białystok',s:'Białystok City Stadium'},{n:'Wisła Płock',b:0,c:'Płock',s:'Stadion Wisły Płock'},
+    {n:'Motor Lublin',b:0,c:'Lublin',s:'Arena Lublin'},{n:'Radomiak Radom',b:0,c:'Radom',s:'Stadion Miejski Radom'},{n:'Pogoń Szczecin',b:0,c:'Szczecin',s:'Stadion Miejski Szczecin'},
+    {n:'Lech Poznań',b:2,c:'Poznań',s:'Enea Stadion'},{n:'Legia Warszawa',b:2,c:'Varsovia',s:'Stadion Wojska Polskiego'},{n:'Piast Gliwice',b:0,c:'Gliwice',s:'Stadion Miejski Gliwice'},
+    {n:'Cracovia',b:0,c:'Cracovia',s:'Stadion Cracovii'},{n:'Zagłębie Lubin',b:0,c:'Lubin',s:'Stadion Zagłębia Lubin'},{n:'Raków Częstochowa',b:1,c:'Częstochowa',s:'Raków Arena'},
+    {n:'GKS Katowice',b:0,c:'Katowice',s:'Stadion GKS Katowice'},{n:'Puszcza Niepołomice',b:0,c:'Niepołomice',s:'Stadion Miejski Niepołomice'},{n:'Korona Kielce',b:0,c:'Kielce',s:'Suzuki Arena'}]},
+  {league:'I liga', country:'Polonia', base:3, matchdays:34, teams:[
+    {n:'Chrobry Głogów',b:0,c:'Głogów',s:'Stadion Chrobrego'},{n:'Polonia Bytom',b:0,c:'Bytom',s:'Stadion Edwarda Szymkowiaka'},{n:'Stal Rzeszów',b:0,c:'Rzeszów',s:'Stadion Stali Rzeszów'},
+    {n:'Pogoń Grodzisk Mazowiecki',b:0,c:'Grodzisk Mazowiecki',s:'Stadion Pogoni'},{n:'GKS Tychy',b:0,c:'Tychy',s:'Stadion GKS Tychy'},{n:'Zagłębie Sosnowiec',b:0,c:'Sosnowiec',s:'Stadion Zagłębia Sosnowiec'},
+    {n:'Odra Opole',b:0,c:'Opole',s:'Stadion Odry Opole'},{n:'Znicz Pruszków',b:0,c:'Pruszków',s:'Stadion Znicza'},{n:'Chojniczanka Chojnice',b:0,c:'Chojnice',s:'Stadion Chojniczanki'},
+    {n:'Miedź Legnica',b:0,c:'Legnica',s:'Stadion Miedzi Legnica'},{n:'ŁKS Łódź',b:0,c:'Łódź',s:'Stadion ŁKS Łódź'},{n:'Resovia',b:0,c:'Rzeszów',s:'Stadion Resovii'},
+    {n:'Lechia Gdańsk',b:1,c:'Gdansk',s:'Stadion Lechii Gdańsk'},{n:'Arka Gdynia',b:0,c:'Gdynia',s:'Stadion Miejski Gdynia'},{n:'Bruk-Bet Termalica Nieciecza',b:0,c:'Nieciecza',s:'Stadion Bruk-Bet Termalica'},
+    {n:'Unia Skierniewice',b:0,c:'Skierniewice',s:'Stadion Unii Skierniewice'},{n:'Warta Poznań',b:0,c:'Poznań',s:'Stadion Warty Poznań'},{n:'Świt Nowy Dwór Mazowiecki',b:0,c:'Nowy Dwór Mazowiecki',s:'Stadion Świtu'}]},
+  {league:'Chance Liga', country:'República Checa', base:9, matchdays:30, teams:[
+    {n:'Slavia Praha',b:3,c:'Praga',s:'Fortuna Aréna'},{n:'Sparta Praha',b:3,c:'Praga',s:'Letná'},{n:'Viktoria Plzeň',b:2,c:'Plzeň',s:'Doosan Arena'},
+    {n:'Baník Ostrava',b:0,c:'Ostrava',s:'Bazaly'},{n:'Sigma Olomouc',b:0,c:'Olomouc',s:'Andrův stadion'},{n:'Slovácko',b:0,c:'Uherské Hradiště',s:'Létajícího Čtveráka'},
+    {n:'Jablonec',b:0,c:'Jablonec nad Nisou',s:'Střelnice'},{n:'Mladá Boleslav',b:0,c:'Mladá Boleslav',s:'Stadion FK Mladá Boleslav'},{n:'Bohemians 1905',b:0,c:'Praga',s:'Ďolíček'},
+    {n:'Hradec Králové',b:0,c:'Hradec Králové',s:'Malšovická aréna'},{n:'Teplice',b:0,c:'Teplice',s:'Na Stínadlech'},{n:'Zlín',b:0,c:'Zlín',s:'Stadion Letná'},
+    {n:'Pardubice',b:0,c:'Pardubice',s:'Stadion FK Pardubice'},{n:'Zbrojovka Brno',b:0,c:'Brno',s:'Za Lužánkami'},{n:'Artis Brno',b:0,c:'Brno',s:'Stadion Srbská'},
+    {n:'Líšeň',b:0,c:'Brno',s:'Stadion FC Líšeň'}]},
+  {league:'Chance Národní Liga', country:'República Checa', base:3, matchdays:30, teams:[
+    {n:'Dukla Praha',b:1,c:'Praga',s:'Stadion Juliska'},{n:'Karviná',b:0,c:'Karviná',s:'Městský stadion Karviná'},{n:'Opava',b:0,c:'Opava',s:'Městský stadion Opava'},
+    {n:'Táborsko',b:0,c:'Tábor',s:'Stadion Míru'},{n:'Vlašim',b:0,c:'Vlašim',s:'Stadion FK Vlašim'},{n:'Vyškov',b:0,c:'Vyškov',s:'Stadion FK Vyškov'},
+    {n:'Prostějov',b:0,c:'Prostějov',s:'Stadion Prostějov'},{n:'Varnsdorf',b:0,c:'Varnsdorf',s:'Stadion Varnsdorf'},{n:'Ústí nad Labem',b:0,c:'Ústí nad Labem',s:'Městský stadion Ústí nad Labem'},
+    {n:'Příbram',b:0,c:'Příbram',s:'Stadion Na Litavce'},{n:'Žižkov',b:0,c:'Praga',s:'Stadion Ďolíček (Žižkov)'},{n:'Sokolov',b:0,c:'Sokolov',s:'Stadion Sokolov'},
+    {n:'Kroměříž',b:0,c:'Kroměříž',s:'Stadion Kroměříž'},{n:'Frýdek-Místek',b:0,c:'Frýdek-Místek',s:'Stadion Frýdek-Místek'},{n:'Vítkovice',b:0,c:'Ostrava',s:'Stadion Vítkovice'},
+    {n:'Jihlava',b:0,c:'Jihlava',s:'Stadion Vysočina Aréna'}]},
+  {league:'NB I', country:'Hungría', base:9, matchdays:33, teams:[
+    {n:'Debreceni VSC',b:0,c:'Debrecen',s:'Nagyerdei Stadion'},{n:'Ferencváros',b:3,c:'Budapest',s:'Groupama Aréna'},{n:'Győri ETO FC',b:1,c:'Győr',s:'ETO Park'},
+    {n:'Kispest-Honvéd',b:0,c:'Budapest',s:'Bozsik Aréna'},{n:'Kisvárda',b:0,c:'Kisvárda',s:'Várkerti Stadion'},{n:'MTK Budapest',b:0,c:'Budapest',s:'Hidegkuti Nándor Stadion'},
+    {n:'Nyíregyháza Spartacus',b:0,c:'Nyíregyháza',s:'Városi Stadion'},{n:'Paksi FC',b:0,c:'Paks',s:'Fehérvári úti Stadion'},{n:'Puskás Akadémia',b:1,c:'Felcsút',s:'Pancho Aréna'},
+    {n:'Újpest',b:0,c:'Budapest',s:'Szusza Ferenc Stadion'},{n:'Vasas',b:0,c:'Budapest',s:'Illovszky Rudolf Stadion'},{n:'ZTE FC',b:0,c:'Zalaegerszeg',s:'ZTE Aréna'}]},
+  {league:'NB II', country:'Hungría', base:3, matchdays:30, teams:[
+    {n:'Szentlőrinc',b:0,c:'Szentlőrinc',s:'Szentlőrinci Stadion'},{n:'BVSC-Zugló',b:0,c:'Budapest',s:'BVSC Stadion'},{n:'Videoton FC Fehérvár',b:1,c:'Székesfehérvár',s:'Sóstói Stadion'},
+    {n:'Budafoki MTE',b:0,c:'Budapest',s:'Promontor Stadion'},{n:'Szeged-Csanád GA',b:0,c:'Szeged',s:'Szegedi Stadion'},{n:'Mezőkövesd Zsóry',b:0,c:'Mezőkövesd',s:'Mezőkövesdi Stadion'},
+    {n:'FC Ajka',b:0,c:'Ajka',s:'Ajkai Stadion'},{n:'Aqvital FC Csákvár',b:0,c:'Csákvár',s:'Csákvári Stadion'},{n:'Kozármisleny',b:0,c:'Kozármisleny',s:'Kozármislenyi Stadion'},
+    {n:'Kecskeméti TE',b:0,c:'Kecskemét',s:'Széktói Stadion'},{n:'Tiszakécskei LC',b:0,c:'Tiszakécske',s:'Tiszakécskei Stadion'},{n:'Soroksár SC',b:0,c:'Budapest',s:'Soroksári Stadion'},
+    {n:'Diósgyőr',b:1,c:'Miskolc',s:'Diósgyőri Stadion'},{n:'Kazincbarcika',b:0,c:'Kazincbarcika',s:'Kazincbarcikai Stadion'},{n:'Nagykanizsa',b:0,c:'Nagykanizsa',s:'Nagykanizsai Stadion'},
+    {n:'Gyirmót',b:0,c:'Győr',s:'Gyirmóti Stadion'}]},
+  {league:'Liga I', country:'Rumanía', base:9, matchdays:32, teams:[
+    {n:'FCSB',b:2,c:'Bucarest',s:'Arena Națională'},{n:'CFR Cluj',b:1,c:'Cluj-Napoca',s:'Stadionul Dr. Constantin Rădulescu'},{n:'Universitatea Craiova',b:1,c:'Craiova',s:'Stadionul Ion Oblemenco'},
+    {n:'Rapid București',b:1,c:'Bucarest',s:'Stadionul Giulești'},{n:'Dinamo București',b:1,c:'Bucarest',s:'Stadionul Dinamo'},{n:'Farul Constanța',b:0,c:'Constanța',s:'Stadionul Farul'},
+    {n:'Universitatea Cluj',b:0,c:'Cluj-Napoca',s:'Cluj Arena'},{n:'Petrolul Ploiești',b:0,c:'Ploiești',s:'Stadionul Ilie Oană'},{n:'UTA Arad',b:0,c:'Arad',s:'Stadionul UTA'},
+    {n:'FC Botoșani',b:0,c:'Botoșani',s:'Stadionul Municipal Botoșani'},{n:'Oțelul Galați',b:0,c:'Galați',s:'Stadionul Oțelul'},{n:'Csíkszereda',b:0,c:'Miercurea Ciuc',s:'Stadionul Municipal Miercurea Ciuc'},
+    {n:'FC Argeș',b:0,c:'Pitești',s:'Stadionul Nicolae Dobrin'},{n:'FC Voluntari',b:0,c:'Voluntari',s:'Stadionul Anghel Iordănescu'},{n:'Corvinul Hunedoara',b:0,c:'Hunedoara',s:'Stadionul Michael Klein'},
+    {n:'Sepsi OSK',b:0,c:'Sfântu Gheorghe',s:'Stadionul Sepsi Arena'}]},
+  {league:'Liga II', country:'Rumanía', base:3, matchdays:30, teams:[
+    {n:'Hermannstadt',b:0,c:'Sibiu',s:'Stadionul Municipal Sibiu'},{n:'Chindia Târgoviște',b:0,c:'Târgoviște',s:'Stadionul Eugen Popescu'},{n:'Gloria Buzău',b:0,c:'Buzău',s:'Stadionul Gloria'},
+    {n:'Politehnica Iași',b:0,c:'Iași',s:'Stadionul Emil Alexandrescu'},{n:'Concordia Chiajna',b:0,c:'Chiajna',s:'Stadionul Concordia'},{n:'CS Mioveni',b:0,c:'Mioveni',s:'Stadionul Orășenesc Mioveni'},
+    {n:'Steaua București',b:1,c:'Bucarest',s:'Stadionul Steaua'},{n:'Bihor Oradea',b:0,c:'Oradea',s:'Stadionul Iuliu Bodola'},{n:'Ceahlăul Piatra Neamț',b:0,c:'Piatra Neamț',s:'Stadionul Ceahlăul'},
+    {n:'Câmpulung Muscel',b:0,c:'Câmpulung',s:'Stadionul Câmpulung'},{n:'Unirea Slobozia',b:0,c:'Slobozia',s:'Stadionul Unirea'},{n:'Tunari',b:0,c:'Tunari',s:'Stadionul Tunari'},
+    {n:'Olimpia Satu Mare',b:0,c:'Satu Mare',s:'Stadionul Olimpia'},{n:'Unirea Ungheni',b:0,c:'Ungheni',s:'Stadionul Unirea Ungheni'},{n:'CSM Reșița',b:0,c:'Reșița',s:'Stadionul CSM Reșița'},
+    {n:'Metaloglobus București',b:0,c:'Bucarest',s:'Stadionul Metaloglobus'}]},
+  {league:'Първа лига', country:'Bulgaria', base:9, matchdays:26, teams:[
+    {n:'Levski Sofia',b:2,c:'Sofía',s:'Georgi Asparuhov Stadium'},{n:'CSKA Sofia',b:1,c:'Sofía',s:'Balgarska Armiya Stadium'},{n:'CSKA 1948 Sofia',b:0,c:'Sofía',s:'GATE Sofia'},
+    {n:'Ludogorets Razgrad',b:2,c:'Razgrad',s:'Ludogorets Arena'},{n:'Botev Plovdiv',b:0,c:'Plovdiv',s:'Hristo Botev Stadium'},{n:'Lokomotiv Plovdiv',b:0,c:'Plovdiv',s:'Lokomotiv Stadium'},
+    {n:'Cherno More Varna',b:0,c:'Varna',s:'Ticha Stadium'},{n:'Lokomotiv Sofia',b:0,c:'Sofía',s:'Lokomotiv Stadium Sofia'},{n:'Slavia Sofia',b:0,c:'Sofía',s:'Ovcha Kupel Stadium'},
+    {n:'Spartak Varna',b:0,c:'Varna',s:'Spartak Stadium'},{n:'Arda Kardzhali',b:0,c:'Kardzhali',s:'Arda Stadium'},{n:'Septemvri Sofia',b:0,c:'Sofía',s:'Septemvri Stadium'},
+    {n:'Dunav Ruse',b:0,c:'Ruse',s:'Gradski Stadium Ruse'},{n:'Botev Vratsa',b:0,c:'Vratsa',s:'Hristo Botev Stadium Vratsa'}]},
+  {league:'Втора лига', country:'Bulgaria', base:3, matchdays:38, teams:[
+    {n:'Beroe Stara Zagora',b:0,c:'Stara Zagora',s:'Beroe Stadium'},{n:'Etar Veliko Tarnovo',b:0,c:'Veliko Tarnovo',s:'Ivailo Stadium'},{n:'Dobrudzha Dobrich',b:0,c:'Dobrich',s:'Dobrudzha Stadium'},
+    {n:'Hebar Pazardzhik',b:0,c:'Pazardzhik',s:'Hebar Stadium'},{n:'Montana',b:0,c:'Montana',s:'Ogosta Stadium'},{n:'Marek Dupnitsa',b:0,c:'Dupnitsa',s:'Bonsystem Arena'},
+    {n:'Pirin Blagoevgrad',b:0,c:'Blagoevgrad',s:'Hristo Botev Stadium Blagoevgrad'},{n:'Yantra Gabrovo',b:0,c:'Gabrovo',s:'Hristo Botev Stadium Gabrovo'},{n:'Vitosha Bistritsa',b:0,c:'Bistritsa',s:'Vitosha Arena'},
+    {n:'Chernomorets Balchik',b:0,c:'Balchik',s:'Chernomorets Stadium'},{n:'Minyor Pernik',b:0,c:'Pernik',s:'Minyor Stadium'},{n:'Sozopol',b:0,c:'Sozopol',s:'Sozopol Stadium'},
+    {n:'Spartak Pleven',b:0,c:'Pleven',s:'Spartak Stadium Pleven'},{n:'Litex Lovech',b:0,c:'Lovech',s:'Llitex Arena'},{n:'Belasitsa Petrich',b:0,c:'Petrich',s:'Mladost Stadium'},
+    {n:'Neftochimic Burgas',b:0,c:'Burgas',s:'Neftochimic Stadium'},{n:'Lokomotiv Gorna Oryahovitsa',b:0,c:'Gorna Oryahovitsa',s:'Lokomotiv Stadium GO'},{n:'Strumska Slava',b:0,c:'Radomir',s:'Strumska Slava Stadium'},
+    {n:'Rilski Sportist Samokov',b:0,c:'Samokov',s:'Rilski Sportist Stadium'},{n:'Vereya Stara Zagora',b:0,c:'Stara Zagora',s:'Vereya Stadium'}]},
+  {league:'HNL', country:'Croacia', base:9, matchdays:36, teams:[
+    {n:'Dinamo Zagreb',b:3,c:'Zagreb',s:'Stadion Maksimir'},{n:'Hajduk Split',b:2,c:'Split',s:'Stadion Poljud'},{n:'Varaždin',b:0,c:'Varaždin',s:'Stadion Anđelko Herjavec'},
+    {n:'Rijeka',b:1,c:'Rijeka',s:'Stadion Rujevica'},{n:'Lokomotiva',b:0,c:'Zagreb',s:'Stadion Kranjčevićeva'},{n:'Istra 1961',b:0,c:'Pula',s:'Stadion Aldo Drosina'},
+    {n:'Slaven Belupo',b:0,c:'Koprivnica',s:'Gradski stadion Koprivnica'},{n:'Gorica',b:0,c:'Velika Gorica',s:'Stadion ORNO Gorica'},{n:'Osijek',b:0,c:'Osijek',s:'Stadion Opus Arena'},
+    {n:'Rudeš',b:0,c:'Zagreb',s:'Stadion Rudeš'}]},
+  {league:'Prva NL', country:'Croacia', base:3, matchdays:30, teams:[
+    {n:'Vukovar 1991',b:0,c:'Vukovar',s:'Stadion Vukovar'},{n:'Dinamo Zagreb II',b:0,c:'Zagreb',s:'Stadion Zapruđe'},{n:'Cibalia',b:0,c:'Vinkovci',s:'Stadion Cibalia'},
+    {n:'Sesvete',b:0,c:'Zagreb',s:'Stadion Sesvete'},{n:'Dugopolje',b:0,c:'Dugopolje',s:'Stadion Dugopolje'},{n:'Dubrava',b:0,c:'Zagreb',s:'Stadion Dubrava'},
+    {n:'BSK Bijelo Brdo',b:0,c:'Bijelo Brdo',s:'Stadion BSK'},{n:'Karlovac 1919',b:0,c:'Karlovac',s:'Stadion Branko Čavlović-Čavlek'},{n:'Opatija',b:0,c:'Opatija',s:'Stadion Opatija'},
+    {n:'Orijent',b:0,c:'Rijeka',s:'Stadion Budućnost'},{n:'Hrvace',b:0,c:'Hrvace',s:'Stadion Hrvace'},{n:'Croatia Zmijavci',b:0,c:'Zmijavci',s:'Stadion Zmijavci'},
+    {n:'Zrinski',b:0,c:'Jurjevac',s:'Stadion Zrinski'},{n:'Bjelovar',b:0,c:'Bjelovar',s:'Gradski stadion Bjelovar'},{n:'Marsonia',b:0,c:'Slavonski Brod',s:'Stadion Vrtno naselje'},
+    {n:'Belišće',b:0,c:'Belišće',s:'Stadion Belišće'}]},
+  {league:'Super liga', country:'Serbia', base:9, matchdays:26, teams:[
+    {n:'Crvena Zvezda',b:4,c:'Belgrado',s:'Stadion Rajko Mitić'},{n:'Partizan',b:3,c:'Belgrado',s:'Stadion Partizana'},{n:'Vojvodina',b:1,c:'Novi Sad',s:'Karađorđe Stadion'},
+    {n:'Radnički Niš',b:0,c:'Niš',s:'Čair Stadion'},{n:'Čukarički',b:0,c:'Belgrado',s:'Stadion Čukarički'},{n:'TSC Bačka Topola',b:0,c:'Bačka Topola',s:'Stadion TSC Arena'},
+    {n:'Radnik Surdulica',b:0,c:'Surdulica',s:'Stadion Radnika'},{n:'Novi Pazar',b:0,c:'Novi Pazar',s:'Gradski stadion Novi Pazar'},{n:'Spartak Subotica',b:0,c:'Subotica',s:'Subotica City Stadium'},
+    {n:'IMT',b:0,c:'Belgrado',s:'Stadion IMT'},{n:'Mačva Šabac',b:0,c:'Šabac',s:'Gradski stadion Šabac'},{n:'Zemun',b:0,c:'Belgrado',s:'Stadion Zemun'},
+    {n:'Radnički 1923',b:0,c:'Kragujevac',s:'Čika Dača Stadion'},{n:'Voždovac',b:0,c:'Belgrado',s:'Stadion Vožda'}]},
+  {league:'Prva liga', country:'Serbia', base:3, matchdays:30, teams:[
+    {n:'Napredak Kruševac',b:0,c:'Kruševac',s:'Stadion Mladost'},{n:'Sloboda Užice',b:0,c:'Užice',s:'Gradski stadion Užice'},{n:'Dinamo Vranje',b:0,c:'Vranje',s:'Stadion Dinama'},
+    {n:'Trayal Kruševac',b:0,c:'Kruševac',s:'Stadion Trayal'},{n:'Metalac Gornji Milanovac',b:0,c:'Gornji Milanovac',s:'Stadion Metalac'},{n:'Timok Zaječar',b:0,c:'Zaječar',s:'Stadion Timok'},
+    {n:'Kolubara',b:0,c:'Lazarevac',s:'Stadion Kolubara'},{n:'Loznica',b:0,c:'Loznica',s:'Stadion Lagator'},{n:'Bačka Bačka Palanka',b:0,c:'Bačka Palanka',s:'Stadion Bačka'},
+    {n:'Javor Ivanjica',b:0,c:'Ivanjica',s:'Gradski stadion Ivanjica'},{n:'OFK Beograd',b:0,c:'Belgrado',s:'Omladinski stadion'},{n:'Proleter Novi Sad',b:0,c:'Novi Sad',s:'Stadion Slana Bara'},
+    {n:'Rad',b:0,c:'Belgrado',s:'Stadion Rada'},{n:'Backa 1901',b:0,c:'Bačka Palanka',s:'Stadion Bačka 1901'},{n:'Tekstilac Odžaci',b:0,c:'Odžaci',s:'Stadion Tekstilac'},
+    {n:'Vršac',b:0,c:'Vršac',s:'Stadion Milenijum'}]},
+  {league:'Prva liga', country:'Eslovenia', base:9, matchdays:33, teams:[
+    {n:'NK Celje',b:1,c:'Celje',s:'Z\'dežele Stadium'},{n:'Maribor',b:2,c:'Maribor',s:'Ljudski vrt'},{n:'Koper',b:0,c:'Koper',s:'Bonifika Stadium'},
+    {n:'NK Bravo',b:0,c:'Ljubljana',s:'ZAK Stadium'},{n:'Olimpija Ljubljana',b:1,c:'Ljubljana',s:'Stožice Stadium'},{n:'Aluminij',b:0,c:'Kidričevo',s:'Aluminij Stadium'},
+    {n:'Radomlje',b:0,c:'Radomlje',s:'Radomlje Sports Park'},{n:'Mura',b:0,c:'Murska Sobota',s:'Fazanerija Stadium'},{n:'Nafta',b:0,c:'Lendava',s:'Nafta Stadium'},
+    {n:'Brinje Grosuplje',b:0,c:'Grosuplje',s:'Brinje Stadium'}]},
+  {league:'Druga liga', country:'Eslovenia', base:3, matchdays:26, teams:[
+    {n:'Primorje',b:0,c:'Ajdovščina',s:'Primorje Stadium'},{n:'Bilje',b:0,c:'Bilje',s:'Bilje Stadium'},{n:'Triglav Kranj',b:0,c:'Kranj',s:'Triglav Stadium'},
+    {n:'Jadran Dekani',b:0,c:'Dekani',s:'Jadran Stadium'},{n:'Krka',b:0,c:'Novo Mesto',s:'Portoval Stadium'},{n:'Rudar Velenje',b:0,c:'Velenje',s:'Rudar Stadium'},
+    {n:'Beltinci',b:0,c:'Beltinci',s:'Beltinci Stadium'},{n:'Vrhnika',b:0,c:'Vrhnika',s:'Vrhnika Stadium'},{n:'Bistrica',b:0,c:'Slovenska Bistrica',s:'Bistrica Stadium'},
+    {n:'Jesenice',b:0,c:'Jesenice',s:'Podmežakla Stadium'},{n:'Tabor Sežana',b:0,c:'Sežana',s:'Tabor Stadium'},{n:'Krško',b:0,c:'Krško',s:'Matija Gubec Stadium'},
+    {n:'Brežice 1919',b:0,c:'Brežice',s:'Brežice Stadium'},{n:'Slovan Ljubljana',b:0,c:'Ljubljana',s:'Slovan Stadium'}]},
+  {league:'Niké liga', country:'Eslovaquia', base:9, matchdays:32, teams:[
+    {n:'Slovan Bratislava',b:3,c:'Bratislava',s:'Národný futbalový štadión'},{n:'Ružomberok',b:0,c:'Ružomberok',s:'Štadión Miloša Ruska'},{n:'Dukla Banská Bystrica',b:0,c:'Banská Bystrica',s:'Štadión Štiavničky'},
+    {n:'MŠK Žilina',b:1,c:'Žilina',s:'Štadión pod Dubňom'},{n:'Skalica',b:0,c:'Skalica',s:'Štadión Skalica'},{n:'FC Košice',b:0,c:'Košice',s:'Štadión Košice'},
+    {n:'Podbrezová',b:0,c:'Podbrezová',s:'Štadión Kolkáreň'},{n:'Trenčín',b:0,c:'Trenčín',s:'Štadión Sihoť'},{n:'Spartak Trnava',b:0,c:'Trnava',s:'Štadión Antona Malatinského'},
+    {n:'Michalovce',b:0,c:'Michalovce',s:'Štadión Michalovce'},{n:'Komárno',b:0,c:'Komárno',s:'Štadión KFC Komárno'},{n:'FK DAC 1904',b:1,c:'Dunajská Streda',s:'MOL Aréna'}]},
+  {league:'2. Liga', country:'Eslovaquia', base:3, matchdays:30, teams:[
+    {n:'Liptovský Mikuláš',b:0,c:'Liptovský Mikuláš',s:'Stadium Liptovský Mikuláš'},{n:'FC ŠTK 1914 Šamorín',b:0,c:'Šamorín',s:'Pomlé Stadium'},{n:'Lehota pod Vtáčnikom',b:0,c:'Lehota pod Vtáčnikom',s:'Štadión Lehota'},
+    {n:'Slávia TU Košice',b:0,c:'Košice',s:'Štadión Slávia TU'},{n:'Inter Bratislava',b:0,c:'Bratislava',s:'Štadión Inter'},{n:'Petržalka',b:0,c:'Bratislava',s:'Štadión Petržalka'},
+    {n:'Zlaté Moravce',b:0,c:'Zlaté Moravce',s:'Štadión FK Zlaté Moravce'},{n:'Dolný Kubín',b:0,c:'Dolný Kubín',s:'Štadión Dolný Kubín'},{n:'Pohronie',b:0,c:'Žiar nad Hronom',s:'Štadión Pohronie'},
+    {n:'Bardejov',b:0,c:'Bardejov',s:'Štadión Bardejov'},{n:'MFK Zvolen',b:0,c:'Zvolen',s:'Štadión Pod Kalváriou'},{n:'Prievidza',b:0,c:'Prievidza',s:'Štadión Prievidza'},
+    {n:'Tatran Prešov',b:0,c:'Prešov',s:'Štadión Tatran Prešov'},{n:'Humenné',b:0,c:'Humenné',s:'Štadión Humenné'},{n:'Bytča',b:0,c:'Bytča',s:'Štadión Bytča'},
+    {n:'Galanta',b:0,c:'Galanta',s:'Štadión Galanta'}]},
+  {league:'Super League 1', country:'Grecia', base:9, matchdays:26, teams:[
+    {n:'AEK Athens',b:2,c:'Atenas',s:'OPAP Arena'},{n:'Olympiacos',b:4,c:'El Pireo',s:'Karaiskakis Stadium'},{n:'PAOK',b:2,c:'Salónica',s:'Toumba Stadium'},
+    {n:'Panathinaikos',b:2,c:'Atenas',s:'Apostolos Nikolaidis Stadium'},{n:'Aris',b:0,c:'Salónica',s:'Kleanthis Vikelidis Stadium'},{n:'Asteras Tripolis',b:0,c:'Trípoli',s:'Theodoros Kolokotronis Stadium'},
+    {n:'PAS Giannina',b:0,c:'Ioánina',s:'Zosimades Stadium'},{n:'OFI Crete',b:0,c:'Heraclión',s:'Theodoros Vardinogiannis Stadium'},{n:'Volos NPS',b:0,c:'Volos',s:'Panthessaliko Stadium'},
+    {n:'Atromitos',b:0,c:'Atenas',s:'Peristeri Stadium'},{n:'Levadiakos',b:0,c:'Livadiá',s:'Levadia Municipal Stadium'},{n:'Athens Kallithea',b:0,c:'Atenas',s:'Kallithea Municipal Stadium'},
+    {n:'Iraklis',b:0,c:'Salónica',s:'Kaftanzoglio Stadium'},{n:'Kalamata',b:0,c:'Kalamata',s:'Kalamata Municipal Stadium'}]},
+  {league:'Super League 2', country:'Grecia', base:3, matchdays:30, teams:[
+    {n:'Panserraikos',b:0,c:'Serres',s:'Serres Municipal Stadium'},{n:'AEL',b:0,c:'Larisa',s:'AEL FC Arena'},{n:'Kavala',b:0,c:'Kavala',s:'Kavala Municipal Stadium'},
+    {n:'Kampaniakos',b:0,c:'Kalochori',s:'Kampaniakos Stadium'},{n:'Makedonikos',b:0,c:'Neochorouda',s:'Makedonikos Stadium'},{n:'Egaleo',b:0,c:'Egaleo',s:'Egaleo Municipal Stadium'},
+    {n:'Chania',b:0,c:'La Canea',s:'Perivolia Stadium'},{n:'Ilioupoli',b:0,c:'Atenas',s:'Ilioupoli Stadium'},{n:'Panargiakos',b:0,c:'Argos',s:'Panargiakos Stadium'},
+    {n:'Niki Volos',b:0,c:'Volos',s:'Panthessaliko Stadium'},{n:'PAOK B',b:0,c:'Salónica',s:'PAOK Sports Center'},{n:'Panachaiki',b:0,c:'Patras',s:'Pampeloponnisiako Stadium'},
+    {n:'Apollon Kalamarias',b:0,c:'Salónica',s:'Kalamaria Stadium'},{n:'Ethnikos Piraeus',b:0,c:'El Pireo',s:'Georgios Kamaras Stadium'},{n:'Anagennisi Karditsa',b:0,c:'Karditsa',s:'Karditsa Municipal Stadium'},
+    {n:'Olympiacos B',b:0,c:'El Pireo',s:'Rentis Training Center'}]},
+  {league:'Premier League', country:'Ucrania', base:9, matchdays:30, teams:[
+    {n:'Shakhtar Donetsk',b:3,c:'Kyiv (sede provisional)',s:'Arena Lviv'},{n:'Dynamo Kyiv',b:2,c:'Kyiv',s:'Estadio Valeriy Lobanovskyi'},{n:'Kryvbas Kryvyi Rih',b:0,c:'Kryvyi Rih',s:'Estadio Metalurg'},
+    {n:'LNZ Cherkasy',b:0,c:'Cherkasy',s:'Estadio LNZ'},{n:'Polissya Zhytomyr',b:0,c:'Zhytomyr',s:'Estadio Polissya'},{n:'Karpaty Lviv',b:0,c:'Lviv',s:'Ukraina Stadium'},
+    {n:'Obolon Kyiv',b:0,c:'Kyiv',s:'Estadio Obolon Arena'},{n:'Veres Rivne',b:0,c:'Rivne',s:'Estadio Avanhard'},{n:'Zorya Luhansk',b:0,c:'Zaporizhzhia (sede provisional)',s:'Slavutych-Arena'},
+    {n:'Kolos Kovalivka',b:0,c:'Kovalivka',s:'Estadio Kolos'},{n:'FC Kharkiv',b:0,c:'Kharkiv',s:'Estadio Metalist'},{n:'Livyi Bereh Kyiv',b:0,c:'Kyiv',s:'Estadio Livyi Bereh'},
+    {n:'Epitsentr',b:0,c:'Dunaivtsi',s:'Estadio Epitsentr'},{n:'Bukovyna Chernivtsi',b:0,c:'Chernivtsi',s:'Estadio Bukovyna'},{n:'Kudrivka',b:0,c:'Kudrivka',s:'Estadio Kudrivka'},
+    {n:'Chornomorets Odesa',b:1,c:'Odesa',s:'Estadio Chornomorets'}]},
+  {league:'Persha Liha', country:'Ucrania', base:3, matchdays:30, teams:[
+    {n:'Chernihiv',b:0,c:'Chernihiv',s:'Estadio Yunist'},{n:'Probiy Horodenka',b:0,c:'Horodenka',s:'Estadio Probiy'},{n:'Inhulets',b:0,c:'Petrove',s:'Estadio Inhulets'},
+    {n:'Nyva Ternopil',b:0,c:'Ternopil',s:'Estadio Nyva'},{n:'Ahrobiznes Volochysk',b:0,c:'Volochysk',s:'Estadio Ahrobiznes'},{n:'Metalist Kharkiv',b:0,c:'Kharkiv',s:'Estadio Metalist'},
+    {n:'Prykarpattia Ivano-Frankivsk',b:0,c:'Ivano-Frankivsk',s:'Estadio Prykarpattia'},{n:'Rukh Lviv',b:0,c:'Lviv',s:'Estadio Rukh'},{n:'SC Poltava',b:0,c:'Poltava',s:'Estadio SC Poltava'},
+    {n:'Oleksandriya',b:0,c:'Oleksandriya',s:'Estadio Nika'},{n:'Yunist Chernihiv',b:0,c:'Chernihiv',s:'Estadio Yunist Chernihiv'},{n:'Podillya Khmelnytskyi',b:0,c:'Khmelnytskyi',s:'Estadio Podillya'},
+    {n:'Real Pharma Odesa',b:0,c:'Odesa',s:'Estadio Real Pharma'},{n:'Ingulets-2',b:0,c:'Petrove',s:'Estadio Inhulets'},{n:'Vorskla Poltava',b:0,c:'Poltava',s:'Estadio Vorskla'},
+    {n:'Dnipro-1',b:0,c:'Dnipró',s:'Estadio Dnipro-Arena'}]},
+  {league:'Ligat ha\'Al', country:'Israel', base:9, matchdays:26, teams:[
+    {n:'Maccabi Tel Aviv',b:2,c:'Tel Aviv',s:'Bloomfield Stadium'},{n:'Maccabi Haifa',b:2,c:'Haifa',s:'Sammy Ofer Stadium'},{n:'Hapoel Beer Sheva',b:1,c:'Beersheba',s:'Turner Stadium'},
+    {n:'Beitar Jerusalem',b:1,c:'Jerusalén',s:'Teddy Stadium'},{n:'Hapoel Tel Aviv',b:0,c:'Tel Aviv',s:'Bloomfield Stadium'},{n:'Hapoel Petah Tikva',b:0,c:'Petah Tikva',s:'HaMoshava Stadium'},
+    {n:'Hapoel Haifa',b:0,c:'Haifa',s:'Sammy Ofer Stadium'},{n:'Ironi Kiryat Shmona',b:0,c:'Kiryat Shmona',s:'Municipal Stadium Kiryat Shmona'},{n:'Bnei Sakhnin',b:0,c:'Sakhnin',s:'Doha Stadium'},
+    {n:'Hapoel Jerusalem',b:0,c:'Jerusalén',s:'Teddy Stadium'},{n:'Maccabi Petah Tikva',b:0,c:'Petah Tikva',s:'HaMoshava Stadium'},{n:'Hapoel Ramat Gan',b:0,c:'Ramat Gan',s:'Municipal Stadium Ramat Gan'},
+    {n:'Maccabi Netanya',b:0,c:'Netanya',s:'Netanya Stadium'},{n:'Hapoel Nazareth Illit',b:0,c:'Nof HaGalil',s:'Municipal Stadium Nof HaGalil'}]},
+  {league:'Liga Leumit', country:'Israel', base:3, matchdays:37, teams:[
+    {n:'F.C. Ashdod',b:0,c:'Ashdod',s:'Yud-Alef Stadium'},{n:'Maccabi Bnei Reineh',b:0,c:'Reineh',s:'Reineh Stadium'},{n:'Hapoel Kfar Saba',b:0,c:'Kfar Saba',s:'Municipal Stadium Kfar Saba'},
+    {n:'Hapoel Rishon LeZion',b:0,c:'Rishon LeZion',s:'HaMoshava Stadium Rishon'},{n:'Bnei Yehuda Tel Aviv',b:0,c:'Tel Aviv',s:'Bloomfield Stadium'},{n:'Maccabi Herzliya',b:0,c:'Herzliya',s:'Herzliya Stadium'},
+    {n:'Hapoel Kfar Shalem',b:0,c:'Tel Aviv',s:'Kfar Shalem Stadium'},{n:'Maccabi Jaffa',b:0,c:'Jaffa',s:'Jaffa Stadium'},{n:'F.C. Kiryat Yam',b:0,c:'Kiryat Yam',s:'Kiryat Yam Stadium'},
+    {n:'Ironi Tiberias',b:0,c:'Tiberíades',s:'Tiberias Stadium'},{n:'Hapoel Umm al-Fahm',b:0,c:'Umm al-Fahm',s:'Umm al-Fahm Stadium'},{n:'Maccabi Kiryat Gat',b:0,c:'Kiryat Gat',s:'Kiryat Gat Stadium'},
+    {n:'Maccabi Ahi Nazareth',b:0,c:'Nazaret',s:'Nazareth Stadium'},{n:'Sektzia Ness Ziona',b:0,c:'Ness Ziona',s:'Ness Ziona Stadium'},{n:'Hapoel Hadera',b:0,c:'Hadera',s:'Hadera Stadium'},
+    {n:'Hapoel Nof HaGalil',b:0,c:'Nof HaGalil',s:'Nof HaGalil Stadium'}]},
+  {league:'K League 1', country:'Corea del Sur', base:9, matchdays:33, teams:[
+    {n:'Jeonbuk Hyundai Motors',b:2,c:'Jeonju',s:'Jeonju World Cup Stadium'},{n:'FC Seoul',b:1,c:'Seúl',s:'Seoul World Cup Stadium'},{n:'Gwangju FC',b:0,c:'Gwangju',s:'Gwangju Football Stadium'},
+    {n:'Gimcheon Sangmu',b:0,c:'Gimcheon',s:'Gimcheon Sports Complex'},{n:'Incheon United',b:0,c:'Incheon',s:'Incheon Football Stadium'},{n:'Pohang Steelers',b:1,c:'Pohang',s:'Pohang Steel Yard'},
+    {n:'Gangwon FC',b:0,c:'Gangneung',s:'Gangneung Stadium'},{n:'FC Anyang',b:0,c:'Anyang',s:'Anyang Sports Complex'},{n:'Daejeon Hana Citizen',b:0,c:'Daejeon',s:'Daejeon World Cup Stadium'},
+    {n:'Ulsan HD',b:2,c:'Ulsan',s:'Ulsan Munsu Football Stadium'},{n:'Jeju SK',b:0,c:'Jeju',s:'Jeju World Cup Stadium'},{n:'Seongnam FC',b:0,c:'Seongnam',s:'Tancheon Sports Complex'}]},
+  {league:'K League 2', country:'Corea del Sur', base:3, matchdays:32, teams:[
+    {n:'Busan IPark',b:0,c:'Busán',s:'Busan Asiad Main Stadium'},{n:'Paju Frontier',b:0,c:'Paju',s:'Paju Public Stadium'},{n:'Gimhae FC',b:0,c:'Gimhae',s:'Gimhae Sports Complex'},
+    {n:'Ansan Greeners',b:0,c:'Ansan',s:'Ansan Wa~ Stadium'},{n:'Chungbuk Cheongju',b:0,c:'Cheongju',s:'Cheongju Stadium'},{n:'Suwon FC',b:0,c:'Suwon',s:'Suwon Sports Complex'},
+    {n:'Gyeongnam FC',b:0,c:'Changwon',s:'Changwon Football Center'},{n:'Jeonnam Dragons',b:0,c:'Gwangyang',s:'Gwangyang Football Stadium'},{n:'Daegu FC',b:0,c:'Daegu',s:'DGB Daegu Bank Park'},
+    {n:'Suwon Samsung Bluewings',b:1,c:'Suwon',s:'Suwon World Cup Stadium'},{n:'Seoul E-Land FC',b:0,c:'Seúl',s:'Jamsil Arena'},{n:'Yongin FC',b:0,c:'Yongin',s:'Yongin Football Center'},
+    {n:'Gimpo FC',b:0,c:'Gimpo',s:'Gimpo Sono International Stadium'},{n:'Hwaseong FC',b:0,c:'Hwaseong',s:'Hwaseong Sports Complex'},{n:'Bucheon FC 1995',b:0,c:'Bucheon',s:'Bucheon Stadium'},
+    {n:'Cheonan City FC',b:0,c:'Cheonan',s:'Cheonan Sports Complex'},{n:'Chungju Citizen',b:0,c:'Chungju',s:'Chungju Stadium'}]},
+  {league:'Chinese Super League', country:'China', base:9, matchdays:30, teams:[
+    {n:'Chengdu Rongcheng',b:0,c:'Chengdu',s:'Phoenix Hill Football Stadium'},{n:'Chongqing Tonglianglong',b:0,c:'Chongqing',s:'Chongqing Stadium'},{n:'Dalian Yingbo',b:0,c:'Dalian',s:'Dalian Sports Center'},
+    {n:'Yunnan Yukun',b:0,c:'Kunming',s:'Kunming Tuodong Stadium'},{n:'Shandong Taishan',b:1,c:'Jinan',s:'Shandong Provincial Stadium'},{n:'Qingdao West Coast',b:0,c:'Qingdao',s:'Qingdao Youth Football Stadium'},
+    {n:'Liaoning Tieren',b:0,c:'Shenyang',s:'Shenyang Olympic Sports Centre'},{n:'Zhejiang',b:0,c:'Hangzhou',s:'Huanglong Sports Center'},{n:'Shenzhen Peng City',b:0,c:'Shenzhen',s:'Shenzhen Universiade Stadium'},
+    {n:'Beijing Guoan',b:1,c:'Pekín',s:'Beijing Workers Stadium'},{n:'Henan',b:0,c:'Zhengzhou',s:'Hanghai Stadium'},{n:'Shanghai Shenhua',b:1,c:'Shanghái',s:'Shanghai Stadium'},
+    {n:'Shanghai Port',b:2,c:'Shanghái',s:'Pudong Football Stadium'},{n:'Qingdao Hainiu',b:0,c:'Qingdao',s:'Qingdao Cetc Stadium'},{n:'Wuhan Three Towns',b:0,c:'Wuhan',s:'Wuhan Sports Center'},
+    {n:'Tianjin Jinmen Tiger',b:0,c:'Tianjin',s:'Tianjin Olympic Center Stadium'}]},
+  {league:'China League One', country:'China', base:3, matchdays:38, teams:[
+    {n:'Meizhou Hakka',b:0,c:'Wuhua',s:'Huitang Stadium'},{n:'Changchun Yatai',b:0,c:'Changchun',s:'Development Area Stadium'},{n:'Dongguan United',b:0,c:'Dongguan',s:'Dongguan Stadium'},
+    {n:'Heilongjiang Lava Spring',b:0,c:'Harbin',s:'Harbin Sports Center'},{n:'Dalian Huayi',b:0,c:'Dalian',s:'Dalian Sports Center'},{n:'Suzhou Dongwu',b:0,c:'Suzhou',s:'Suzhou Olympic Sports Center'},
+    {n:'Hebei Kungfu',b:0,c:'Langfang',s:'Hebei Langfang Stadium'},{n:'Shenzhen Juniors',b:0,c:'Shenzhen',s:'Shenzhen Universiade Stadium'},{n:'Nantong Zhiyun',b:0,c:'Rugao',s:'Rugao Olympic Sports Center'},
+    {n:'Yanbian Longding',b:0,c:'Yanji',s:'Yanji Stadium'},{n:'Guangzhou E-Power',b:0,c:'Cantón',s:'Yuexiushan Stadium'},{n:'Shaanxi Union',b:0,c:'Xi\'an',s:'Xi\'an Stadium'},
+    {n:'Shanghai Jiading Huilong',b:0,c:'Shanghái',s:'Jiading Stadium'},{n:'Guangxi Hengchen',b:0,c:'Nanning',s:'Guangxi Sports Center'},{n:'Nanjing City',b:0,c:'Nankín',s:'Nanjing Olympic Sports Center'},
+    {n:'Wuxi Wugo',b:0,c:'Wuxi',s:'Jiangyin Sports Centre'},{n:'Ningbo Professional',b:0,c:'Ningbo',s:'Ningbo Sports Center'},{n:'Foshan Nanshi',b:0,c:'Foshan',s:'Foshan Sports Center'},
+    {n:'Shijiazhuang Gongfu',b:0,c:'Shijiazhuang',s:'Shijiazhuang Sports Center'},{n:'Jiangxi Dingnan United',b:0,c:'Ganzhou',s:'Dingnan Stadium'}]},
+  {league:'A-League Men', country:'Australia', base:9, matchdays:26, teams:[
+    {n:'Adelaide United',b:0,c:'Adelaida',s:'Coopers Stadium'},{n:'Auckland FC',b:1,c:'Auckland (Nueva Zelanda)',s:'Go Media Stadium'},{n:'Brisbane Roar',b:0,c:'Brisbane',s:'Suncorp Stadium'},
+    {n:'Central Coast Mariners',b:0,c:'Gosford',s:'Polytec Stadium'},{n:'Macarthur FC',b:0,c:'Sídney',s:'Campbelltown Sports Stadium'},{n:'Melbourne City',b:0,c:'Melbourne',s:'AAMI Park'},
+    {n:'Melbourne Victory',b:1,c:'Melbourne',s:'AAMI Park'},{n:'Newcastle Jets',b:1,c:'Newcastle',s:'McDonald Jones Stadium'},{n:'Perth Glory',b:0,c:'Perth',s:'HBF Park'},
+    {n:'Sydney FC',b:1,c:'Sídney',s:'Allianz Stadium'},{n:'Western Sydney Wanderers',b:0,c:'Sídney',s:'CommBank Stadium'},{n:'Wellington Phoenix',b:0,c:'Wellington (Nueva Zelanda)',s:'Sky Stadium'}]},
+  {league:'Australian Championship', country:'Australia', base:3, matchdays:14, teams:[
+    {n:'South Melbourne',b:0,c:'Melbourne',s:'Lakeside Stadium'},{n:'Preston Lions',b:0,c:'Melbourne',s:'B.T. Connor Reserve'},{n:'Avondale FC',b:0,c:'Melbourne',s:'ABD Stadium'},
+    {n:'Marconi Stallions',b:0,c:'Sídney',s:'Marconi Stadium'},{n:'Sydney United 58',b:0,c:'Sídney',s:'Sydney United Sports Centre'},{n:'Sydney Olympic',b:0,c:'Sídney',s:'Belmore Sports Ground'},
+    {n:'APIA Leichhardt',b:0,c:'Sídney',s:'Lambert Park'},{n:'Wollongong Wolves',b:0,c:'Wollongong',s:'WIN Stadium'}]}
 ];
 
-var FILIAL_TEAMS = ['Real Sociedad B','Celta Fortuna','Athletic Club B','Deportivo Fabril','Atlético Madrileño','Real Madrid Castilla','Villarreal CF B'];
+var FILIAL_TEAMS = ['Real Sociedad B','Celta Fortuna','Athletic Club B','Deportivo Fabril','Atlético Madrileño','Real Madrid Castilla','Villarreal CF B','TSG Hoffenheim II','VfB Stuttgart II','Juventus Next Gen','Atalanta U23','Inter U23','Jong Ajax','Jong AZ','Jong PSV','Jong FC Utrecht','FC Porto B','Sporting CP B','Benfica B','Cruz Azul Hidalgo','Tapatío'];
 var RIVAL_FIRST_NAMES = ['Marco','Diego','Thomas','Luca','Pierre','Carlos','Antoine','Klaus','Rui','Bruno','Hugo','Nicolás','Fernando','Giovanni','Erik','Sven','Mateo','Adrián','Rafael','Tomás'];
 var RIVAL_SURNAMES = ['Ferreira','Rossi','Dubois','Müller','Herrera','Novak','Costa','Larsson','Ribeiro','Santini','Delgado','Vasquez','Bianchi','Almeida','Petit','Weber','Castro','Moreau','Silveira','Cardoso'];
 function randomRivalName(){
@@ -1422,6 +1887,34 @@ var TROPHY_IMAGES = {
 };
 var teamBadgeCache = {}; // name -> url string, or false if confirmed not found
 var fetchingBadges = {};
+function leagueLogoFilename(name){
+  var cleaned = name.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]/g,'');
+  var m = cleaned.match(/^(\d+)([A-Za-z].*)$/);
+  if (m) cleaned = m[2]+m[1];
+  return cleaned || 'liga_sin_nombre';
+}
+function leagueBadge(name, size){
+  size = size || 20;
+  var file = 'logos/leagues/'+leagueLogoFilename(name)+'.png';
+  return '<span style="display:inline-flex; align-items:center; gap:5px; vertical-align:middle;">'+
+    '<img src="'+file+'" alt="'+name.replace(/"/g,'&quot;')+'" title="'+name.replace(/"/g,'&quot;')+'" style="width:'+size+'px; height:'+size+'px; object-fit:contain; flex-shrink:0;" '+
+    'onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'inline\';" />'+
+    '<span style="display:none; font-size:13px;">('+name+')</span>'+
+  '</span>';
+}
+function leagueNameWithBadge(name, size){
+  size = size || 14;
+  var file = 'logos/leagues/'+leagueLogoFilename(name)+'.png';
+  return '<span style="display:inline-flex; align-items:center; gap:4px; vertical-align:middle;">'+
+    '<img src="'+file+'" alt="" style="width:'+size+'px; height:'+size+'px; object-fit:contain; flex-shrink:0;" onerror="this.style.display=\'none\';" />'+
+    '<span>'+name+'</span>'+
+  '</span>';
+}
+function movementArrow(direction){
+  var color = direction==='up' ? '#4dd68a' : '#e2574c';
+  var icon = direction==='up' ? 'ti-arrow-up' : 'ti-arrow-down';
+  return '<i class="ti '+icon+'" style="color:'+color+'; font-size:15px; vertical-align:-2px; margin:0 1px;" aria-hidden="true"></i>';
+}
 function teamBadge(name, size){
   size = size || 38;
   var color = BADGE_COLORS[hashStr(name) % BADGE_COLORS.length];
@@ -1613,15 +2106,22 @@ function loadGame(){
 function deleteSave(){
   try { localStorage.removeItem('dtCareerSave'); } catch(e){}
 }
+function scrollAppToTop(){
+  window.scrollTo(0, 0);
+  var appEl = el('app');
+  if (appEl) appEl.scrollTop = 0;
+}
 function navigate(id){
   history.pushState({screenId:id, snapshot: JSON.stringify(state)}, '', '#'+id);
   renderScreen(id);
   saveGame();
+  scrollAppToTop();
 }
 window.addEventListener('popstate', function(e){
   if (e.state && e.state.snapshot){
     state = JSON.parse(e.state.snapshot);
     renderScreen(e.state.screenId);
+    scrollAppToTop();
   }
 });
 function continueAfterTournament(){
@@ -1918,10 +2418,22 @@ function renderSetup(){
       fieldRow('Nacionalidad', '<div style="display:flex; align-items:center; gap:8px;"><span id="natFlag" style="font-size:20px;">🏳️</span><input id="dtNat" list="countryList" type="text" placeholder="Busca tu país" value="España" style="flex:1;" /></div><datalist id="countryList">'+countryOpts+'</datalist>')+
       fieldRow('País donde quieres dirigir', '<select id="dtLiga" style="width:100%;">'+ligaOpts+'</select>')+
     '</div>'+
+    '<div id="ligaPreview" style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:1rem; display:flex; align-items:center; gap:10px;"></div>'+
     '<button id="toStep2" style="width:100%;">Continuar <i class="ti ti-arrow-right" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'
   );
   el('dtNat').addEventListener('input', function(e){ el('natFlag').innerHTML = flagEmoji(e.target.value.trim()); });
   el('dtNat').dispatchEvent(new Event('input'));
+  function updateLigaPreview(){
+    var c = el('dtLiga').value;
+    var d = byCountry[c];
+    if (!d) { el('ligaPreview').innerHTML = ''; return; }
+    el('ligaPreview').innerHTML =
+      '<span style="font-size:24px;">'+flagEmoji(c)+'</span>'+
+      '<span><span style="display:block; font-weight:600; font-size:14px;">'+c+'</span>'+
+      '<span style="display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--text-secondary);">'+leagueNameWithBadge(d.league, 16)+'</span></span>';
+  }
+  el('dtLiga').addEventListener('change', updateLigaPreview);
+  updateLigaPreview();
   el('toStep2').addEventListener('click', function(){
     state.name = el('dtName').value.trim() || 'DT';
     state.nat = el('dtNat').value.trim() || 'España';
@@ -1935,7 +2447,7 @@ function renderOffers(){
   var division = byCountry[state.pendingCountryChoice];
   var offers = shuffle(division.teams).slice(0,3);
   render(
-    '<h2 style="margin:0 0 6px;">'+flagEmoji(division.country)+' Ofertas en '+division.league+' ('+division.country+')</h2>'+
+    '<h2 style="margin:0 0 6px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">'+flagEmoji(division.country)+' Ofertas en '+leagueNameWithBadge(division.league, 20)+' ('+division.country+')</h2>'+
     '<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px;">'+
       offers.map(function(t){
         var h = historyFor(t.n, t.b);
@@ -1971,7 +2483,7 @@ function renderOffers(){
 
 function headerBanner(){
   return '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:1.25rem; display:flex; gap:10px; align-items:center;">'+
-    '<p style="font-size:14px; margin:0; color:var(--text-secondary); display:flex; align-items:center; gap:6px; flex-wrap:wrap;">'+flagEmoji(state.nat)+' DT '+state.name+' · Temporada '+state.season+'/'+TOTAL_SEASONS+' · '+flagEmoji(state.country)+' '+state.team+' ('+state.division+')</p>'+
+    '<p style="font-size:14px; margin:0; color:var(--text-secondary); display:flex; align-items:center; gap:6px; flex-wrap:wrap;">'+flagEmoji(state.nat)+' DT '+state.name+' · Temporada '+state.season+'/'+TOTAL_SEASONS+' · '+flagEmoji(state.country)+' '+state.team+' '+leagueBadge(state.division, 18)+'</p>'+
   '</div>';
 }
 
@@ -2220,7 +2732,8 @@ function positionInfo(){
   var inPlayoff = topFlight ? false : (ov ? (rank>=ov.playoffLo && rank<=ov.playoffHi) : (rank>1 && rank<=Math.max(2,Math.round(teams*0.15))));
 
   var tag, rep;
-  if (rank <= autoPromo){ tag='Ascenso directo'; rep=6; }
+  if (topFlight && rank === 1){ tag='Campeón'; rep=8; }
+  else if (!topFlight && rank <= autoPromo){ tag='Ascenso directo'; rep=6; }
   else if (inPlayoff){ tag='Zona de playoff'; rep=3; }
   else if (rank <= midCut){ tag='Mitad de tabla'; rep=1; }
   else if (rank < releCut){ tag='Pelea por la permanencia'; rep=-2; }
@@ -3155,7 +3668,7 @@ function buildOffersSection(){
   }
   }
 
-  var stayLabel, stayDivision, stayNote, sectionTitle;
+  var stayLabel, stayDivision, stayNote, sectionTitle, stayArrow = '';
   if (wasFired){
     stayDivision = null; stayLabel = null; stayNote = null;
     sectionTitle = 'Despedido';
@@ -3163,21 +3676,23 @@ function buildOffersSection(){
     var upDiv = nextDivisionUp(lastDivisionObj);
     if (FILIAL_TEAMS.indexOf(state.team) !== -1 && isTopFlight(upDiv)){
       stayDivision = lastDivisionObj;
-      stayLabel = 'Sigues con '+state.team+' en '+lastDivisionObj.league;
+      stayLabel = 'Sigues con '+state.team+' en '+leagueNameWithBadge(lastDivisionObj.league);
       stayNote = 'Como filial, '+state.team+' no puede ascender a Primera — se queda en su categoría actual.';
       sectionTitle = 'Ascenso bloqueado (filial)';
     } else {
       stayDivision = upDiv;
-      stayLabel = 'Subes con '+state.team+' a '+upDiv.league;
-      stayNote = 'Ascenso conseguido · '+upDiv.league+' ('+upDiv.country+')';
+      stayArrow = movementArrow('up');
+      stayLabel = 'Subes con '+state.team+' a '+stayArrow+' '+leagueNameWithBadge(upDiv.league);
+      stayNote = 'Ascenso conseguido · '+upDiv.country;
       sectionTitle = 'Ascenso';
     }
   } else if (movement === 'Descenso'){
     var downDiv = nextDivisionDown(lastDivisionObj);
     if (downDiv){
       stayDivision = downDiv;
-      stayLabel = 'Bajas con '+state.team+' a '+downDiv.league;
-      stayNote = 'Descenso confirmado · '+downDiv.league+' ('+downDiv.country+')';
+      stayArrow = movementArrow('down');
+      stayLabel = 'Bajas con '+state.team+' a '+stayArrow+' '+leagueNameWithBadge(downDiv.league);
+      stayNote = 'Descenso confirmado · '+downDiv.country;
     } else {
       stayDivision = lastDivisionObj;
       stayLabel = 'Sigues con '+state.team+' (ya es la categoría más baja registrada)';
@@ -3186,8 +3701,8 @@ function buildOffersSection(){
     sectionTitle = 'Descenso';
   } else {
     stayDivision = lastDivisionObj;
-    stayLabel = 'Renovar con '+state.team;
-    stayNote = state.division+' ('+state.country+')';
+    stayLabel = 'Renovar con '+state.team+' en '+leagueNameWithBadge(state.division);
+    stayNote = state.country;
     sectionTitle = 'Quedarte';
   }
 
@@ -3211,7 +3726,7 @@ function buildOffersSection(){
         return '<div class="clubTintCard" data-tint-club="'+o.team+'" style="padding:8px 6px; border-radius:var(--radius); text-align:center;">'+
           '<div style="display:flex; justify-content:center; margin-bottom:4px;">'+teamBadge(o.team, 34)+'</div>'+
           '<p style="margin:0 0 2px; font-size:11.5px; font-weight:600; line-height:1.2;">'+o.team+'</p>'+
-          '<p style="margin:0 0 6px; font-size:9.5px; color:var(--text-secondary);">'+flagEmoji(o.division.country,12)+' '+o.division.league+'</p>'+
+          '<p style="margin:0 0 6px; font-size:9.5px; color:var(--text-secondary); display:flex; align-items:center; justify-content:center; gap:3px;">'+flagEmoji(o.division.country,12)+' '+leagueNameWithBadge(o.division.league, 11)+'</p>'+
           '<details style="margin-bottom:6px; text-align:left;"><summary style="cursor:pointer; font-size:9.5px; color:var(--text-accent); list-style:none; text-align:center;">Ver detalles</summary>'+
             clubStatBars(o.team, o.bonus, o.division, h.mod)+
           '</details>'+
