@@ -1895,7 +1895,7 @@ function leagueLogoFilename(name){
 }
 function leagueBadge(name, size){
   size = size || 20;
-  var file = 'logos/leagues/'+leagueLogoFilename(name)+'.png';
+  var file = 'leagues/'+leagueLogoFilename(name)+'.png';
   return '<span style="display:inline-flex; align-items:center; gap:5px; vertical-align:middle;">'+
     '<img src="'+file+'" alt="'+name.replace(/"/g,'&quot;')+'" title="'+name.replace(/"/g,'&quot;')+'" style="width:'+size+'px; height:'+size+'px; object-fit:contain; flex-shrink:0;" '+
     'onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'inline\';" />'+
@@ -1905,7 +1905,7 @@ function leagueBadge(name, size){
 function leagueNameWithBadge(name, size, imageLeagueName){
   size = size || 14;
   var lookupName = imageLeagueName || name;
-  var file = 'logos/leagues/'+leagueLogoFilename(lookupName)+'.png';
+  var file = 'leagues/'+leagueLogoFilename(lookupName)+'.png';
   return '<span style="display:inline-flex; align-items:center; gap:4px; vertical-align:middle;">'+
     '<img src="'+file+'" alt="" style="width:'+size+'px; height:'+size+'px; object-fit:contain; flex-shrink:0;" onerror="this.style.display=\'none\';" />'+
     '<span>'+name+'</span>'+
@@ -1931,7 +1931,7 @@ function teamLogoFilename(name){
 }
 function tryLocalTeamBadge(name){
   return new Promise(function(resolve){
-    var file = 'logos/teams/' + teamLogoFilename(name) + '.png';
+    var file = 'teams/' + teamLogoFilename(name) + '.png';
     var img = new Image();
     img.onload = function(){ resolve(file); };
     img.onerror = function(){ resolve(null); };
