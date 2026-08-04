@@ -253,7 +253,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </footer>
 
 <script>
-var ISO = {'Reino Unido':'GB','España':'ES','Alemania':'DE','Italia':'IT','Francia':'FR','Argentina':'AR','Brasil':'BR','Estados Unidos':'US','Portugal':'PT','Países Bajos':'NL','México':'MX','Bélgica':'BE','Turquía':'TR','Arabia Saudita':'SA','Japón':'JP','Uruguay':'UY','Colombia':'CO','Chile':'CL','Ecuador':'EC','Inglaterra':'GB','Croacia':'HR','Dinamarca':'DK'};
+var ISO = {'Reino Unido':'GB','España':'ES','Alemania':'DE','Italia':'IT','Francia':'FR','Argentina':'AR','Brasil':'BR','Estados Unidos':'US','Portugal':'PT','Países Bajos':'NL','México':'MX','Bélgica':'BE','Turquía':'TR','Arabia Saudita':'SA','Japón':'JP','Uruguay':'UY','Colombia':'CO','Chile':'CL','Ecuador':'EC','Inglaterra':'GB','Croacia':'HR','Dinamarca':'DK','Escocia':'GB-SCT','Irlanda del Norte':'GB-NIR','Gales':'GB-WLS','Austria':'AT','Suiza':'CH','Noruega':'NO','Suecia':'SE','Finlandia':'FI','Irlanda':'IE','Polonia':'PL','República Checa':'CZ','Hungría':'HU','Rumanía':'RO','Bulgaria':'BG','Serbia':'RS','Eslovenia':'SI','Eslovaquia':'SK','Grecia':'GR','Ucrania':'UA','Israel':'IL','Corea del Sur':'KR','China':'CN','Australia':'AU'};
 function flagEmoji(country, size){
   size = size || 20;
   var iso = ISO[country];
@@ -2312,10 +2312,22 @@ function shuffle(arr){
   for (var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; }
   return a;
 }
+function pickRandom(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
+}
 function lowestDivisionPerCountry(){
-  var byCountry = {};
+  var candidatesByCountry = {};
   CLUBDB.forEach(function(d){
-    if (!byCountry[d.country] || d.base < byCountry[d.country].base) byCountry[d.country] = d;
+    var current = candidatesByCountry[d.country];
+    if (!current || d.base < current[0].base){
+      candidatesByCountry[d.country] = [d];
+    } else if (d.base === current[0].base){
+      current.push(d);
+    }
+  });
+  var byCountry = {};
+  Object.keys(candidatesByCountry).forEach(function(c){
+    byCountry[c] = pickRandom(candidatesByCountry[c]);
   });
   return byCountry;
 }
@@ -2326,14 +2338,16 @@ function isTopFlight(division){
 function nextDivisionUp(division){
   var higher = CLUBDB.filter(function(d){ return d.country===division.country && d.base>division.base; });
   if (!higher.length) return null;
-  higher.sort(function(a,b){ return a.base-b.base; });
-  return higher[0];
+  var minBase = Math.min.apply(null, higher.map(function(d){ return d.base; }));
+  var tied = higher.filter(function(d){ return d.base===minBase; });
+  return pickRandom(tied);
 }
 function nextDivisionDown(division){
   var lower = CLUBDB.filter(function(d){ return d.country===division.country && d.base<division.base; });
   if (!lower.length) return null;
-  lower.sort(function(a,b){ return b.base-a.base; });
-  return lower[0];
+  var maxBase = Math.max.apply(null, lower.map(function(d){ return d.base; }));
+  var tied = lower.filter(function(d){ return d.base===maxBase; });
+  return pickRandom(tied);
 }
 
 function renderLanding(){
