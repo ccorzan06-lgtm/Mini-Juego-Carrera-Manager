@@ -263,7 +263,7 @@ function flagEmoji(country, size){
 function nationalTeamCrest(teamName, size){
   size = size || 20;
   if (typeof NATIONAL_BADGES !== 'undefined' && NATIONAL_BADGES[teamName]){
-    return '<span class="natBadgeSlot" style="display:inline-flex; align-items:center; justify-content:center; width:'+size+'px; height:'+size+'px; border-radius:6px; background:var(--surface-1); flex-shrink:0; overflow:hidden;"><img src="'+NATIONAL_BADGES[teamName]+'" alt="'+teamName+'" style="width:100%; height:100%; object-fit:contain;" /></span>';
+    return '<span class="natBadgeSlot" style="display:inline-flex; align-items:center; justify-content:center; width:'+size+'px; height:'+size+'px; border-radius:6px; background:var(--surface-1); flex-shrink:0; overflow:hidden;"><img src="'+NATIONAL_BADGE_PATH+NATIONAL_BADGES[teamName]+'" alt="'+teamName+'" style="width:100%; height:100%; object-fit:contain;" /></span>';
   }
   return flagEmoji(teamName, size);
 }
@@ -1762,6 +1762,7 @@ var TEAM_BADGES = {
   "JEF United Chiba": "jef_united_chiba.png",
   "Kasımpaşa": "kasmpasa.png"
 };
+var NATIONAL_BADGE_PATH = 'Selecciones Escudos/';
 var NATIONAL_BADGES = {
   "Tahití": "tahiti.png",
   "Francia": "francia.png",
@@ -1969,7 +1970,7 @@ function processBadges(){
   document.querySelectorAll('.natTintCard').forEach(function(elm){
     var name = elm.getAttribute('data-tint-nat');
     if (!name || elm.getAttribute('data-tinted')) return;
-    var badgeUrl = (typeof NATIONAL_BADGES !== 'undefined') ? NATIONAL_BADGES[name] : null;
+    var badgeUrl = (typeof NATIONAL_BADGES !== 'undefined' && NATIONAL_BADGES[name]) ? NATIONAL_BADGE_PATH+NATIONAL_BADGES[name] : null;
     if (!badgeUrl) return;
     elm.setAttribute('data-tinted','1');
     tintFromImage(elm, badgeUrl);
@@ -2288,6 +2289,12 @@ function buildHistoryRow(h, idx){
   if (h.euro && h.euro.stage==='Campeón') titlesList.push(h.euro.comp.split(' (')[0]);
   if (h.cwc && h.cwc.stage==='Campeón') titlesList.push('Mundial de Clubes');
   if (h.cup && h.cup.stage==='Campeón') titlesList.push(h.cup.name);
+  var promotionBadge = '';
+  if (h.achievement === 'Ascenso'){
+    var srcDiv = CLUBDB.find(function(d){ return d.league===h.division && d.country===h.country; });
+    var upDiv = srcDiv ? nextDivisionUp(srcDiv) : null;
+    if (upDiv) promotionBadge = '<span style="display:inline-flex; align-items:center; margin-left:5px;">'+leagueBadge(upDiv.league, 20)+'</span>';
+  }
   var changedClub = idx>0 && state.history[idx-1].team !== h.team;
   var mr = h.mrSnapshot!=null ? h.mrSnapshot : managerRating();
   return '<div class="clubTintCard" data-tint-club="'+h.team.replace(/"/g,'&quot;')+'" style="display:flex; align-items:center; gap:10px; padding:10px 4px; border-bottom:1px solid var(--border); border-radius:6px;">'+
@@ -2296,7 +2303,7 @@ function buildHistoryRow(h, idx){
     teamBadge(h.team, 34)+
     '<div style="flex:1; min-width:0;">'+
       '<p style="margin:0; font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:5px;">'+flagEmoji(h.country,16)+'<span style="overflow:hidden; text-overflow:ellipsis;">'+h.team+'</span></p>'+
-      '<p style="margin:0; font-size:11px; color:var(--text-secondary); white-space:normal; overflow:visible; display:flex; align-items:center; flex-wrap:wrap; row-gap:4px;">'+h.pos+' · '+h.pts+' pts'+titleIconChips(titlesList, h.team, false)+'</p>'+
+      '<p style="margin:0; font-size:11px; color:var(--text-secondary); white-space:normal; overflow:visible; display:flex; align-items:center; flex-wrap:wrap; row-gap:4px;">'+h.pos+' · '+h.pts+' pts'+titleIconChips(titlesList, h.team, false)+promotionBadge+'</p>'+
     '</div>'+
     ratingChip(mr)+
   '</div>';
