@@ -2315,6 +2315,22 @@ function shuffle(arr){
 function pickRandom(arr){
   return arr[Math.floor(Math.random()*arr.length)];
 }
+function lowestDivisionsPerCountry(){
+  var candidatesByCountry = {};
+  CLUBDB.forEach(function(d){
+    var current = candidatesByCountry[d.country];
+    if (!current || d.base < current[0].base){
+      candidatesByCountry[d.country] = [d];
+    } else if (d.base === current[0].base){
+      current.push(d);
+    }
+  });
+  return candidatesByCountry;
+}
+function baseLeagueDisplayName(divisions){
+  if (divisions.length === 1) return divisions[0].league;
+  return divisions[0].league.replace(/\s*-\s*(Grupo|Girone|Zona)\s+\S+$/i, '');
+}
 function lowestDivisionPerCountry(){
   var candidatesByCountry = {};
   CLUBDB.forEach(function(d){
@@ -2418,11 +2434,11 @@ function renderLanding(){
 }
 function renderSetup(){
   var countryOpts = COUNTRIES.map(function(c){ return '<option value="'+c+'">'; }).join('');
-  var byCountry = lowestDivisionPerCountry();
-  var countryKeys = Object.keys(byCountry).sort();
+  var byCountryGroups = lowestDivisionsPerCountry();
+  var countryKeys = Object.keys(byCountryGroups).sort();
   var ligaOpts = countryKeys.map(function(c){
-    var d = byCountry[c];
-    return '<option value="'+c+'">'+flagEmoji(c)+' '+c+' — comienzas en '+d.league+'</option>';
+    var name = baseLeagueDisplayName(byCountryGroups[c]);
+    return '<option value="'+c+'">'+c+' — '+name+'</option>';
   }).join('');
   render(
     '<h2 style="margin:0 0 4px;">Crea tu propio Entrenador</h2>'+
@@ -2439,12 +2455,13 @@ function renderSetup(){
   el('dtNat').dispatchEvent(new Event('input'));
   function updateLigaPreview(){
     var c = el('dtLiga').value;
-    var d = byCountry[c];
-    if (!d) { el('ligaPreview').innerHTML = ''; return; }
+    var divisions = byCountryGroups[c];
+    if (!divisions) { el('ligaPreview').innerHTML = ''; return; }
+    var name = baseLeagueDisplayName(divisions);
     el('ligaPreview').innerHTML =
       '<span style="font-size:24px;">'+flagEmoji(c)+'</span>'+
       '<span><span style="display:block; font-weight:600; font-size:14px;">'+c+'</span>'+
-      '<span style="display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--text-secondary);">'+leagueNameWithBadge(d.league, 16)+'</span></span>';
+      '<span style="display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--text-secondary);">'+leagueNameWithBadge(name, 16)+'</span></span>';
   }
   el('dtLiga').addEventListener('change', updateLigaPreview);
   updateLigaPreview();
@@ -2457,22 +2474,30 @@ function renderSetup(){
 }
 
 function renderOffers(){
-  var byCountry = lowestDivisionPerCountry();
-  var division = byCountry[state.pendingCountryChoice];
-  var offers = shuffle(division.teams).slice(0,3);
+  var byCountryGroups = lowestDivisionsPerCountry();
+  var divisions = byCountryGroups[state.pendingCountryChoice];
+  var pool = [];
+  divisions.forEach(function(div){
+    div.teams.forEach(function(t){ pool.push({t:t, division:div}); });
+  });
+  var offers = shuffle(pool).slice(0,3);
+  var displayLeague = baseLeagueDisplayName(divisions);
+  var displayCountry = divisions[0].country;
   render(
-    '<h2 style="margin:0 0 6px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">'+flagEmoji(division.country)+' Ofertas en '+leagueNameWithBadge(division.league, 20)+' ('+division.country+')</h2>'+
+    '<h2 style="margin:0 0 6px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">'+flagEmoji(displayCountry)+' Ofertas en '+leagueNameWithBadge(displayLeague, 20)+' ('+displayCountry+')</h2>'+
     '<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px;">'+
-      offers.map(function(t){
+      offers.map(function(o){
+        var t = o.t, division = o.division;
         var h = historyFor(t.n, t.b);
         var rating = baselineClubRating(t.b, isTopFlight(division), division.base);
         return '<div class="clubTintCard" data-tint-club="'+t.n+'" style="padding:8px 6px; border-radius:var(--radius); text-align:center;">'+
           '<div style="display:flex; justify-content:center; margin-bottom:4px;">'+teamBadge(t.n, 34)+'</div>'+
-          '<p style="margin:0 0 6px; font-size:11.5px; font-weight:600; line-height:1.2;">'+t.n+'</p>'+
+          '<p style="margin:0 0 2px; font-size:11.5px; font-weight:600; line-height:1.2;">'+t.n+'</p>'+
+          (divisions.length > 1 ? '<p style="margin:0 0 6px; font-size:9px; color:var(--text-secondary);">'+division.league+'</p>' : '') +
           '<details style="margin-bottom:6px; text-align:left;"><summary style="cursor:pointer; font-size:9.5px; color:var(--text-accent); list-style:none; text-align:center;">Ver detalles</summary>'+
             clubStatBars(t.n, t.b, division, h.mod)+
           '</details>'+
-          '<button class="offerBtn" data-team="'+t.n+'" data-b="'+t.b+'" style="width:100%; background:var(--surface-2); border-color:var(--border); font-size:11px; padding:8px 4px;">Fichar</button>'+
+          '<button class="offerBtn" data-team="'+t.n+'" data-b="'+t.b+'" data-lg="'+division.league+'" style="width:100%; background:var(--surface-2); border-color:var(--border); font-size:11px; padding:8px 4px;">Fichar</button>'+
         '</div>';
       }).join('')+
     '</div>'
@@ -2481,6 +2506,8 @@ function renderOffers(){
     btn.addEventListener('click', function(){
       var teamName = btn.getAttribute('data-team');
       var bonus = parseInt(btn.getAttribute('data-b'),10);
+      var leagueName = btn.getAttribute('data-lg');
+      var division = divisions.find(function(d){ return d.league === leagueName; }) || divisions[0];
       state.team = teamName;
       state.country = division.country;
       state.division = division.league;
