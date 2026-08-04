@@ -1902,9 +1902,10 @@ function leagueBadge(name, size){
     '<span style="display:none; font-size:13px;">('+name+')</span>'+
   '</span>';
 }
-function leagueNameWithBadge(name, size){
+function leagueNameWithBadge(name, size, imageLeagueName){
   size = size || 14;
-  var file = 'logos/leagues/'+leagueLogoFilename(name)+'.png';
+  var lookupName = imageLeagueName || name;
+  var file = 'logos/leagues/'+leagueLogoFilename(lookupName)+'.png';
   return '<span style="display:inline-flex; align-items:center; gap:4px; vertical-align:middle;">'+
     '<img src="'+file+'" alt="" style="width:'+size+'px; height:'+size+'px; object-fit:contain; flex-shrink:0;" onerror="this.style.display=\'none\';" />'+
     '<span>'+name+'</span>'+
@@ -1924,6 +1925,18 @@ function teamBadge(name, size){
     return '<span class="teamBadgeSlot" data-club="'+name.replace(/"/g,'&quot;')+'" style="display:inline-flex; align-items:center; justify-content:center; width:'+size+'px; height:'+size+'px; border-radius:8px; background:transparent; flex-shrink:0; box-sizing:border-box;"><img src="'+cached+'" alt="" style="max-width:100%; max-height:100%; object-fit:contain;" /></span>';
   }
   return '<span class="teamBadgeSlot" data-club="'+name.replace(/"/g,'&quot;')+'" style="display:inline-flex; align-items:center; justify-content:center; width:'+size+'px; height:'+size+'px; border-radius:50%; background:'+color+'; color:#fff; font-size:'+Math.round(size*0.38)+'px; font-weight:500; flex-shrink:0; overflow:hidden;">'+initials(name)+'</span>';
+}
+function teamLogoFilename(name){
+  return name.replace(/[\\/:*?"<>|]/g, '').trim().replace(/\.+$/, '') || 'equipo_sin_nombre';
+}
+function tryLocalTeamBadge(name){
+  return new Promise(function(resolve){
+    var file = 'logos/teams/' + teamLogoFilename(name) + '.png';
+    var img = new Image();
+    img.onload = function(){ resolve(file); };
+    img.onerror = function(){ resolve(null); };
+    img.src = file;
+  });
 }
 function fetchTeamBadge(name){
   var url = 'https://www.thesportsdb.com/api/v1/json/123/searchteams.php?t=' + encodeURIComponent(name);
@@ -1982,7 +1995,9 @@ function processBadges(){
     if (cached === false) return; // confirmed not found, don't retry
     if (fetchingBadges[name]) return;
     fetchingBadges[name] = true;
-    fetchTeamBadge(name).then(function(url){
+    tryLocalTeamBadge(name).then(function(localUrl){
+      return localUrl || fetchTeamBadge(name);
+    }).then(function(url){
       teamBadgeCache[name] = url || false;
       if (url){
         document.querySelectorAll('.teamBadgeSlot').forEach(function(e2){
@@ -2461,7 +2476,7 @@ function renderSetup(){
     el('ligaPreview').innerHTML =
       '<span style="font-size:24px;">'+flagEmoji(c)+'</span>'+
       '<span><span style="display:block; font-weight:600; font-size:14px;">'+c+'</span>'+
-      '<span style="display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--text-secondary);">'+leagueNameWithBadge(name, 16)+'</span></span>';
+      '<span style="display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--text-secondary);">'+leagueNameWithBadge(name, 16, divisions[0].league)+'</span></span>';
   }
   el('dtLiga').addEventListener('change', updateLigaPreview);
   updateLigaPreview();
@@ -2484,7 +2499,7 @@ function renderOffers(){
   var displayLeague = baseLeagueDisplayName(divisions);
   var displayCountry = divisions[0].country;
   render(
-    '<h2 style="margin:0 0 6px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">'+flagEmoji(displayCountry)+' Ofertas en '+leagueNameWithBadge(displayLeague, 20)+' ('+displayCountry+')</h2>'+
+    '<h2 style="margin:0 0 6px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">'+flagEmoji(displayCountry)+' Ofertas en '+leagueNameWithBadge(displayLeague, 20, divisions[0].league)+' ('+displayCountry+')</h2>'+
     '<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px;">'+
       offers.map(function(o){
         var t = o.t, division = o.division;
