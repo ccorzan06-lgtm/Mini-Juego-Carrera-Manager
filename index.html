@@ -2554,6 +2554,8 @@ function renderSetup(){
     var name = baseLeagueDisplayName(byCountryGroups[c]);
     return '<option value="'+c+'">'+c+' — '+name+'</option>';
   }).join('');
+  var seasonOptions = [15, 20, 30, 40];
+  var selectedSeasons = 20;
   render(
     '<h2 style="margin:0 0 4px;">Crea tu propio Entrenador</h2>'+
     '<p style="color:var(--text-secondary); font-size:14px; margin:0 0 1.25rem;">Comienza tu carrera desde abajo para crear un legado y hacer historia.</p>'+
@@ -2561,12 +2563,27 @@ function renderSetup(){
       fieldRow('Nombre', '<input id="dtName" type="text" placeholder="Tu apellido de DT" style="width:100%;" />')+
       fieldRow('Nacionalidad', '<div style="display:flex; align-items:center; gap:8px;"><span id="natFlag" style="font-size:20px;">🏳️</span><input id="dtNat" list="countryList" type="text" placeholder="Busca tu país" value="España" style="flex:1;" /></div><datalist id="countryList">'+countryOpts+'</datalist>')+
       fieldRow('País donde quieres dirigir', '<select id="dtLiga" style="width:100%;">'+ligaOpts+'</select>')+
+      fieldRow('Duración de la carrera', '<div id="seasonPicker" style="display:flex; gap:8px;">'+
+        seasonOptions.map(function(n){
+          return '<button type="button" class="seasonOpt" data-n="'+n+'" style="flex:1; padding:10px; border-radius:8px; border:1px solid var(--border); background:'+(n===selectedSeasons?'var(--text-accent)':'var(--surface-1)')+'; color:'+(n===selectedSeasons?'#1a1206':'var(--text)')+'; font-weight:600; cursor:pointer; font-family:var(--mono);">'+n+'</button>';
+        }).join('')+
+      '</div>')+
     '</div>'+
     '<div id="ligaPreview" style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:1rem; display:flex; align-items:center; gap:10px;"></div>'+
     '<button id="toStep2" style="width:100%;">Continuar <i class="ti ti-arrow-right" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'
   );
   el('dtNat').addEventListener('input', function(e){ el('natFlag').innerHTML = flagEmoji(e.target.value.trim()); });
   el('dtNat').dispatchEvent(new Event('input'));
+  document.querySelectorAll('.seasonOpt').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      selectedSeasons = parseInt(btn.getAttribute('data-n'), 10);
+      document.querySelectorAll('.seasonOpt').forEach(function(b){
+        var active = b === btn;
+        b.style.background = active ? 'var(--text-accent)' : 'var(--surface-1)';
+        b.style.color = active ? '#1a1206' : 'var(--text)';
+      });
+    });
+  });
   function updateLigaPreview(){
     var c = el('dtLiga').value;
     var divisions = byCountryGroups[c];
@@ -2583,6 +2600,10 @@ function renderSetup(){
     state.name = el('dtName').value.trim() || 'DT';
     state.nat = el('dtNat').value.trim() || 'España';
     state.pendingCountryChoice = el('dtLiga').value;
+    TOTAL_SEASONS = selectedSeasons;
+    RETIRE_FROM_SEASON = Math.max(5, Math.round(TOTAL_SEASONS/2));
+    CLUB_WORLD_CUP_SEASONS = [];
+    for (var s=3; s<TOTAL_SEASONS; s+=4){ CLUB_WORLD_CUP_SEASONS.push(s); }
     navigate('ofertas-inicio');
   });
 }
