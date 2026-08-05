@@ -264,7 +264,7 @@ function flagEmoji(country, size){
   size = size || 20;
   var iso = ISO[country];
   if (!iso) return '🏳️';
-  return '<img src="https://flagcdn.com/48x36/'+iso.toLowerCase()+'.png" alt="'+country+'" style="width:'+size+'px; height:auto; vertical-align:middle; border-radius:2px; box-shadow:0 0 0 1px rgba(255,255,255,0.15); flex-shrink:0;" />';
+  return '<img src="https://flagcdn.com/48x36/'+iso.toLowerCase()+'.png" alt="'+country+'" style="width:'+size+'px; height:auto; vertical-align:middle; border-radius:2px; box-shadow:0 0 0 1px rgba(255,255,255,0.15); flex-shrink:0;" onerror="this.outerHTML=\'🏳️\';" />';
 }
 function nationalTeamCrest(teamName, size){
   size = size || 20;
