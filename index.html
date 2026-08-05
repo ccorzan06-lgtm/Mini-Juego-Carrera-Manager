@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-35QGYDXMSZ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-35QGYDXMSZ');
-</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>DT · Simulador de carrera de entrenador</title>
@@ -110,6 +101,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       scrollbar-gutter: stable;
     }
     #app { padding-right: 6px; }
+    .ofertasGrid { gap: 14px !important; }
+    .ofertaCard { padding: 18px 14px !important; }
+    .ofertaCard p:first-of-type { font-size: 15px !important; margin-bottom: 4px !important; }
+    .ofertaCard p:nth-of-type(2) { font-size: 12px !important; }
+    .ofertaCard .offerBtn2 { font-size: 13px !important; padding: 11px 4px !important; }
+    .ofertaCard details summary { font-size: 12px !important; }
   }
   @media (max-width: 1180px) {
     #layout { flex-direction: column; }
@@ -1850,6 +1847,7 @@ var NATIONAL_BADGES = {
   "Nueva Caledonia": "nueva_caledonia.png",
   "Vanuatu": "vanuatu.png"
 };
+var TROPHY_IMAGE_PATH = 'Titulos_transparente/';
 var TROPHY_IMAGES = {
   "Champions League": "ChampionsLeague.png",
   "Copa del Mundo": "CopaDelMundo.png",
@@ -1897,25 +1895,36 @@ var TROPHY_IMAGES = {
 };
 var teamBadgeCache = {}; // name -> url string, or false if confirmed not found
 var fetchingBadges = {};
-function leagueLogoFilename(name){
-  var cleaned = name.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]/g,'');
+var CYRILLIC_TRANSLIT = {'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ж':'zh','з':'z','и':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'h','ц':'ts','ч':'ch','ш':'sh','щ':'sht','ъ':'a','ь':'','ю':'yu','я':'ya','А':'A','Б':'B','В':'V','Г':'G','Д':'D','Е':'E','Ж':'Zh','З':'Z','И':'I','Й':'Y','К':'K','Л':'L','М':'M','Н':'N','О':'O','П':'P','Р':'R','С':'S','Т':'T','У':'U','Ф':'F','Х':'H','Ц':'Ts','Ч':'Ch','Ш':'Sh','Щ':'Sht','Ъ':'A','Ь':'','Ю':'Yu','Я':'Ya'};
+function transliterate(s){
+  return s.split('').map(function(ch){ return CYRILLIC_TRANSLIT.hasOwnProperty(ch) ? CYRILLIC_TRANSLIT[ch] : ch; }).join('');
+}
+function cleanNamePart(s){
+  var cleaned = transliterate(s).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]/g,'');
   var m = cleaned.match(/^(\d+)([A-Za-z].*)$/);
   if (m) cleaned = m[2]+m[1];
-  return cleaned || 'liga_sin_nombre';
+  return cleaned;
 }
-function leagueBadge(name, size){
+function leagueLogoFilename(name, country){
+  var leaguePart = cleanNamePart(name);
+  var countryPart = country ? cleanNamePart(country) : '';
+  var combined = leaguePart + (countryPart ? '_'+countryPart : '');
+  return combined || 'liga_sin_nombre';
+}
+function leagueBadge(name, country, size){
   size = size || 20;
-  var file = 'leagues/'+leagueLogoFilename(name)+'.png';
+  var file = 'leagues/'+leagueLogoFilename(name, country)+'.png';
   return '<span style="display:inline-flex; align-items:center; gap:5px; vertical-align:middle;">'+
     '<img src="'+file+'" alt="'+name.replace(/"/g,'&quot;')+'" title="'+name.replace(/"/g,'&quot;')+'" style="width:'+size+'px; height:'+size+'px; object-fit:contain; flex-shrink:0;" '+
     'onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'inline\';" />'+
     '<span style="display:none; font-size:13px;">('+name+')</span>'+
   '</span>';
 }
-function leagueNameWithBadge(name, size, imageLeagueName){
+function leagueNameWithBadge(name, country, size, imageLeagueName, imageCountry){
   size = size || 14;
   var lookupName = imageLeagueName || name;
-  var file = 'leagues/'+leagueLogoFilename(lookupName)+'.png';
+  var lookupCountry = imageCountry || country;
+  var file = 'leagues/'+leagueLogoFilename(lookupName, lookupCountry)+'.png';
   return '<span style="display:inline-flex; align-items:center; gap:4px; vertical-align:middle;">'+
     '<img src="'+file+'" alt="" style="width:'+size+'px; height:'+size+'px; object-fit:contain; flex-shrink:0;" onerror="this.style.display=\'none\';" />'+
     '<span>'+name+'</span>'+
@@ -2277,7 +2286,7 @@ function trophyIcon(label, size){
   if (img){
     var pad = Math.max(2, Math.round(size*0.14));
     var box = size + pad*2;
-    return '<span style="display:inline-flex; align-items:center; justify-content:center; width:'+box+'px; height:'+box+'px; border-radius:7px; background:var(--bg); flex-shrink:0; vertical-align:middle; box-sizing:border-box;"><img src="'+img+'" alt="'+safeLabel+'" title="'+safeLabel+'" style="width:'+size+'px; height:'+size+'px; object-fit:contain;" /></span>';
+    return '<span style="display:inline-flex; align-items:center; justify-content:center; width:'+box+'px; height:'+box+'px; border-radius:7px; background:var(--bg); flex-shrink:0; vertical-align:middle; box-sizing:border-box;"><img src="'+TROPHY_IMAGE_PATH+img+'" alt="'+safeLabel+'" title="'+safeLabel+'" style="width:'+size+'px; height:'+size+'px; object-fit:contain;" /></span>';
   }
   var t = titleIconFor(label);
   return svgTrophyIcon(t.shape, t.color, size, label);
@@ -2302,7 +2311,7 @@ function buildHistoryRow(h, idx){
   if (h.achievement === 'Ascenso'){
     var srcDiv = CLUBDB.find(function(d){ return d.league===h.division && d.country===h.country; });
     var upDiv = srcDiv ? nextDivisionUp(srcDiv) : null;
-    if (upDiv) promotionBadge = '<span style="display:inline-flex; align-items:center; margin-left:5px;">'+leagueBadge(upDiv.league, 20)+'</span>';
+    if (upDiv) promotionBadge = '<span style="display:inline-flex; align-items:center; margin-left:5px;">'+leagueBadge(upDiv.league, upDiv.country, 20)+'</span>';
   }
   var changedClub = idx>0 && state.history[idx-1].team !== h.team;
   var mr = h.mrSnapshot!=null ? h.mrSnapshot : managerRating();
@@ -2492,7 +2501,7 @@ function renderSetup(){
     el('ligaPreview').innerHTML =
       '<span style="font-size:24px;">'+flagEmoji(c)+'</span>'+
       '<span><span style="display:block; font-weight:600; font-size:14px;">'+c+'</span>'+
-      '<span style="display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--text-secondary);">'+leagueNameWithBadge(name, 16, divisions[0].league)+'</span></span>';
+      '<span style="display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--text-secondary);">'+leagueNameWithBadge(name, c, 16, divisions[0].league, divisions[0].country)+'</span></span>';
   }
   el('dtLiga').addEventListener('change', updateLigaPreview);
   updateLigaPreview();
@@ -2515,7 +2524,7 @@ function renderOffers(){
   var displayLeague = baseLeagueDisplayName(divisions);
   var displayCountry = divisions[0].country;
   render(
-    '<h2 style="margin:0 0 6px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">'+flagEmoji(displayCountry)+' Ofertas en '+leagueNameWithBadge(displayLeague, 20, divisions[0].league)+' ('+displayCountry+')</h2>'+
+    '<h2 style="margin:0 0 6px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">'+flagEmoji(displayCountry)+' Ofertas en '+leagueNameWithBadge(displayLeague, displayCountry, 20, divisions[0].league, divisions[0].country)+' ('+displayCountry+')</h2>'+
     '<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px;">'+
       offers.map(function(o){
         var t = o.t, division = o.division;
@@ -2555,7 +2564,7 @@ function renderOffers(){
 
 function headerBanner(){
   return '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:1.25rem; display:flex; gap:10px; align-items:center;">'+
-    '<p style="font-size:14px; margin:0; color:var(--text-secondary); display:flex; align-items:center; gap:6px; flex-wrap:wrap;">'+flagEmoji(state.nat)+' DT '+state.name+' · Temporada '+state.season+'/'+TOTAL_SEASONS+' · '+flagEmoji(state.country)+' '+state.team+' '+leagueBadge(state.division, 18)+'</p>'+
+    '<p style="font-size:14px; margin:0; color:var(--text-secondary); display:flex; align-items:center; gap:6px; flex-wrap:wrap;">'+flagEmoji(state.nat)+' DT '+state.name+' · Temporada '+state.season+'/'+TOTAL_SEASONS+' · '+flagEmoji(state.country)+' '+state.team+' '+leagueBadge(state.division, state.country, 18)+'</p>'+
   '</div>';
 }
 
@@ -2578,14 +2587,40 @@ function selectOptions(options, current){
   return options.map(function(o){ return '<option'+(o===current?' selected':'')+'>'+o+'</option>'; }).join('');
 }
 
+function careerTrajectory(){
+  if (!state.history || state.history.length < 2) return 'normal';
+  var titles = 0, bigCups = 0, promotions = 0, relegations = 0, fires = 0;
+  state.history.forEach(function(h){
+    if (h.achievement === 'Título de Liga') titles++;
+    if (h.achievement === 'Ascenso') promotions++;
+    if (h.tag === 'Zona de descenso') relegations++;
+    if ((h.euro && h.euro.stage==='Campeón') || (h.cup && h.cup.stage==='Campeón') || (h.cwc && h.cwc.stage==='Campeón')) bigCups++;
+  });
+  var score = titles*3 + bigCups*2 + promotions*2 - relegations*2;
+  if (score >= 7) return 'exitosa';
+  if (score <= -3) return 'mediocre';
+  return 'normal';
+}
 function directivaMessage(){
   var last = state.history[state.history.length-1];
+  var trajectory = careerTrajectory();
   if (!last) return 'Confían en ti.';
-  if (last.achievement === 'Título de Liga') return 'Están eufóricos contigo.';
+  if (last.achievement === 'Título de Liga') return trajectory==='exitosa' ? 'Te ven como el líder de un proyecto ganador.' : 'Están eufóricos contigo.';
   if (last.achievement === 'Ascenso') return 'Llegan con ilusión.';
-  if (last.tag === 'Zona de descenso') return 'Tienen dudas.';
+  if (last.tag === 'Zona de descenso') return trajectory==='mediocre' ? 'Su paciencia se agota — necesitan resultados ya.' : 'Tienen dudas.';
   if (last.tag === 'Pelea por la permanencia') return 'Quedan algunas dudas.';
+  if (trajectory === 'exitosa') return 'Confían plenamente en tu proyecto a largo plazo.';
+  if (trajectory === 'mediocre') return 'Empiezan a cuestionar hacia dónde va esto.';
   return 'Confían en ti.';
+}
+function prensaMessage(){
+  var trajectory = careerTrajectory();
+  var last = state.history[state.history.length-1];
+  if (last && last.achievement === 'Título de Liga') return trajectory==='exitosa' ? 'Te presentan como uno de los grandes del oficio.' : 'Titulares elogiosos en toda la prensa deportiva.';
+  if (last && last.tag === 'Zona de descenso') return trajectory==='mediocre' ? 'Piden explicaciones y cuestionan tu continuidad.' : 'Análisis críticos tras el mal resultado.';
+  if (trajectory === 'exitosa') return 'Te tratan como una referencia del banquillo.';
+  if (trajectory === 'mediocre') return 'El tono es escéptico con tu trabajo últimamente.';
+  return 'Cobertura normal, sin grandes titulares.';
 }
 function statBar(label, value, color){
   return '<div style="margin-bottom:6px;"><div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-secondary); margin-bottom:2px;"><span>'+label+'</span><span>'+Math.round(value)+'</span></div><div style="background:var(--surface-2); border-radius:6px; height:6px; overflow:hidden;"><div style="width:'+Math.max(2,Math.min(100,value))+'%; height:100%; background:'+color+';"></div></div></div>';
@@ -2634,7 +2669,9 @@ function renderConfig(){
     headerBanner()+
     '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; margin-bottom:12px;">'+
       '<p style="font-size:11px; color:var(--text-accent); text-transform:uppercase; letter-spacing:0.03em; font-family:var(--display); margin:0 0 4px;">La directiva</p>'+
-      '<p style="font-size:13px; color:var(--text-secondary); margin:0 0 10px; font-style:italic;">"'+directivaMessage()+'"</p>'+
+      '<p style="font-size:13px; color:var(--text-secondary); margin:0 0 6px; font-style:italic;">"'+directivaMessage()+'"</p>'+
+      '<p style="font-size:11px; color:var(--text-accent); text-transform:uppercase; letter-spacing:0.03em; font-family:var(--display); margin:0 0 4px;">La prensa</p>'+
+      '<p style="font-size:13px; color:var(--text-secondary); margin:0 0 10px; font-style:italic;">"'+prensaMessage()+'"</p>'+
       statBar('Vestuario', state.vestuario||50, '#4dd68a')+
       statBar('Presupuesto', state.presupuesto||50, '#E8A33D')+
       statBar('Prensa', state.prensa||50, '#5ec9f2')+
@@ -3727,13 +3764,20 @@ function buildOffersSection(){
   if (didSomethingBigThisSeason && wasModestClub){
     bigClubChance = Math.max(bigClubChance, 0.75);
   }
+  var trajectory = careerTrajectory();
+  if (trajectory === 'exitosa') bigClubChance = Math.min(1, bigClubChance + 0.2);
+  else if (trajectory === 'mediocre') bigClubChance = Math.max(0, bigClubChance - 0.15);
   if (Math.random() < bigClubChance){
     var bigPool = [];
+    var playerInTopFlight = lastDivisionObj && isTopFlight(lastDivisionObj);
     CLUBDB.forEach(function(div){
       var isTop = isTopFlight(div);
       div.teams.forEach(function(t){
         var rating = baselineClubRating(t.b, isTop, div.base);
-        if (rating >= 80 && !(t.n===state.team && div.league===state.division)) bigPool.push({team:t.n, bonus:t.b, division:div, rating:rating});
+        if (rating >= 80 && !(t.n===state.team && div.league===state.division)){
+          var eligible = rating < 85 || (playerInTopFlight && div.country === state.country);
+          if (eligible) bigPool.push({team:t.n, bonus:t.b, division:div, rating:rating});
+        }
       });
     });
     if (bigPool.length) offers[0] = shuffle(bigPool)[0];
@@ -3748,13 +3792,13 @@ function buildOffersSection(){
     var upDiv = nextDivisionUp(lastDivisionObj);
     if (FILIAL_TEAMS.indexOf(state.team) !== -1 && isTopFlight(upDiv)){
       stayDivision = lastDivisionObj;
-      stayLabel = 'Sigues con '+state.team+' en '+leagueNameWithBadge(lastDivisionObj.league);
+      stayLabel = 'Sigues con '+state.team+' en '+leagueNameWithBadge(lastDivisionObj.league, lastDivisionObj.country);
       stayNote = 'Como filial, '+state.team+' no puede ascender a Primera — se queda en su categoría actual.';
       sectionTitle = 'Ascenso bloqueado (filial)';
     } else {
       stayDivision = upDiv;
       stayArrow = movementArrow('up');
-      stayLabel = 'Subes con '+state.team+' a '+stayArrow+' '+leagueNameWithBadge(upDiv.league);
+      stayLabel = 'Subes con '+state.team+' a '+stayArrow+' '+leagueNameWithBadge(upDiv.league, upDiv.country);
       stayNote = 'Ascenso conseguido · '+upDiv.country;
       sectionTitle = 'Ascenso';
     }
@@ -3763,7 +3807,7 @@ function buildOffersSection(){
     if (downDiv){
       stayDivision = downDiv;
       stayArrow = movementArrow('down');
-      stayLabel = 'Bajas con '+state.team+' a '+stayArrow+' '+leagueNameWithBadge(downDiv.league);
+      stayLabel = 'Bajas con '+state.team+' a '+stayArrow+' '+leagueNameWithBadge(downDiv.league, downDiv.country);
       stayNote = 'Descenso confirmado · '+downDiv.country;
     } else {
       stayDivision = lastDivisionObj;
@@ -3773,7 +3817,7 @@ function buildOffersSection(){
     sectionTitle = 'Descenso';
   } else {
     stayDivision = lastDivisionObj;
-    stayLabel = 'Renovar con '+state.team+' en '+leagueNameWithBadge(state.division);
+    stayLabel = 'Renovar con '+state.team+' en '+leagueNameWithBadge(state.division, state.country);
     stayNote = state.country;
     sectionTitle = 'Quedarte';
   }
@@ -3792,13 +3836,13 @@ function buildOffersSection(){
       '</div>'
     )+
     '<h3 style="margin:0 0 6px;">Ofertas nuevas</h3>'+
-    '<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:'+(state.season>=RETIRE_FROM_SEASON ? '16px' : '0')+';">'+
+    '<div class="ofertasGrid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:'+(state.season>=RETIRE_FROM_SEASON ? '16px' : '0')+';">'+
       offers.map(function(o){
         var h = historyFor(o.team, o.bonus);
-        return '<div class="clubTintCard" data-tint-club="'+o.team+'" style="padding:8px 6px; border-radius:var(--radius); text-align:center;">'+
+        return '<div class="clubTintCard ofertaCard" data-tint-club="'+o.team+'" style="padding:8px 6px; border-radius:var(--radius); text-align:center;">'+
           '<div style="display:flex; justify-content:center; margin-bottom:4px;">'+teamBadge(o.team, 34)+'</div>'+
           '<p style="margin:0 0 2px; font-size:11.5px; font-weight:600; line-height:1.2;">'+o.team+'</p>'+
-          '<p style="margin:0 0 6px; font-size:9.5px; color:var(--text-secondary); display:flex; align-items:center; justify-content:center; gap:3px;">'+flagEmoji(o.division.country,12)+' '+leagueNameWithBadge(o.division.league, 11)+'</p>'+
+          '<p style="margin:0 0 6px; font-size:9.5px; color:var(--text-secondary); display:flex; align-items:center; justify-content:center; gap:3px;">'+flagEmoji(o.division.country,12)+' '+leagueNameWithBadge(o.division.league, o.division.country, 11)+'</p>'+
           '<details style="margin-bottom:6px; text-align:left;"><summary style="cursor:pointer; font-size:9.5px; color:var(--text-accent); list-style:none; text-align:center;">Ver detalles</summary>'+
             clubStatBars(o.team, o.bonus, o.division, h.mod)+
           '</details>'+
