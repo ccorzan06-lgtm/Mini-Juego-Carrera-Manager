@@ -2280,15 +2280,26 @@ function trophyImageFor(label){
   }
   return null;
 }
-function trophyIcon(label, size){
+function trophyIcon(label, size, country){
   var img = trophyImageFor(label);
   var safeLabel = label.replace(/"/g,'&quot;');
-  if (img){
-    var pad = Math.max(2, Math.round(size*0.14));
-    var box = size + pad*2;
-    return '<span style="display:inline-flex; align-items:center; justify-content:center; width:'+box+'px; height:'+box+'px; border-radius:7px; background:var(--bg); flex-shrink:0; vertical-align:middle; box-sizing:border-box;"><img src="'+TROPHY_IMAGE_PATH+img+'" alt="'+safeLabel+'" title="'+safeLabel+'" style="width:'+size+'px; height:'+size+'px; object-fit:contain;" /></span>';
-  }
   var t = titleIconFor(label);
+  var svgFallback = '<span style="display:none; align-items:center; justify-content:center;">'+svgTrophyIcon(t.shape, t.color, size, label)+'</span>';
+  var pad = Math.max(2, Math.round(size*0.14));
+  var box = size + pad*2;
+  if (img){
+    return '<span style="display:inline-flex; align-items:center; justify-content:center; width:'+box+'px; height:'+box+'px; border-radius:7px; background:var(--bg); flex-shrink:0; vertical-align:middle; box-sizing:border-box; position:relative;">'+
+      '<img src="'+TROPHY_IMAGE_PATH+img+'" alt="'+safeLabel+'" title="'+safeLabel+'" style="width:'+size+'px; height:'+size+'px; object-fit:contain;" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'inline-flex\';" />'+
+      svgFallback+
+    '</span>';
+  }
+  if (country){
+    var leagueFile = 'leagues/'+leagueLogoFilename(label, country)+'.png';
+    return '<span style="display:inline-flex; align-items:center; justify-content:center; width:'+box+'px; height:'+box+'px; border-radius:7px; background:var(--bg); flex-shrink:0; vertical-align:middle; box-sizing:border-box; position:relative;">'+
+      '<img src="'+leagueFile+'" alt="'+safeLabel+'" title="'+safeLabel+'" style="width:'+size+'px; height:'+size+'px; object-fit:contain;" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'inline-flex\';" />'+
+      svgFallback+
+    '</span>';
+  }
   return svgTrophyIcon(t.shape, t.color, size, label);
 }
 function titleIconChips(titlesList, teamName, isNational){
@@ -2296,14 +2307,16 @@ function titleIconChips(titlesList, teamName, isNational){
   var tintClass = isNational ? 'natTintCard' : 'clubTintCard';
   var tintAttr = isNational ? 'data-tint-nat' : 'data-tint-club';
   return '<span style="display:inline-flex; gap:6px; align-items:center; margin-left:5px;">'+
-    titlesList.map(function(label){
-      return '<span class="'+tintClass+'" '+tintAttr+'="'+(teamName||'').replace(/"/g,'&quot;')+'" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:var(--surface-1);">'+trophyIcon(label, 18)+'</span>';
+    titlesList.map(function(item){
+      var label = typeof item === 'string' ? item : item.label;
+      var country = typeof item === 'string' ? null : item.country;
+      return '<span class="'+tintClass+'" '+tintAttr+'="'+(teamName||'').replace(/"/g,'&quot;')+'" style="display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:var(--surface-1);">'+trophyIcon(label, 18, country)+'</span>';
     }).join('')+
   '</span>';
 }
 function buildHistoryRow(h, idx){
   var titlesList = [];
-  if (h.achievement) titlesList.push(h.achievement === 'Título de Liga' ? h.division : h.achievement);
+  if (h.achievement) titlesList.push(h.achievement === 'Título de Liga' ? {label:h.division, country:h.country} : h.achievement);
   if (h.euro && h.euro.stage==='Campeón') titlesList.push(h.euro.comp.split(' (')[0]);
   if (h.cwc && h.cwc.stage==='Campeón') titlesList.push('Mundial de Clubes');
   if (h.cup && h.cup.stage==='Campeón') titlesList.push(h.cup.name);
@@ -3993,15 +4006,18 @@ function seasonYearLabel(season){
 function tournamentYearLabel(season){
   return String(2025 + season + 1);
 }
+var LAST_CLUB_LABEL_COUNTRY = {};
 function buildClubGroups(){
   var groups = {};
-  function add(club, label, season){
+  LAST_CLUB_LABEL_COUNTRY = {};
+  function add(club, label, season, country){
     if (!groups[club]) groups[club] = {};
     if (!groups[club][label]) groups[club][label] = [];
     groups[club][label].push(season);
+    if (country) LAST_CLUB_LABEL_COUNTRY[club+'||'+label] = country;
   }
   state.history.forEach(function(h){
-    if (h.achievement) add(h.team, h.achievement === 'Título de Liga' ? h.division : h.achievement, h.season);
+    if (h.achievement) add(h.team, h.achievement === 'Título de Liga' ? h.division : h.achievement, h.season, h.achievement === 'Título de Liga' ? h.country : null);
     if (h.euro && h.euro.stage==='Campeón') add(h.team, h.euro.comp.split(' (')[0]+' (Campeón)', h.season);
     if (h.cup && h.cup.stage==='Campeón') add(h.team, h.cup.name+' (Campeón)', h.season);
     if (h.cwc && h.cwc.stage==='Campeón') add(h.team, 'Mundial de Clubes (Campeón)', h.season);
@@ -4306,7 +4322,7 @@ function renderCareerSummary(){
       var seasons = labels[label];
       var count = seasons.length;
       return '<span style="position:relative; display:inline-flex;" title="'+label.replace(/"/g,'&quot;')+' — '+seasons.map(seasonYearLabel).join(', ')+'">'+
-        trophyIcon(label, 34)+
+        trophyIcon(label, 34, LAST_CLUB_LABEL_COUNTRY[club+'||'+label])+
         (count>1 ? '<span style="position:absolute; bottom:-4px; right:-6px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:0 4px; font-size:10px; font-weight:700; color:var(--text-accent);">x'+count+'</span>' : '')+
       '</span>';
     }).join('');
