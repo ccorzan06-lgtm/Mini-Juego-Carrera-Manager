@@ -264,7 +264,7 @@ function flagEmoji(country, size){
   size = size || 20;
   var iso = ISO[country];
   if (!iso) return '🏳️';
-  return '<img src="https://flagcdn.com/48x36/'+iso.toLowerCase()+'.png" alt="'+country+'" style="width:'+size+'px; height:auto; vertical-align:middle; border-radius:2px; box-shadow:0 0 0 1px rgba(255,255,255,0.15); flex-shrink:0;" onerror="this.outerHTML=\'🏳️\';" />';
+  return '<img src="https://flagcdn.com/48x36/'+iso.toLowerCase()+'.png" alt="'+country+'" style="width:'+size+'px; height:auto; vertical-align:middle; border-radius:2px; box-shadow:0 0 0 1px rgba(255,255,255,0.15); flex-shrink:0;" onerror="this.style.display=\'none\';" />';
 }
 function nationalTeamCrest(teamName, size){
   size = size || 20;
@@ -911,7 +911,8 @@ var DOMESTIC_CUPS = {
   'Escocia':'Scottish Cup','Eslovaquia':'Slovnaft Cup','Eslovenia':'Copa de Eslovenia','Finlandia':'Copa de Finlandia',
   'Grecia':'Copa de Grecia','Hungría':'Magyar Kupa','Irlanda del Norte':'Irish Cup','Irlanda':'FAI Cup',
   'Israel':'Copa de Israel','Noruega':'Copa de Noruega','Polonia':'Copa de Polonia','República Checa':'MOL Cup',
-  'Rumanía':'Copa de Rumanía','Serbia':'Copa de Serbia','Suecia':'Copa de Suecia','Suiza':'Copa de Suiza'
+  'Rumanía':'Copa de Rumanía','Serbia':'Copa de Serbia','Suecia':'Copa de Suecia','Suiza':'Copa de Suiza',
+  'Ucrania':'Copa de Ucrania','Austria':'ÖFB-Cup'
 };
 var CUP_STAGES = ['Rondas previas','Dieciseisavos','Octavos','Cuartos','Semifinal','Final','Campeón'];
 function simulateDomesticCup(){
@@ -1210,6 +1211,9 @@ function achievementUnlockBanner(){
 var TOTAL_SEASONS = 20;
 var RETIRE_FROM_SEASON = 10;
 var EURO_TOP_LEAGUES = ['Premier League','LaLiga','Bundesliga','Serie A','Ligue 1','Eredivisie','Primeira Liga','Pro League'];
+var EURO_MINOR_LEAGUES = ['Süper Lig','Premiership','Super League','Superliga','Eliteserien','Allsvenskan','Veikkausliiga','Premier Division',
+  'NIFL Premiership','Ekstraklasa','Chance Liga','NB I','Liga I','Първа лига','HNL','Super liga','Prva liga','Niké liga',
+  'Super League 1',"Ligat ha'Al"];
 var SOUTHAM_LEAGUES = ['Liga Profesional','Brasileirão Série A'];
 var AFC_TOP_LEAGUES = ['Saudi Pro League','J1 League','K League 1','Chinese Super League'];
 var CONCACAF_TOP_LEAGUES = ['Liga MX','MLS'];
@@ -3002,6 +3006,7 @@ function finalizeSeason(p, playoffLost){
   var newEuroQualified = null;
   var isFilial = FILIAL_TEAMS.indexOf(state.team) !== -1;
   var isEuroCountry = isTopFlight(currentDivisionObj) && EURO_TOP_LEAGUES.indexOf(state.division) !== -1;
+  var isEuroMinorCountry = isTopFlight(currentDivisionObj) && EURO_MINOR_LEAGUES.indexOf(state.division) !== -1;
   var isSouthAmCountry = isTopFlight(currentDivisionObj) && SOUTHAM_LEAGUES.indexOf(state.division) !== -1;
   var isAFCCountry = isTopFlight(currentDivisionObj) && AFC_TOP_LEAGUES.indexOf(state.division) !== -1;
   var isConcacafCountry = isTopFlight(currentDivisionObj) && CONCACAF_TOP_LEAGUES.indexOf(state.division) !== -1;
@@ -3015,6 +3020,12 @@ function finalizeSeason(p, playoffLost){
       var curRank = newEuroQualified ? (cupEuroRank[newEuroQualified.split(' (')[0]] || 0) : 0;
       if (curRank < 2) newEuroQualified = 'Europa League (copa doméstica)';
     }
+  } else if (isEuroMinorCountry){
+    // Ligas menores: como mucho 2 plazas por posición de liga (mucho más ajustado que las grandes)
+    if (p.rank === 1) newEuroQualified = 'Champions League';
+    else if (p.rank === 2) newEuroQualified = 'Europa League';
+    if (!isFilial) cup = simulateDomesticCup();
+    if (!newEuroQualified && cup && cup.stage === 'Campeón'){ newEuroQualified = 'Conference League (copa doméstica)'; }
   } else if (isSouthAmCountry){
     if (p.rank <= 4) newEuroQualified = 'Copa Libertadores';
     else if (p.rank <= 8) newEuroQualified = 'Copa Sudamericana';
