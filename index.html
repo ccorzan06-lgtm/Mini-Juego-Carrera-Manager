@@ -107,6 +107,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .ofertaCard p:nth-of-type(2) { font-size: 12px !important; }
     .ofertaCard .offerBtn2 { font-size: 13px !important; padding: 11px 4px !important; }
     .ofertaCard details summary { font-size: 12px !important; }
+    /* Iconos más grandes y legibles en escritorio: escudos, logos de liga, banderas y trofeos */
+    .teamBadgeSlot, .natBadgeSlot { transform: scale(1.3); transform-origin: center; margin: 0 4px; }
+    .leagueIcon, .flagIcon { transform: scale(1.35); transform-origin: center; margin: 0 3px; }
+    .trophyIconBox { transform: scale(1.3); transform-origin: center; margin: 0 4px; }
   }
   @media (max-width: 1180px) {
     #layout { flex-direction: column; }
@@ -264,7 +268,7 @@ function flagEmoji(country, size){
   size = size || 20;
   var iso = ISO[country];
   if (!iso) return '🏳️';
-  return '<img src="https://flagcdn.com/48x36/'+iso.toLowerCase()+'.png" alt="'+country+'" style="width:'+size+'px; height:auto; vertical-align:middle; border-radius:2px; box-shadow:0 0 0 1px rgba(255,255,255,0.15); flex-shrink:0;" onerror="this.style.display=\'none\';" />';
+  return '<img class="flagIcon" src="https://flagcdn.com/48x36/'+iso.toLowerCase()+'.png" alt="'+country+'" style="width:'+size+'px; height:auto; vertical-align:middle; border-radius:2px; box-shadow:0 0 0 1px rgba(255,255,255,0.15); flex-shrink:0;" onerror="this.style.display=\'none\';" />';
 }
 function nationalTeamCrest(teamName, size){
   size = size || 20;
@@ -1974,7 +1978,7 @@ function leagueBadge(name, country, size){
   size = size || 20;
   var file = 'leagues/'+leagueLogoFilename(name, country)+'.png';
   return '<span style="display:inline-flex; align-items:center; gap:5px; vertical-align:middle;">'+
-    '<img src="'+file+'" alt="'+name.replace(/"/g,'&quot;')+'" title="'+name.replace(/"/g,'&quot;')+'" style="width:'+size+'px; height:'+size+'px; object-fit:contain; flex-shrink:0;" '+
+    '<img class="leagueIcon" src="'+file+'" alt="'+name.replace(/"/g,'&quot;')+'" title="'+name.replace(/"/g,'&quot;')+'" style="width:'+size+'px; height:'+size+'px; object-fit:contain; flex-shrink:0;" '+
     'onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'inline\';" />'+
     '<span style="display:none; font-size:13px;">('+name+')</span>'+
   '</span>';
@@ -1985,7 +1989,7 @@ function leagueNameWithBadge(name, country, size, imageLeagueName, imageCountry)
   var lookupCountry = imageCountry || country;
   var file = 'leagues/'+leagueLogoFilename(lookupName, lookupCountry)+'.png';
   return '<span style="display:inline-flex; align-items:center; gap:4px; vertical-align:middle;">'+
-    '<img src="'+file+'" alt="" style="width:'+size+'px; height:'+size+'px; object-fit:contain; flex-shrink:0;" onerror="this.style.display=\'none\';" />'+
+    '<img class="leagueIcon" src="'+file+'" alt="" style="width:'+size+'px; height:'+size+'px; object-fit:contain; flex-shrink:0;" onerror="this.style.display=\'none\';" />'+
     '<span>'+name+'</span>'+
   '</span>';
 }
@@ -2349,14 +2353,14 @@ function trophyIcon(label, size, country){
   var pad = Math.max(2, Math.round(size*0.14));
   var box = size + pad*2;
   if (img){
-    return '<span style="display:inline-flex; align-items:center; justify-content:center; width:'+box+'px; height:'+box+'px; border-radius:7px; background:var(--bg); flex-shrink:0; vertical-align:middle; box-sizing:border-box; position:relative;">'+
+    return '<span class="trophyIconBox" style="display:inline-flex; align-items:center; justify-content:center; width:'+box+'px; height:'+box+'px; border-radius:7px; background:var(--bg); flex-shrink:0; vertical-align:middle; box-sizing:border-box; position:relative;">'+
       '<img src="'+TROPHY_IMAGE_PATH+img+'" alt="'+safeLabel+'" title="'+safeLabel+'" style="width:'+size+'px; height:'+size+'px; object-fit:contain;" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'inline-flex\';" />'+
       svgFallback+
     '</span>';
   }
   if (country){
     var leagueFile = 'leagues/'+leagueLogoFilename(label, country)+'.png';
-    return '<span style="display:inline-flex; align-items:center; justify-content:center; width:'+box+'px; height:'+box+'px; border-radius:7px; background:var(--bg); flex-shrink:0; vertical-align:middle; box-sizing:border-box; position:relative;">'+
+    return '<span class="trophyIconBox" style="display:inline-flex; align-items:center; justify-content:center; width:'+box+'px; height:'+box+'px; border-radius:7px; background:var(--bg); flex-shrink:0; vertical-align:middle; box-sizing:border-box; position:relative;">'+
       '<img src="'+leagueFile+'" alt="'+safeLabel+'" title="'+safeLabel+'" style="width:'+size+'px; height:'+size+'px; object-fit:contain;" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'inline-flex\';" />'+
       svgFallback+
     '</span>';
