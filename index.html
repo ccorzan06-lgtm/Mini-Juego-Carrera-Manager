@@ -906,7 +906,12 @@ var DOMESTIC_CUPS = {
   'España':'Copa del Rey','Reino Unido':'FA Cup','Alemania':'DFB-Pokal','Italia':'Coppa Italia','Francia':'Coupe de France',
   'Argentina':'Copa Argentina','Brasil':'Copa do Brasil','México':'Copa MX','Portugal':'Taça de Portugal',
   'Países Bajos':'KNVB Beker','Bélgica':'Croky Cup','Turquía':'Copa de Turquía','Arabia Saudita':'Copa del Rey saudí',
-  'Japón':'Copa del Emperador','Estados Unidos':'US Open Cup'
+  'Japón':'Copa del Emperador','Estados Unidos':'US Open Cup','Corea del Sur':'Korea FA Cup','China':'Chinese FA Cup',
+  'Australia':'Australia Cup','Bulgaria':'Copa Bulgaria','Croacia':'Copa de Croacia','Dinamarca':'DBU Pokalen',
+  'Escocia':'Scottish Cup','Eslovaquia':'Slovnaft Cup','Eslovenia':'Copa de Eslovenia','Finlandia':'Copa de Finlandia',
+  'Grecia':'Copa de Grecia','Hungría':'Magyar Kupa','Irlanda del Norte':'Irish Cup','Irlanda':'FAI Cup',
+  'Israel':'Copa de Israel','Noruega':'Copa de Noruega','Polonia':'Copa de Polonia','República Checa':'MOL Cup',
+  'Rumanía':'Copa de Rumanía','Serbia':'Copa de Serbia','Suecia':'Copa de Suecia','Suiza':'Copa de Suiza'
 };
 var CUP_STAGES = ['Rondas previas','Dieciseisavos','Octavos','Cuartos','Semifinal','Final','Campeón'];
 function simulateDomesticCup(){
@@ -1160,8 +1165,8 @@ var ACHIEVEMENTS = [
    check: function(){ var last = state.history[state.history.length-1]; return !!(last && last.achievement==='Título de Liga' && state.clubBonus<2); }},
   {id:'mundialista', label:'Campeón del Mundo', desc:'Ganaste un Mundial con una selección.', shape:'globe', color:'#ffd700',
    check: function(){ return state.nationalHistory.some(function(h){ return h.stage==='Campeón' && h.kind==='Copa del Mundo'; }); }},
-  {id:'maestro', label:'Maestro continental', desc:'Ganaste la Champions League o la Copa Libertadores.', shape:'medal', color:'#9d7bff',
-   check: function(){ return state.history.some(function(h){ return h.euro && h.euro.stage==='Campeón' && (h.euro.comp.indexOf('Champions League')!==-1 || h.euro.comp.indexOf('Copa Libertadores')!==-1); }); }},
+  {id:'maestro', label:'Maestro continental', desc:'Ganaste la máxima competición continental de clubes de tu confederación.', shape:'medal', color:'#9d7bff',
+   check: function(){ return state.history.some(function(h){ return h.euro && h.euro.stage==='Campeón' && ['Champions League','Copa Libertadores','AFC Champions League Elite','Concacaf Champions Cup'].some(function(c){ return h.euro.comp.indexOf(c)!==-1; }); }); }},
   {id:'fiel', label:'Toda una vida', desc:'Dirigiste al mismo club las 20 temporadas de tu carrera.', shape:'ribbon', color:'#4dd68a',
    check: function(){ if (state.history.length<20) return false; var team=state.history[0].team; return state.history.every(function(h){ return h.team===team; }); }},
   {id:'perfeccion', label:'Perfección absoluta', desc:'Desbloqueaste los otros 11 logros en la misma carrera.', shape:'medal', color:'#ffd700',
@@ -1206,6 +1211,8 @@ var TOTAL_SEASONS = 20;
 var RETIRE_FROM_SEASON = 10;
 var EURO_TOP_LEAGUES = ['Premier League','LaLiga','Bundesliga','Serie A','Ligue 1','Eredivisie','Primeira Liga','Pro League'];
 var SOUTHAM_LEAGUES = ['Liga Profesional','Brasileirão Série A'];
+var AFC_TOP_LEAGUES = ['Saudi Pro League','J1 League','K League 1','Chinese Super League'];
+var CONCACAF_TOP_LEAGUES = ['Liga MX','MLS'];
 var FIXED_CWC_CLUBS = ['Real Madrid','FC Barcelona','Manchester City','Manchester United','Liverpool','Paris Saint-Germain','Bayern München','Inter','Juventus','Boca Juniors','River Plate','Flamengo'];
 var CONTINENTAL_STAGES = ['Fase de liga','Octavos de final','Cuartos de final','Semifinal','Final','Campeón'];
 var CLUB_WORLD_CUP_SEASONS = [3,7,11,15,19];
@@ -1215,6 +1222,8 @@ var COMP_CONFIG = {
   'Conference League': {difficulty:0, cap:0.82},
   'Copa Libertadores': {difficulty:9, cap:0.68},
   'Copa Sudamericana': {difficulty:3, cap:0.78},
+  'AFC Champions League Elite': {difficulty:6, cap:0.74},
+  'Concacaf Champions Cup': {difficulty:4, cap:0.77},
   'Mundial de Clubes': {difficulty:12, cap:0.64}
 };
 function simulateContinentalRun(compLabel){
@@ -1891,7 +1900,53 @@ var TROPHY_IMAGES = {
   "Copa América": "CopaAmerica.png",
   "Eurocopa": "EuroCopa.png",
   "Süper Lig": "SuperLig.png",
-  "Pro League": "ProLeague.png"
+  "Pro League": "ProLeague.png",
+  "A-League Men|Australia": "ALeagueMen_Australia.png",
+  "Първа лига|Bulgaria": "PrvaLiga_Bulgaria.png",
+  "Chinese Super League|China": "ChineseSuperLeague_China.png",
+  "K League 1|Corea del Sur": "KLeague1_CoreaDelSur.png",
+  "HNL|Croacia": "HNL_Croacia.png",
+  "Superliga|Dinamarca": "Superliga_Dinamarca.png",
+  "Premiership|Escocia": "Premiership_Escocia.png",
+  "Niké liga|Eslovaquia": "NikeLiga_Eslovaquia.png",
+  "Prva liga|Eslovenia": "PrvaLiga_Eslovenia.png",
+  "Veikkausliiga|Finlandia": "Veikkausliiga_Finlandia.png",
+  "Super League 1|Grecia": "SuperLeague1_Grecia.png",
+  "NB I|Hungría": "NBI_Hungria.png",
+  "NIFL Premiership|Irlanda del Norte": "NIFLPremiership_IrlandaDelNorte.png",
+  "Premier Division|Irlanda": "PremierDivision_Irlanda.png",
+  "Ligat ha'Al|Israel": "LigatHaAl_Israel.png",
+  "Eliteserien|Noruega": "Eliteserien_Noruega.png",
+  "Ekstraklasa|Polonia": "Ekstraklasa_Polonia.png",
+  "Chance Liga|República Checa": "ChanceLiga_RepublicaCheca.png",
+  "Liga I|Rumanía": "LigaI_Rumania.png",
+  "Super liga|Serbia": "SuperLiga_Serbia.png",
+  "Allsvenskan|Suecia": "Allsvenskan_Suecia.png",
+  "Super League|Suiza": "SuperLeague_Suiza.png",
+  "Australia Cup|Australia": "FACup_Australia.png",
+  "Copa Bulgaria|Bulgaria": "CopaBulgaria_Bulgaria.png",
+  "Chinese FA Cup|China": "FACup_China.png",
+  "Korea FA Cup|Corea del Sur": "KoreaFACup_CoreaDelSur.png",
+  "Copa de Croacia|Croacia": "CopaDeCroacia_Croacia.png",
+  "DBU Pokalen|Dinamarca": "DBUPokalen_Dinamarca.png",
+  "Scottish Cup|Escocia": "ScottishCup_Escocia.png",
+  "Slovnaft Cup|Eslovaquia": "SlovnaftCup_Eslovaquia.png",
+  "Copa de Eslovenia|Eslovenia": "CopaDeEslovenia_Eslovenia.png",
+  "Copa de Finlandia|Finlandia": "CopaDeFinlandia_Finlandia.png",
+  "Copa de Grecia|Grecia": "CopaDeGrecia_Grecia.png",
+  "Magyar Kupa|Hungría": "MagyarKupa_Hungria.png",
+  "Irish Cup|Irlanda del Norte": "IrishCup_IrlandaDelNorte.png",
+  "FAI Cup|Irlanda": "FAICup_Irlanda.png",
+  "Copa de Israel|Israel": "CopaDeIsrael_Israel.png",
+  "Copa de Noruega|Noruega": "CopaDeNoruega_Noruega.png",
+  "Copa de Polonia|Polonia": "CopaDePolonia_Polonia.png",
+  "MOL Cup|República Checa": "MOLCup_RepublicaCheca.png",
+  "Copa de Rumanía|Rumanía": "CopaDeRumania_Rumania.png",
+  "Copa de Serbia|Serbia": "CopaDeSerbia_Serbia.png",
+  "Copa de Suecia|Suecia": "CopaDeSuecia_Suecia.png",
+  "Copa de Suiza|Suiza": "CopaDeSuiza_Suiza.png",
+  "AFC Champions League Elite": "AFCChampionsLeagueElite.png",
+  "Concacaf Champions Cup": "ConcacafChampionsCup.png"
 };
 var teamBadgeCache = {}; // name -> url string, or false if confirmed not found
 var fetchingBadges = {};
@@ -2272,8 +2327,10 @@ function titleIconFor(label){
   }
   return {shape:'ribbon', color:'#c7c7c7'};
 }
-function trophyImageFor(label){
+function trophyImageFor(label, country){
   if (!label) return null;
+  var baseLabel = label.replace(/\s*\(Campeón\)\s*$/, '');
+  if (country && TROPHY_IMAGES[baseLabel+'|'+country]) return TROPHY_IMAGES[baseLabel+'|'+country];
   if (TROPHY_IMAGES[label]) return TROPHY_IMAGES[label];
   for (var key in TROPHY_IMAGES){
     if (label.indexOf(key) !== -1) return TROPHY_IMAGES[key];
@@ -2281,7 +2338,7 @@ function trophyImageFor(label){
   return null;
 }
 function trophyIcon(label, size, country){
-  var img = trophyImageFor(label);
+  var img = trophyImageFor(label, country);
   var safeLabel = label.replace(/"/g,'&quot;');
   var t = titleIconFor(label);
   var svgFallback = '<span style="display:none; align-items:center; justify-content:center;">'+svgTrophyIcon(t.shape, t.color, size, label)+'</span>';
@@ -2319,7 +2376,7 @@ function buildHistoryRow(h, idx){
   if (h.achievement) titlesList.push(h.achievement === 'Título de Liga' ? {label:h.division, country:h.country} : h.achievement);
   if (h.euro && h.euro.stage==='Campeón') titlesList.push(h.euro.comp.split(' (')[0]);
   if (h.cwc && h.cwc.stage==='Campeón') titlesList.push('Mundial de Clubes');
-  if (h.cup && h.cup.stage==='Campeón') titlesList.push(h.cup.name);
+  if (h.cup && h.cup.stage==='Campeón') titlesList.push({label:h.cup.name, country:h.country});
   var promotionBadge = '';
   if (h.achievement === 'Ascenso'){
     var srcDiv = CLUBDB.find(function(d){ return d.league===h.division && d.country===h.country; });
@@ -2946,6 +3003,8 @@ function finalizeSeason(p, playoffLost){
   var isFilial = FILIAL_TEAMS.indexOf(state.team) !== -1;
   var isEuroCountry = isTopFlight(currentDivisionObj) && EURO_TOP_LEAGUES.indexOf(state.division) !== -1;
   var isSouthAmCountry = isTopFlight(currentDivisionObj) && SOUTHAM_LEAGUES.indexOf(state.division) !== -1;
+  var isAFCCountry = isTopFlight(currentDivisionObj) && AFC_TOP_LEAGUES.indexOf(state.division) !== -1;
+  var isConcacafCountry = isTopFlight(currentDivisionObj) && CONCACAF_TOP_LEAGUES.indexOf(state.division) !== -1;
   if (isEuroCountry){
     if (p.rank <= 4) newEuroQualified = 'Champions League';
     else if (p.rank === 5) newEuroQualified = 'Europa League';
@@ -2961,14 +3020,22 @@ function finalizeSeason(p, playoffLost){
     else if (p.rank <= 8) newEuroQualified = 'Copa Sudamericana';
     if (!isFilial) cup = simulateDomesticCup();
     if (!newEuroQualified && cup && cup.stage === 'Campeón'){ newEuroQualified = 'Copa Sudamericana (copa doméstica)'; }
+  } else if (isAFCCountry){
+    if (p.rank <= 2) newEuroQualified = 'AFC Champions League Elite';
+    if (!isFilial) cup = simulateDomesticCup();
+    if (!newEuroQualified && cup && cup.stage === 'Campeón'){ newEuroQualified = 'AFC Champions League Elite (copa doméstica)'; }
+  } else if (isConcacafCountry){
+    if (p.rank <= 2) newEuroQualified = 'Concacaf Champions Cup';
+    if (!isFilial) cup = simulateDomesticCup();
+    if (!newEuroQualified && cup && cup.stage === 'Campeón'){ newEuroQualified = 'Concacaf Champions Cup (copa doméstica)'; }
   } else if (DOMESTIC_CUPS[state.country] && !isFilial) {
     cup = simulateDomesticCup();
   }
 
   if (resolvedEuro && resolvedEuro.stage === 'Campeón'){
     var wonComp = resolvedEuro.comp.split(' (')[0];
-    var euroRank = {'Champions League':4, 'Europa League':3, 'Conference League':2, 'Copa Libertadores':3, 'Copa Sudamericana':2};
-    var wonToNext = {'Champions League':'Champions League', 'Europa League':'Champions League', 'Conference League':'Europa League', 'Copa Libertadores':'Copa Libertadores', 'Copa Sudamericana':'Copa Libertadores'};
+    var euroRank = {'Champions League':4, 'Europa League':3, 'Conference League':2, 'Copa Libertadores':3, 'Copa Sudamericana':2, 'AFC Champions League Elite':3, 'Concacaf Champions Cup':3};
+    var wonToNext = {'Champions League':'Champions League', 'Europa League':'Champions League', 'Conference League':'Europa League', 'Copa Libertadores':'Copa Libertadores', 'Copa Sudamericana':'Copa Libertadores', 'AFC Champions League Elite':'AFC Champions League Elite', 'Concacaf Champions Cup':'Concacaf Champions Cup'};
     if (wonToNext[wonComp]){
       var candidate = wonToNext[wonComp];
       var currentRank = newEuroQualified ? (euroRank[newEuroQualified.split(' (')[0]] || 0) : 0;
@@ -2978,7 +3045,7 @@ function finalizeSeason(p, playoffLost){
   }
   if (newEuroQualified){ state.pendingEuroComp = newEuroQualified; state.pendingEuroClub = state.team; }
 
-  var cwcTitleWon = resolvedEuro && resolvedEuro.stage==='Campeón' && ['Champions League','Europa League','Copa Libertadores','Copa Sudamericana'].indexOf(resolvedEuro.comp.split(' (')[0]) !== -1;
+  var cwcTitleWon = resolvedEuro && resolvedEuro.stage==='Campeón' && ['Champions League','Europa League','Copa Libertadores','Copa Sudamericana','AFC Champions League Elite','Concacaf Champions Cup'].indexOf(resolvedEuro.comp.split(' (')[0]) !== -1;
   var nextSeasonIsCWC = CLUB_WORLD_CUP_SEASONS.indexOf(state.season+1) !== -1;
   var cwcEligible = nextSeasonIsCWC && (FIXED_CWC_CLUBS.indexOf(state.team) !== -1 || cwcTitleWon);
   if (cwcEligible){ state.pendingCWC = 'Mundial de Clubes'; state.pendingCWCClub = state.team; }
@@ -4019,7 +4086,7 @@ function buildClubGroups(){
   state.history.forEach(function(h){
     if (h.achievement) add(h.team, h.achievement === 'Título de Liga' ? h.division : h.achievement, h.season, h.achievement === 'Título de Liga' ? h.country : null);
     if (h.euro && h.euro.stage==='Campeón') add(h.team, h.euro.comp.split(' (')[0]+' (Campeón)', h.season);
-    if (h.cup && h.cup.stage==='Campeón') add(h.team, h.cup.name+' (Campeón)', h.season);
+    if (h.cup && h.cup.stage==='Campeón') add(h.team, h.cup.name+' (Campeón)', h.season, h.country);
     if (h.cwc && h.cwc.stage==='Campeón') add(h.team, 'Mundial de Clubes (Campeón)', h.season);
   });
   return groups;
@@ -4369,6 +4436,10 @@ function renderCareerSummary(){
       (moyTier ? '<div style="display:flex; align-items:center; gap:8px; margin-top:8px;"><i class="ti '+moyTier.icon+'" style="font-size:22px; color:var(--text-accent);" aria-hidden="true"></i><p style="margin:0; font-size:15px; font-weight:600;">'+moyTier.label+' ('+totalPoints+' pts)</p></div>' : '<p style="margin:8px 0 0; font-size:13px; color:var(--text-secondary);">'+totalPoints+' puntos de carrera.</p>')+
     '</div>'+
     hofBanner+
+    '<div style="display:flex; gap:8px; margin-bottom:1.5rem;">'+
+      '<button id="shareBtn" style="flex:1;">Compartir <i class="ti ti-share" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'+
+      '<button id="retryBtn" style="flex:1;">Empezar otra carrera <i class="ti ti-refresh" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'+
+    '</div>'+
     '<h3 style="margin:0 0 8px;">Palmarés por club</h3>'+
     '<div style="margin-bottom:1.5rem;">'+palmaresByClub+'</div>'+
     (natPalmares ? '<h3 style="margin:0 0 8px;">Palmarés con selecciones</h3><div style="margin-bottom:1.5rem;">'+natPalmares+'</div>' : '')+
@@ -4396,10 +4467,6 @@ function renderCareerSummary(){
         return '<h3 style="margin:0 0 8px;">Premios individuales</h3>'+
           '<div style="background:var(--surface-1); border-radius:var(--radius); padding:0.4rem 0.9rem; margin-bottom:1.5rem;">'+rows+'</div>';
       })() : '')+
-    '<div style="display:flex; gap:8px; margin-bottom:1.5rem;">'+
-      '<button id="shareBtn" style="flex:1;">Compartir <i class="ti ti-share" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'+
-      '<button id="retryBtn" style="flex:1;">Empezar otra carrera <i class="ti ti-refresh" style="font-size:16px; vertical-align:-2px;" aria-hidden="true"></i></button>'+
-    '</div>'+
     '<h3 style="margin:0 0 8px;">Logros</h3>'+
     '<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:8px; margin-bottom:1.5rem;">'+
       ACHIEVEMENTS.map(function(a, idx){
