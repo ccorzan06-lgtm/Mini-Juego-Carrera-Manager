@@ -6,12 +6,12 @@
 <title>DT · Simulador de carrera de entrenador</title>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4752580914392959" crossorigin="anonymous"></script>
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-C662LM8N9W"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5GTRY2Y88S"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-C662LM8N9W');
+  gtag('config', 'G-5GTRY2Y88S');
 </script>
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -192,6 +192,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   button:active { transform: translateY(1px); box-shadow: none; }
   button:focus-visible { outline: 2px solid var(--text-accent-strong); outline-offset: 2px; }
   .primaryBtn:hover { box-shadow: 0 8px 22px rgba(232,163,61,0.32); }
+  .clubTintCard, .natTintCard { transition: background 0.45s ease; }
   #app { animation: appFadeIn 0.28s ease; }
   @keyframes appFadeIn {
     from { opacity: 0; transform: translateY(6px); }
@@ -663,7 +664,7 @@ var CLUBDB = [
   {league:'Ykkösliiga', country:'Finlandia', base:3, matchdays:27, teams:[
     {n:'FC Haka',b:0,c:'Valkeakoski',s:'Tehtaan kenttä'},{n:'EIF',b:0,c:'Tammisaari',s:'Ekenäs Idrottspark'},{n:'Jippo',b:0,c:'Joensuu',s:'Keskuskenttä'},
     {n:'JäPS',b:0,c:'Järvenpää',s:'Järvenpään Stadion'},{n:'HJK Klubi-04',b:0,c:'Helsinki',s:'Talin harjoitusalue'},{n:'KTP',b:0,c:'Kotka',s:'Arto Tolsa Areena'},
-    {n:'KäPa',b:0,c:'Helsinki',s:'Käpylän Urheilupuisto'},{n:'MP',b:0,c:'Mikkeli',s:'Urheilupuisto'},{n:'PK-35',b:0,c:'Vantaa',s:'Myyrmäen jalkapallostadion'},
+    {n:'KäPa',b:0,c:'Helsinki',s:'Käpylän Urheilupuisto'},{n:'MP',b:0,c:'Mikkeli',s:'Urheilupuisto'},
     {n:'SJK Akatemia',b:0,c:'Seinäjoki',s:'OmaSp Stadion'}]},
   {league:'Premier Division', country:'Irlanda', base:9, matchdays:36, teams:[
     {n:'Shamrock Rovers',b:2,c:'Dublín',s:'Tallaght Stadium'},{n:'St Patrick\'s Athletic',b:1,c:'Dublín',s:'Richmond Park'},{n:'Bohemians',b:1,c:'Dublín',s:'Dalymount Park'},
@@ -712,7 +713,7 @@ var CLUBDB = [
     {n:'Dukla Praha',b:1,c:'Praga',s:'Stadion Juliska'},{n:'Karviná',b:0,c:'Karviná',s:'Městský stadion Karviná'},{n:'Opava',b:0,c:'Opava',s:'Městský stadion Opava'},
     {n:'Táborsko',b:0,c:'Tábor',s:'Stadion Míru'},{n:'Vlašim',b:0,c:'Vlašim',s:'Stadion FK Vlašim'},{n:'Vyškov',b:0,c:'Vyškov',s:'Stadion FK Vyškov'},
     {n:'Prostějov',b:0,c:'Prostějov',s:'Stadion Prostějov'},{n:'Varnsdorf',b:0,c:'Varnsdorf',s:'Stadion Varnsdorf'},{n:'Ústí nad Labem',b:0,c:'Ústí nad Labem',s:'Městský stadion Ústí nad Labem'},
-    {n:'Příbram',b:0,c:'Příbram',s:'Stadion Na Litavce'},{n:'Žižkov',b:0,c:'Praga',s:'Stadion Ďolíček (Žižkov)'},{n:'Sokolov',b:0,c:'Sokolov',s:'Stadion Sokolov'},
+    {n:'Příbram',b:0,c:'Příbram',s:'Stadion Na Litavce'},{n:'Žižkov',b:0,c:'Praga',s:'Stadion Ďolíček (Žižkov)'},
     {n:'Kroměříž',b:0,c:'Kroměříž',s:'Stadion Kroměříž'},{n:'Frýdek-Místek',b:0,c:'Frýdek-Místek',s:'Stadion Frýdek-Místek'},{n:'Vítkovice',b:0,c:'Ostrava',s:'Stadion Vítkovice'},
     {n:'Jihlava',b:0,c:'Jihlava',s:'Stadion Vysočina Aréna'}]},
   {league:'NB I', country:'Hungría', base:9, matchdays:33, teams:[
@@ -722,7 +723,7 @@ var CLUBDB = [
     {n:'Újpest',b:0,c:'Budapest',s:'Szusza Ferenc Stadion'},{n:'Vasas',b:0,c:'Budapest',s:'Illovszky Rudolf Stadion'},{n:'ZTE FC',b:0,c:'Zalaegerszeg',s:'ZTE Aréna'}]},
   {league:'NB II', country:'Hungría', base:3, matchdays:30, teams:[
     {n:'Szentlőrinc',b:0,c:'Szentlőrinc',s:'Szentlőrinci Stadion'},{n:'BVSC-Zugló',b:0,c:'Budapest',s:'BVSC Stadion'},{n:'Videoton FC Fehérvár',b:1,c:'Székesfehérvár',s:'Sóstói Stadion'},
-    {n:'Budafoki MTE',b:0,c:'Budapest',s:'Promontor Stadion'},{n:'Szeged-Csanád GA',b:0,c:'Szeged',s:'Szegedi Stadion'},{n:'Mezőkövesd Zsóry',b:0,c:'Mezőkövesd',s:'Mezőkövesdi Stadion'},
+    {n:'Budafoki MTE',b:0,c:'Budapest',s:'Promontor Stadion'},{n:'Szeged-Csanád GA',b:0,c:'Szeged',s:'Szegedi Stadion'},
     {n:'FC Ajka',b:0,c:'Ajka',s:'Ajkai Stadion'},{n:'Aqvital FC Csákvár',b:0,c:'Csákvár',s:'Csákvári Stadion'},{n:'Kozármisleny',b:0,c:'Kozármisleny',s:'Kozármislenyi Stadion'},
     {n:'Kecskeméti TE',b:0,c:'Kecskemét',s:'Széktói Stadion'},{n:'Tiszakécskei LC',b:0,c:'Tiszakécske',s:'Tiszakécskei Stadion'},{n:'Soroksár SC',b:0,c:'Budapest',s:'Soroksári Stadion'},
     {n:'Diósgyőr',b:1,c:'Miskolc',s:'Diósgyőri Stadion'},{n:'Kazincbarcika',b:0,c:'Kazincbarcika',s:'Kazincbarcikai Stadion'},{n:'Nagykanizsa',b:0,c:'Nagykanizsa',s:'Nagykanizsai Stadion'},
@@ -754,7 +755,7 @@ var CLUBDB = [
     {n:'Chernomorets Balchik',b:0,c:'Balchik',s:'Chernomorets Stadium'},{n:'Minyor Pernik',b:0,c:'Pernik',s:'Minyor Stadium'},{n:'Sozopol',b:0,c:'Sozopol',s:'Sozopol Stadium'},
     {n:'Spartak Pleven',b:0,c:'Pleven',s:'Spartak Stadium Pleven'},{n:'Litex Lovech',b:0,c:'Lovech',s:'Llitex Arena'},{n:'Belasitsa Petrich',b:0,c:'Petrich',s:'Mladost Stadium'},
     {n:'Neftochimic Burgas',b:0,c:'Burgas',s:'Neftochimic Stadium'},{n:'Lokomotiv Gorna Oryahovitsa',b:0,c:'Gorna Oryahovitsa',s:'Lokomotiv Stadium GO'},{n:'Strumska Slava',b:0,c:'Radomir',s:'Strumska Slava Stadium'},
-    {n:'Rilski Sportist Samokov',b:0,c:'Samokov',s:'Rilski Sportist Stadium'},{n:'Vereya Stara Zagora',b:0,c:'Stara Zagora',s:'Vereya Stadium'}]},
+    {n:'Rilski Sportist Samokov',b:0,c:'Samokov',s:'Rilski Sportist Stadium'}]},
   {league:'HNL', country:'Croacia', base:9, matchdays:36, teams:[
     {n:'Dinamo Zagreb',b:3,c:'Zagreb',s:'Stadion Maksimir'},{n:'Hajduk Split',b:2,c:'Split',s:'Stadion Poljud'},{n:'Varaždin',b:0,c:'Varaždin',s:'Stadion Anđelko Herjavec'},
     {n:'Rijeka',b:1,c:'Rijeka',s:'Stadion Rujevica'},{n:'Lokomotiva',b:0,c:'Zagreb',s:'Stadion Kranjčevićeva'},{n:'Istra 1961',b:0,c:'Pula',s:'Stadion Aldo Drosina'},
@@ -765,8 +766,7 @@ var CLUBDB = [
     {n:'Sesvete',b:0,c:'Zagreb',s:'Stadion Sesvete'},{n:'Dugopolje',b:0,c:'Dugopolje',s:'Stadion Dugopolje'},{n:'Dubrava',b:0,c:'Zagreb',s:'Stadion Dubrava'},
     {n:'BSK Bijelo Brdo',b:0,c:'Bijelo Brdo',s:'Stadion BSK'},{n:'Karlovac 1919',b:0,c:'Karlovac',s:'Stadion Branko Čavlović-Čavlek'},{n:'Opatija',b:0,c:'Opatija',s:'Stadion Opatija'},
     {n:'Orijent',b:0,c:'Rijeka',s:'Stadion Budućnost'},{n:'Hrvace',b:0,c:'Hrvace',s:'Stadion Hrvace'},{n:'Croatia Zmijavci',b:0,c:'Zmijavci',s:'Stadion Zmijavci'},
-    {n:'Zrinski',b:0,c:'Jurjevac',s:'Stadion Zrinski'},{n:'Bjelovar',b:0,c:'Bjelovar',s:'Gradski stadion Bjelovar'},{n:'Marsonia',b:0,c:'Slavonski Brod',s:'Stadion Vrtno naselje'},
-    {n:'Belišće',b:0,c:'Belišće',s:'Stadion Belišće'}]},
+    {n:'Zrinski',b:0,c:'Jurjevac',s:'Stadion Zrinski'},{n:'Bjelovar',b:0,c:'Bjelovar',s:'Gradski stadion Bjelovar'}]},
   {league:'Super liga', country:'Serbia', base:9, matchdays:26, teams:[
     {n:'Crvena Zvezda',b:4,c:'Belgrado',s:'Stadion Rajko Mitić'},{n:'Partizan',b:3,c:'Belgrado',s:'Stadion Partizana'},{n:'Vojvodina',b:1,c:'Novi Sad',s:'Karađorđe Stadion'},
     {n:'Radnički Niš',b:0,c:'Niš',s:'Čair Stadion'},{n:'Čukarički',b:0,c:'Belgrado',s:'Stadion Čukarički'},{n:'TSC Bačka Topola',b:0,c:'Bačka Topola',s:'Stadion TSC Arena'},
@@ -774,11 +774,11 @@ var CLUBDB = [
     {n:'IMT',b:0,c:'Belgrado',s:'Stadion IMT'},{n:'Mačva Šabac',b:0,c:'Šabac',s:'Gradski stadion Šabac'},{n:'Zemun',b:0,c:'Belgrado',s:'Stadion Zemun'},
     {n:'Radnički 1923',b:0,c:'Kragujevac',s:'Čika Dača Stadion'},{n:'Voždovac',b:0,c:'Belgrado',s:'Stadion Vožda'}]},
   {league:'Prva liga', country:'Serbia', base:3, matchdays:30, teams:[
-    {n:'Napredak Kruševac',b:0,c:'Kruševac',s:'Stadion Mladost'},{n:'Sloboda Užice',b:0,c:'Užice',s:'Gradski stadion Užice'},{n:'Dinamo Vranje',b:0,c:'Vranje',s:'Stadion Dinama'},
-    {n:'Trayal Kruševac',b:0,c:'Kruševac',s:'Stadion Trayal'},{n:'Metalac Gornji Milanovac',b:0,c:'Gornji Milanovac',s:'Stadion Metalac'},{n:'Timok Zaječar',b:0,c:'Zaječar',s:'Stadion Timok'},
+    {n:'Napredak Kruševac',b:0,c:'Kruševac',s:'Stadion Mladost'},{n:'Sloboda Užice',b:0,c:'Užice',s:'Gradski stadion Užice'},
+    {n:'Metalac Gornji Milanovac',b:0,c:'Gornji Milanovac',s:'Stadion Metalac'},{n:'Timok Zaječar',b:0,c:'Zaječar',s:'Stadion Timok'},
     {n:'Kolubara',b:0,c:'Lazarevac',s:'Stadion Kolubara'},{n:'Loznica',b:0,c:'Loznica',s:'Stadion Lagator'},{n:'Bačka Bačka Palanka',b:0,c:'Bačka Palanka',s:'Stadion Bačka'},
     {n:'Javor Ivanjica',b:0,c:'Ivanjica',s:'Gradski stadion Ivanjica'},{n:'OFK Beograd',b:0,c:'Belgrado',s:'Omladinski stadion'},{n:'Proleter Novi Sad',b:0,c:'Novi Sad',s:'Stadion Slana Bara'},
-    {n:'Rad',b:0,c:'Belgrado',s:'Stadion Rada'},{n:'Backa 1901',b:0,c:'Bačka Palanka',s:'Stadion Bačka 1901'},{n:'Tekstilac Odžaci',b:0,c:'Odžaci',s:'Stadion Tekstilac'},
+    {n:'Rad',b:0,c:'Belgrado',s:'Stadion Rada'},{n:'Tekstilac Odžaci',b:0,c:'Odžaci',s:'Stadion Tekstilac'},
     {n:'Vršac',b:0,c:'Vršac',s:'Stadion Milenijum'}]},
   {league:'Prva liga', country:'Eslovenia', base:9, matchdays:33, teams:[
     {n:'NK Celje',b:1,c:'Celje',s:'Z\'dežele Stadium'},{n:'Maribor',b:2,c:'Maribor',s:'Ljudski vrt'},{n:'Koper',b:0,c:'Koper',s:'Bonifika Stadium'},
@@ -800,13 +800,13 @@ var CLUBDB = [
     {n:'Liptovský Mikuláš',b:0,c:'Liptovský Mikuláš',s:'Stadium Liptovský Mikuláš'},{n:'FC ŠTK 1914 Šamorín',b:0,c:'Šamorín',s:'Pomlé Stadium'},{n:'Lehota pod Vtáčnikom',b:0,c:'Lehota pod Vtáčnikom',s:'Štadión Lehota'},
     {n:'Slávia TU Košice',b:0,c:'Košice',s:'Štadión Slávia TU'},{n:'Inter Bratislava',b:0,c:'Bratislava',s:'Štadión Inter'},{n:'Petržalka',b:0,c:'Bratislava',s:'Štadión Petržalka'},
     {n:'Zlaté Moravce',b:0,c:'Zlaté Moravce',s:'Štadión FK Zlaté Moravce'},{n:'Dolný Kubín',b:0,c:'Dolný Kubín',s:'Štadión Dolný Kubín'},{n:'Pohronie',b:0,c:'Žiar nad Hronom',s:'Štadión Pohronie'},
-    {n:'Bardejov',b:0,c:'Bardejov',s:'Štadión Bardejov'},{n:'MFK Zvolen',b:0,c:'Zvolen',s:'Štadión Pod Kalváriou'},{n:'Prievidza',b:0,c:'Prievidza',s:'Štadión Prievidza'},
+    {n:'Prievidza',b:0,c:'Prievidza',s:'Štadión Prievidza'},
     {n:'Tatran Prešov',b:0,c:'Prešov',s:'Štadión Tatran Prešov'},{n:'Humenné',b:0,c:'Humenné',s:'Štadión Humenné'},{n:'Bytča',b:0,c:'Bytča',s:'Štadión Bytča'},
     {n:'Galanta',b:0,c:'Galanta',s:'Štadión Galanta'}]},
   {league:'Super League 1', country:'Grecia', base:9, matchdays:26, teams:[
     {n:'AEK Athens',b:2,c:'Atenas',s:'OPAP Arena'},{n:'Olympiacos',b:4,c:'El Pireo',s:'Karaiskakis Stadium'},{n:'PAOK',b:2,c:'Salónica',s:'Toumba Stadium'},
     {n:'Panathinaikos',b:2,c:'Atenas',s:'Apostolos Nikolaidis Stadium'},{n:'Aris',b:0,c:'Salónica',s:'Kleanthis Vikelidis Stadium'},{n:'Asteras Tripolis',b:0,c:'Trípoli',s:'Theodoros Kolokotronis Stadium'},
-    {n:'PAS Giannina',b:0,c:'Ioánina',s:'Zosimades Stadium'},{n:'OFI Crete',b:0,c:'Heraclión',s:'Theodoros Vardinogiannis Stadium'},{n:'Volos NPS',b:0,c:'Volos',s:'Panthessaliko Stadium'},
+    {n:'PAS Giannina',b:0,c:'Ioánina',s:'Zosimades Stadium'},{n:'OFI Crete',b:0,c:'Heraclión',s:'Theodoros Vardinogiannis Stadium'},
     {n:'Atromitos',b:0,c:'Atenas',s:'Peristeri Stadium'},{n:'Levadiakos',b:0,c:'Livadiá',s:'Levadia Municipal Stadium'},{n:'Athens Kallithea',b:0,c:'Atenas',s:'Kallithea Municipal Stadium'},
     {n:'Iraklis',b:0,c:'Salónica',s:'Kaftanzoglio Stadium'},{n:'Kalamata',b:0,c:'Kalamata',s:'Kalamata Municipal Stadium'}]},
   {league:'Super League 2', country:'Grecia', base:3, matchdays:30, teams:[
@@ -827,8 +827,8 @@ var CLUBDB = [
     {n:'Chernihiv',b:0,c:'Chernihiv',s:'Estadio Yunist'},{n:'Probiy Horodenka',b:0,c:'Horodenka',s:'Estadio Probiy'},{n:'Inhulets',b:0,c:'Petrove',s:'Estadio Inhulets'},
     {n:'Nyva Ternopil',b:0,c:'Ternopil',s:'Estadio Nyva'},{n:'Ahrobiznes Volochysk',b:0,c:'Volochysk',s:'Estadio Ahrobiznes'},{n:'Metalist Kharkiv',b:0,c:'Kharkiv',s:'Estadio Metalist'},
     {n:'Prykarpattia Ivano-Frankivsk',b:0,c:'Ivano-Frankivsk',s:'Estadio Prykarpattia'},{n:'Rukh Lviv',b:0,c:'Lviv',s:'Estadio Rukh'},{n:'SC Poltava',b:0,c:'Poltava',s:'Estadio SC Poltava'},
-    {n:'Oleksandriya',b:0,c:'Oleksandriya',s:'Estadio Nika'},{n:'Yunist Chernihiv',b:0,c:'Chernihiv',s:'Estadio Yunist Chernihiv'},{n:'Podillya Khmelnytskyi',b:0,c:'Khmelnytskyi',s:'Estadio Podillya'},
-    {n:'Real Pharma Odesa',b:0,c:'Odesa',s:'Estadio Real Pharma'},{n:'Ingulets-2',b:0,c:'Petrove',s:'Estadio Inhulets'},{n:'Vorskla Poltava',b:0,c:'Poltava',s:'Estadio Vorskla'},
+    {n:'Oleksandriya',b:0,c:'Oleksandriya',s:'Estadio Nika'},{n:'Podillya Khmelnytskyi',b:0,c:'Khmelnytskyi',s:'Estadio Podillya'},
+    {n:'Vorskla Poltava',b:0,c:'Poltava',s:'Estadio Vorskla'},
     {n:'Dnipro-1',b:0,c:'Dnipró',s:'Estadio Dnipro-Arena'}]},
   {league:'Ligat ha\'Al', country:'Israel', base:9, matchdays:26, teams:[
     {n:'Maccabi Tel Aviv',b:2,c:'Tel Aviv',s:'Bloomfield Stadium'},{n:'Maccabi Haifa',b:2,c:'Haifa',s:'Sammy Ofer Stadium'},{n:'Hapoel Beer Sheva',b:1,c:'Beersheba',s:'Turner Stadium'},
@@ -841,7 +841,7 @@ var CLUBDB = [
     {n:'Hapoel Rishon LeZion',b:0,c:'Rishon LeZion',s:'HaMoshava Stadium Rishon'},{n:'Bnei Yehuda Tel Aviv',b:0,c:'Tel Aviv',s:'Bloomfield Stadium'},{n:'Maccabi Herzliya',b:0,c:'Herzliya',s:'Herzliya Stadium'},
     {n:'Hapoel Kfar Shalem',b:0,c:'Tel Aviv',s:'Kfar Shalem Stadium'},{n:'Maccabi Jaffa',b:0,c:'Jaffa',s:'Jaffa Stadium'},{n:'F.C. Kiryat Yam',b:0,c:'Kiryat Yam',s:'Kiryat Yam Stadium'},
     {n:'Ironi Tiberias',b:0,c:'Tiberíades',s:'Tiberias Stadium'},{n:'Hapoel Umm al-Fahm',b:0,c:'Umm al-Fahm',s:'Umm al-Fahm Stadium'},{n:'Maccabi Kiryat Gat',b:0,c:'Kiryat Gat',s:'Kiryat Gat Stadium'},
-    {n:'Maccabi Ahi Nazareth',b:0,c:'Nazaret',s:'Nazareth Stadium'},{n:'Sektzia Ness Ziona',b:0,c:'Ness Ziona',s:'Ness Ziona Stadium'},{n:'Hapoel Hadera',b:0,c:'Hadera',s:'Hadera Stadium'},
+    {n:'Maccabi Ahi Nazareth',b:0,c:'Nazaret',s:'Nazareth Stadium'},{n:'Hapoel Hadera',b:0,c:'Hadera',s:'Hadera Stadium'},
     {n:'Hapoel Nof HaGalil',b:0,c:'Nof HaGalil',s:'Nof HaGalil Stadium'}]},
   {league:'K League 1', country:'Corea del Sur', base:9, matchdays:33, teams:[
     {n:'Jeonbuk Hyundai Motors',b:2,c:'Jeonju',s:'Jeonju World Cup Stadium'},{n:'FC Seoul',b:1,c:'Seúl',s:'Seoul World Cup Stadium'},{n:'Gwangju FC',b:0,c:'Gwangju',s:'Gwangju Football Stadium'},
@@ -854,7 +854,7 @@ var CLUBDB = [
     {n:'Gyeongnam FC',b:0,c:'Changwon',s:'Changwon Football Center'},{n:'Jeonnam Dragons',b:0,c:'Gwangyang',s:'Gwangyang Football Stadium'},{n:'Daegu FC',b:0,c:'Daegu',s:'DGB Daegu Bank Park'},
     {n:'Suwon Samsung Bluewings',b:1,c:'Suwon',s:'Suwon World Cup Stadium'},{n:'Seoul E-Land FC',b:0,c:'Seúl',s:'Jamsil Arena'},{n:'Yongin FC',b:0,c:'Yongin',s:'Yongin Football Center'},
     {n:'Gimpo FC',b:0,c:'Gimpo',s:'Gimpo Sono International Stadium'},{n:'Hwaseong FC',b:0,c:'Hwaseong',s:'Hwaseong Sports Complex'},{n:'Bucheon FC 1995',b:0,c:'Bucheon',s:'Bucheon Stadium'},
-    {n:'Cheonan City FC',b:0,c:'Cheonan',s:'Cheonan Sports Complex'},{n:'Chungju Citizen',b:0,c:'Chungju',s:'Chungju Stadium'}]},
+    {n:'Cheonan City FC',b:0,c:'Cheonan',s:'Cheonan Sports Complex'}]},
   {league:'Chinese Super League', country:'China', base:9, matchdays:30, teams:[
     {n:'Chengdu Rongcheng',b:0,c:'Chengdu',s:'Phoenix Hill Football Stadium'},{n:'Chongqing Tonglianglong',b:0,c:'Chongqing',s:'Chongqing Stadium'},{n:'Dalian Yingbo',b:0,c:'Dalian',s:'Dalian Sports Center'},
     {n:'Yunnan Yukun',b:0,c:'Kunming',s:'Kunming Tuodong Stadium'},{n:'Shandong Taishan',b:1,c:'Jinan',s:'Shandong Provincial Stadium'},{n:'Qingdao West Coast',b:0,c:'Qingdao',s:'Qingdao Youth Football Stadium'},
@@ -864,10 +864,10 @@ var CLUBDB = [
     {n:'Tianjin Jinmen Tiger',b:0,c:'Tianjin',s:'Tianjin Olympic Center Stadium'}]},
   {league:'China League One', country:'China', base:3, matchdays:38, teams:[
     {n:'Meizhou Hakka',b:0,c:'Wuhua',s:'Huitang Stadium'},{n:'Changchun Yatai',b:0,c:'Changchun',s:'Development Area Stadium'},{n:'Dongguan United',b:0,c:'Dongguan',s:'Dongguan Stadium'},
-    {n:'Heilongjiang Lava Spring',b:0,c:'Harbin',s:'Harbin Sports Center'},{n:'Dalian Huayi',b:0,c:'Dalian',s:'Dalian Sports Center'},{n:'Suzhou Dongwu',b:0,c:'Suzhou',s:'Suzhou Olympic Sports Center'},
+    {n:'Heilongjiang Lava Spring',b:0,c:'Harbin',s:'Harbin Sports Center'},{n:'Suzhou Dongwu',b:0,c:'Suzhou',s:'Suzhou Olympic Sports Center'},
     {n:'Hebei Kungfu',b:0,c:'Langfang',s:'Hebei Langfang Stadium'},{n:'Shenzhen Juniors',b:0,c:'Shenzhen',s:'Shenzhen Universiade Stadium'},{n:'Nantong Zhiyun',b:0,c:'Rugao',s:'Rugao Olympic Sports Center'},
-    {n:'Yanbian Longding',b:0,c:'Yanji',s:'Yanji Stadium'},{n:'Guangzhou E-Power',b:0,c:'Cantón',s:'Yuexiushan Stadium'},{n:'Shaanxi Union',b:0,c:'Xi\'an',s:'Xi\'an Stadium'},
-    {n:'Shanghai Jiading Huilong',b:0,c:'Shanghái',s:'Jiading Stadium'},{n:'Guangxi Hengchen',b:0,c:'Nanning',s:'Guangxi Sports Center'},{n:'Nanjing City',b:0,c:'Nankín',s:'Nanjing Olympic Sports Center'},
+    {n:'Yanbian Longding',b:0,c:'Yanji',s:'Yanji Stadium'},{n:'Shaanxi Union',b:0,c:'Xi\'an',s:'Xi\'an Stadium'},
+    {n:'Guangxi Hengchen',b:0,c:'Nanning',s:'Guangxi Sports Center'},{n:'Nanjing City',b:0,c:'Nankín',s:'Nanjing Olympic Sports Center'},
     {n:'Wuxi Wugo',b:0,c:'Wuxi',s:'Jiangyin Sports Centre'},{n:'Ningbo Professional',b:0,c:'Ningbo',s:'Ningbo Sports Center'},{n:'Foshan Nanshi',b:0,c:'Foshan',s:'Foshan Sports Center'},
     {n:'Shijiazhuang Gongfu',b:0,c:'Shijiazhuang',s:'Shijiazhuang Sports Center'},{n:'Jiangxi Dingnan United',b:0,c:'Ganzhou',s:'Dingnan Stadium'}]},
   {league:'A-League Men', country:'Australia', base:9, matchdays:26, teams:[
@@ -882,6 +882,23 @@ var CLUBDB = [
 ];
 
 var FILIAL_TEAMS = ['Real Sociedad B','Celta Fortuna','Athletic Club B','Deportivo Fabril','Atlético Madrileño','Real Madrid Castilla','Villarreal CF B','TSG Hoffenheim II','VfB Stuttgart II','Juventus Next Gen','Atalanta U23','Inter U23','Jong Ajax','Jong AZ','Jong PSV','Jong FC Utrecht','FC Porto B','Sporting CP B','Benfica B','Cruz Azul Hidalgo','Tapatío'];
+var FILIAL_PARENT = {
+  'Real Sociedad B':'Real Sociedad','Celta Fortuna':'Celta de Vigo','Athletic Club B':'Athletic Club',
+  'Deportivo Fabril':'Deportivo de La Coruña','Atlético Madrileño':'Atlético de Madrid','Real Madrid Castilla':'Real Madrid',
+  'Villarreal CF B':'Villarreal CF','TSG Hoffenheim II':'TSG 1899 Hoffenheim','VfB Stuttgart II':'VfB Stuttgart',
+  'Juventus Next Gen':'Juventus','Atalanta U23':'Atalanta','Inter U23':'Inter','Jong Ajax':'Ajax','Jong AZ':'AZ Alkmaar',
+  'Jong PSV':'PSV Eindhoven','Jong FC Utrecht':'Utrecht','FC Porto B':'FC Porto','Sporting CP B':'Sporting CP','Benfica B':'Benfica',
+  'Cruz Azul Hidalgo':'Cruz Azul','Tapatío':'Chivas Guadalajara'
+};
+function parentClubDivision(filialName){
+  var parentName = FILIAL_PARENT[filialName];
+  if (!parentName) return null;
+  var found = null;
+  CLUBDB.forEach(function(d){
+    d.teams.forEach(function(t){ if (t.n === parentName) found = d; });
+  });
+  return found;
+}
 var RIVAL_FIRST_NAMES = ['Marco','Diego','Thomas','Luca','Pierre','Carlos','Antoine','Klaus','Rui','Bruno','Hugo','Nicolás','Fernando','Giovanni','Erik','Sven','Mateo','Adrián','Rafael','Tomás'];
 var RIVAL_SURNAMES = ['Ferreira','Rossi','Dubois','Müller','Herrera','Novak','Costa','Larsson','Ribeiro','Santini','Delgado','Vasquez','Bianchi','Almeida','Petit','Weber','Castro','Moreau','Silveira','Cardoso'];
 function randomRivalName(){
@@ -3896,7 +3913,10 @@ function buildOffersSection(){
         }
       });
     });
-    if (bigPool.length) offers[0] = shuffle(bigPool)[0];
+    if (bigPool.length){
+      var bigPick = pickUnique(bigPool, offers.slice(1));
+      if (bigPick) offers[0] = bigPick;
+    }
   }
   }
 
@@ -3906,10 +3926,12 @@ function buildOffersSection(){
     sectionTitle = 'Despedido';
   } else if (movement === 'Ascenso'){
     var upDiv = nextDivisionUp(lastDivisionObj);
-    if (FILIAL_TEAMS.indexOf(state.team) !== -1 && isTopFlight(upDiv)){
+    var parentDiv = FILIAL_TEAMS.indexOf(state.team) !== -1 ? parentClubDivision(state.team) : null;
+    var blockedByParent = parentDiv && upDiv && parentDiv.league === upDiv.league && parentDiv.country === upDiv.country;
+    if (blockedByParent){
       stayDivision = lastDivisionObj;
       stayLabel = 'Sigues con '+state.team+' en '+leagueNameWithBadge(lastDivisionObj.league, lastDivisionObj.country);
-      stayNote = 'Como filial, '+state.team+' no puede ascender a Primera — se queda en su categoría actual.';
+      stayNote = 'Como filial, '+state.team+' no puede jugar en la misma categoría que '+FILIAL_PARENT[state.team]+' — se queda en su categoría actual.';
       sectionTitle = 'Ascenso bloqueado (filial)';
     } else {
       stayDivision = upDiv;
@@ -3946,7 +3968,7 @@ function buildOffersSection(){
     (wasFired ? '' :
       '<h3 style="margin:0 0 6px;">'+sectionTitle+'</h3>'+
       '<div style="display:grid; gap:8px; margin-bottom:16px;">'+
-        '<button id="stayBtn" class="clubTintCard" data-tint-club="'+state.team.replace(/"/g,'&quot;')+'" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px;">'+
+        '<button id="stayBtn" class="clubTintCard" data-tint-club="'+state.team.replace(/"/g,'&quot;')+'" style="width:100%; text-align:left; display:flex; align-items:center; gap:10px; border-left:3px solid var(--text-accent);">'+
           teamBadge(state.team)+'<span><span style="display:block;">'+flagEmoji(state.country)+' '+stayLabel+'</span><span style="display:block; font-size:12px; color:var(--text-secondary); font-weight:400;">'+stayNote+'</span></span>'+
         '</button>'+
       '</div>'
